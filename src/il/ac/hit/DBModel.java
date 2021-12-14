@@ -4,7 +4,6 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
 import static java.sql.Types.NULL;
 
 /**
@@ -12,25 +11,26 @@ import static java.sql.Types.NULL;
  */
 public class DBModel implements IModel
 {
-    private String dbDriverName = "com.mysql.jdbc.Driver";
-    private String dbProtocol = "jdbc:mysql://localhost:3306/costman";
-    private String dbUserName = "root";
-    private String dbPassword = "123456";
+    private final String dbDriverName = "com.mysql.jdbc.Driver";
+    private final String dbProtocol = "jdbc:mysql://localhost:3306/costman";
+    private final String dbUserName = "root";
+    private final String dbPassword = "123456";
+    private static final DBModel instance = new DBModel();
 
-    private static DBModel instance = new DBModel();
-
-    public static DBModel getInstance()
-    {
+    /**
+     * Singleton method, in order to use it on DBModelTest
+     * @return an instance of DBModel
+     */
+    public static DBModel getInstance() {
         return DBModel.instance;
     }
-
-    // Insertion of new user to DataBase
 
     /************************
      General Functions
      ************************/
 
     /**
+     * A code block that will be executed during "final" block, in order to prevent code redundancy
      * @param inputPreparedStatement - The prepared statement which should be terminated
      * @param inputConnection        - The connection which should be terminated
      * @param inputResultSet         - The result set which should be terminated
@@ -38,37 +38,29 @@ public class DBModel implements IModel
      */
     private void cleanupUpdateUsageProcess(PreparedStatement inputPreparedStatement, Connection inputConnection, ResultSet inputResultSet) throws CostManException
     {
-        if (inputConnection != null)
-        {
-            try
-            {
+        if (inputConnection != null) {
+            try {
                 inputConnection.close();
             }
-            catch (Exception e)
-            {
+            catch (Exception e) {
                 throw new CostManException("A problem occurred while closing inputConnection.", e);
             }
         }
 
-        if (inputPreparedStatement != null)
-        {
-            try
-            {
+        if (inputPreparedStatement != null) {
+            try {
                 inputPreparedStatement.close();
             }
-            catch (SQLException e)
-            {
+            catch (SQLException e) {
                 throw new CostManException("A problem occurred while closing Prepared Statement!", e);
             }
         }
-        if (inputResultSet != null)
-        {
-            try
-            {
+
+        if (inputResultSet != null) {
+            try {
                 inputResultSet.close();
             }
-            catch (SQLException e)
-            {
+            catch (SQLException e) {
                 throw new CostManException("A problem occurred while closing ResultSet!", e);
             }
         }
@@ -79,38 +71,33 @@ public class DBModel implements IModel
      ************************************************/
 
     /**
-     * @param email
-     * @param password
+     * A function that inserts a new user to the database.
+     * @param user - A parameter representing user, containing strings of email address and a password.
      * @throws CostManException
      */
-    public void insertNewUser(String email, String password) throws CostManException
+    public void insertNewUser(User user) throws CostManException
     {
         PreparedStatement ps = null;
         Connection connection = null;
 
-        try
-        {
+        try {
             Class.forName(this.dbDriverName);
             connection = DriverManager.getConnection(this.dbProtocol, this.dbUserName, this.dbPassword);
             ps = connection.prepareStatement("INSERT INTO users VALUES (?, ?,?)");
 
             ps.setInt(1, NULL);
-            ps.setString(2, email);
-            ps.setString(3, password);
+            ps.setString(2, user.getEmail());
+            ps.setString(3, user.getPassword());
 
-            if (ps.executeUpdate() != 1)
-            {
+            if (ps.executeUpdate() != 1) {
                 throw new CostManException("Problem with registering user!");
             }
-
         }
-        catch (SQLException | ClassNotFoundException e)
-        {
+
+        catch (SQLException | ClassNotFoundException e) {
             throw new CostManException("Problem with registering user!", e);
-
         }
-        finally
-        {
+        finally {
             cleanupUpdateUsageProcess(ps, connection, null);
         }
     }
@@ -119,7 +106,13 @@ public class DBModel implements IModel
      Functions for Users Login Handling
      ****************************************/
 
-    // verifying the user's input with the database and showing corresponding message
+    /**
+     * A function that verifies the user's input with the database and showing corresponding message.
+     * @param email - email address written on login page
+     * @param password - email address written on login page
+     * @return ID of the specific user on the database, 0 if null/not found
+     * @throws CostManException
+     */
     public int selectUserCredentials(String email, String password) throws CostManException
     {
         PreparedStatement ps = null;
@@ -127,13 +120,7 @@ public class DBModel implements IModel
         ResultSet rs = null;
         int userId = 0;
 
-        if (email.length() == 0 || password.length() == 0)
-        {
-            throw new CostManException("One or more of the details are missing!");
-        }
-
-        try
-        {
+        try {
             Class.forName(this.dbDriverName);
             connection = DriverManager.getConnection(this.dbProtocol, this.dbUserName, this.dbPassword);
             ps = connection.prepareStatement("SELECT UserID from users WHERE Email = ? AND Password = ?");
@@ -143,18 +130,17 @@ public class DBModel implements IModel
 
             rs = ps.executeQuery();
 
-            while (rs.next())
-            { // getting ID of the specific user, only 1 ID returned.
-                userId = rs.getInt("UserID");
-            }
+            // getting ID of the specific user, only 1 ID returned.
+            rs.next();
+            userId = rs.getInt("UserID");
 
         }
-        catch (SQLException | ClassNotFoundException e)
-        {
+
+        catch (SQLException | ClassNotFoundException e) {
             throw new CostManException("Error logging in!", e);
         }
-        finally
-        {
+
+        finally {
             cleanupUpdateUsageProcess(ps, connection, rs);
         }
 
@@ -168,19 +154,20 @@ public class DBModel implements IModel
     /**
      * Retrieve categories by their specified type (PRIMARY or SECONDARY)
      * @param requestedCategoriesType - The type of the requested categories which should be retrieved.
-     * @return - The list of the categories from the requested type.
+     * @return The list of the categories from the requested type.
      * @throws CostManException
      */
+
     public List<String> getCategoriesByCategoryType(EnumCategoryType requestedCategoriesType) throws CostManException {
         Connection connection = null;
         ResultSet rs = null;
         PreparedStatement ps = null;
+        List<String> allRequestedCategories = null;
 
         String finalQueryTemplate = "SELECT CategoryName FROM categories WHERE OwnerCategoryID IS%sNULL ORDER BY CategoryName ASC";
         String finalQuery;
         String categoryPrimaryIndicator = " ";
 
-        List<String> allRequestedCategories = null;
 
         // Decide the indicator value according to the value of "requestedCategoriesType"
         switch (requestedCategoriesType) {
@@ -192,11 +179,10 @@ public class DBModel implements IModel
                 break;
         }
 
-        // Concat the indicator string's value to the general query.
+        // Concatenate the indicator string's value to the general query
         finalQuery = String.format(finalQueryTemplate, categoryPrimaryIndicator);
 
         try {
-
             Class.forName(this.dbDriverName);
             connection = DriverManager.getConnection(this.dbProtocol, this.dbUserName, this.dbPassword);
             ps = connection.prepareStatement(finalQuery);
@@ -207,17 +193,16 @@ public class DBModel implements IModel
             // Initialize the returned list
             allRequestedCategories = new ArrayList<String>();
 
-            // Get all the Categories
+            // Get all the categories
             while (rs.next()) {
                 allRequestedCategories.add(rs.getString("CategoryName"));
             }
 
-        } catch (Exception e)
-        {
+        }
+        catch (Exception e) {
             throw new CostManException("Can't retrieve the categories from the DB.", e);
         }
-        finally
-        {
+        finally {
             cleanupUpdateUsageProcess(ps, connection, rs);
         }
 
@@ -242,7 +227,8 @@ public class DBModel implements IModel
 
         if (ownerCategoryName == null) {
             categoryPrimaryIndicator = null;
-        } else {
+        }
+        else {
             categoryPrimaryIndicator = String.valueOf(getCategoryIDByCategoryName(ownerCategoryName));
         }
 
@@ -254,16 +240,14 @@ public class DBModel implements IModel
             ps.setString(1, newCategoryName);
             ps.setString(2, categoryPrimaryIndicator);
 
-            if (ps.executeUpdate() != 1)
-            {
+            if (ps.executeUpdate() != 1) {
                 throw new CostManException("Error while trying to insert a new category!");
             }
         }
         catch (Exception e) {
             throw new CostManException("Cannot insert the new category to the DB", e);
         }
-        finally
-        {
+        finally {
             cleanupUpdateUsageProcess(ps, connection, rs);
         }
     }
@@ -281,7 +265,7 @@ public class DBModel implements IModel
 
         String finalQueryTemplate = "SELECT CategoryID FROM categories WHERE CategoryName=?";
 
-        // In case where the input category name does not exists, this default value should be returned.
+        // In case where the input category name doesn't exist, this default value should be returned.
         int returnValue = 0;
 
         try {
@@ -299,10 +283,10 @@ public class DBModel implements IModel
             returnValue = rs.getInt("CategoryID");
 
         } catch (Exception e) {
-            throw new CostManException(String.format("Cannot convert the category name \"%s\" to a category id", categoryName), e);
+            throw new CostManException(String.format("Cannot convert the category name \"%s\" to a category id",
+                    categoryName), e);
         }
-        finally
-        {
+        finally {
             cleanupUpdateUsageProcess(ps, connection, rs);
         }
 
@@ -334,11 +318,12 @@ public class DBModel implements IModel
             // Get the requested category ID
             rs.next();
             returnValue = rs.getString("CategoryName");
+
         } catch (Exception e) {
-            throw new CostManException(String.format("Cannot convert the category id \"%d\" to a category name", categoryId), e);
+            throw new CostManException(String.format("Can't convert the category ID \"%d\" to a category name",
+                    categoryId), e);
         }
-        finally
-        {
+        finally {
             cleanupUpdateUsageProcess(ps, connection, rs);
         }
 
@@ -349,7 +334,14 @@ public class DBModel implements IModel
      Functions for Reports Handling
      **********************************/
 
-    // get specific list of items selected by range of dates
+    /**
+     * A function that returns data by a specific range of dates
+     * @param userId - user ID of the requesting user
+     * @param from - origin date
+     * @param to - destination date
+     * @return - A specific list of items selected by range of dates
+     * @throws CostManException
+     */
     public Collection<Item> getDataByRangeOfDates(int userId, String from, String to) throws CostManException
     {
         PreparedStatement ps = null;
@@ -358,8 +350,7 @@ public class DBModel implements IModel
         Collection<Item> items = null;
         Item itemToAdd = null;
 
-        try
-        {
+        try {
             Class.forName(this.dbDriverName);
             connection = DriverManager.getConnection(this.dbProtocol, this.dbUserName, this.dbPassword);
             ps = connection.prepareStatement("SELECT * FROM items WHERE OwnerUserID = ? AND (Date BETWEEN ? AND ?)");
@@ -383,16 +374,15 @@ public class DBModel implements IModel
                 itemToAdd.setCurrencyRate(rs.getFloat("CurrencyRate"));
                 itemToAdd.setDescription(rs.getString("Description"));
                 items.add(itemToAdd);
-                itemToAdd = null;
+                itemToAdd = null; // initializing the temp variable, so we can create it again with new values.
+                                  // Otherwise, it causes itemToAdd to get corrupted.
             }
-
         }
-        catch (SQLException | ClassNotFoundException e)
-        {
+
+        catch (SQLException | ClassNotFoundException e) {
             throw new CostManException("Error getting data between dates!", e);
         }
-        finally
-        {
+        finally {
             cleanupUpdateUsageProcess(ps, connection, rs);
         }
 
@@ -403,13 +393,17 @@ public class DBModel implements IModel
      Functions for Items Handling
      ***********************************/
 
+    /**
+     * A function that inserts a new item into the database
+     * @param item - represents an item that would be inserted into database
+     * @throws CostManException
+     */
     public void insertNewItem(Item item) throws CostManException
     {
         PreparedStatement ps = null;
         Connection connection = null;
 
-        try
-        {
+        try {
             Class.forName(this.dbDriverName);
             connection = DriverManager.getConnection(this.dbProtocol, this.dbUserName, this.dbPassword);
             ps = connection.prepareStatement("INSERT INTO items VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
@@ -423,28 +417,31 @@ public class DBModel implements IModel
             ps.setFloat(7, item.getCurrencyRate());
             ps.setString(8, item.getDescription());
 
-
-            if (ps.executeUpdate() != 1)
+            if (ps.executeUpdate() != 1) {
                 throw new CostManException("Error while inserting into DataBase!");
-
+            }
         }
-        catch (SQLException | ClassNotFoundException e)
-        {
+
+        catch (SQLException | ClassNotFoundException e) {
             throw new CostManException("Error while inserting into DataBase!", e);
         }
-        finally
-        {
+        finally {
             cleanupUpdateUsageProcess(ps, connection, null);
         }
     }
 
+    /**
+     * A function that deletes a specific item from the database
+     * @param OwnerUserId - represents specific user ID whose belonged item to be deleted.
+     * @param itemId - represents specific item ID to be deleted.
+     * @throws CostManException
+     */
     public void deleteItem(int OwnerUserId, int itemId) throws CostManException
     {
         PreparedStatement ps = null;
         Connection connection = null;
 
-        try
-        {
+        try {
             Class.forName(this.dbDriverName);
             connection = DriverManager.getConnection(this.dbProtocol, this.dbUserName, this.dbPassword);
             ps = connection.prepareStatement("DELETE FROM items WHERE ItemID = ? AND OwnerUserID = ?");
@@ -452,18 +449,15 @@ public class DBModel implements IModel
             ps.setInt(1, itemId);
             ps.setInt(2, OwnerUserId);
 
-            if (ps.executeUpdate() != 1)
-            {
+            if (ps.executeUpdate() != 1) {
                 throw new CostManException("Error deleting item!");
             }
 
         }
-        catch (SQLException | ClassNotFoundException e)
-        {
+        catch (SQLException | ClassNotFoundException e) {
             throw new CostManException("Error deleting item!", e);
         }
-        finally
-        {
+        finally {
             cleanupUpdateUsageProcess(ps, connection, null);
         }
     }
