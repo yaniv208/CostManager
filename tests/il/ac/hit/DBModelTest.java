@@ -1,7 +1,6 @@
 package il.ac.hit;
 
 import org.junit.FixMethodOrder;
-import org.junit.jupiter.api.Assertions;
 import org.junit.runners.MethodSorters;
 import java.util.Collection;
 import java.util.List;
@@ -10,101 +9,95 @@ import il.ac.hit.DBModel;
 
 import static org.junit.Assert.*;
 
-@FixMethodOrder( MethodSorters.NAME_ASCENDING )
-class DBModelTest {
+/*
+assertEquals    - Asserts that two objects are equal.
+assertNotEquals - Asserts that two objects are not equals.
+*/
 
+@FixMethodOrder( MethodSorters.NAME_ASCENDING )
+public class DBModelTest
+{
     private static final Logger LOGGER = Logger.getLogger(DBModelTest.class.getName());
 
-    @org.junit.jupiter.api.BeforeEach
-    void setUp() {
-
-    }
-
-    @org.junit.jupiter.api.AfterEach
-    void tearDown() {
-    }
-
-    @org.junit.jupiter.api.Test
-    void insertNewUser() {
+    @org.junit.Test
+    public void insertNewUser() {
         LOGGER.info("Starting insertNewUser() Test");
         String expected = "Problem with registering user!";
 
         try {
-            DBModel.insertNewUser("test@gmail.com", "testPass");
+            DBModel.getInstance().insertNewUser("test@gmail.com", "testPass");
             // if an exception will occur, it would take place on next line
         }
         catch (CostManException e) {
-            Assertions.assertEquals(expected, e.getMessage());
+            assertEquals(null, expected, e.getMessage());
         }
-
     }
 
-    @org.junit.jupiter.api.Test
-    void selectUserCredentials() {
+    @org.junit.Test
+    public void selectUserCredentials() {
         LOGGER.info("Starting selectUserCredentials() Test");
 
         String expected = "Error logging in!";
         try
         {
-            DBModel.selectUserCredentials("test@gmail.com", "testPass");
+            DBModel.getInstance().selectUserCredentials("test@gmail.com", "testPass");
             // if an exception will occur, it would take place on next line
         }
         catch (CostManException err)
         {
-            Assertions.assertEquals(expected, err.getMessage());
+            assertEquals(null, expected, err.getMessage());
         }
 
     }
 
-    @org.junit.jupiter.api.Test
-    void getDataByRangeOfDates() {
+    @org.junit.Test
+    public void getDataByRangeOfDates() {
         LOGGER.info("Starting getRangeOfDatesByUser() Test");
         String expected = "Error getting data between dates!";
 
         try {
-            Collection<Item> items = DBModel.getDataByRangeOfDates(12, "2020-01-01", "2021-12-08");
-            Assertions.assertNotNull(items, "List of items is null");
+            Collection<Item> items = DBModel.getInstance().getDataByRangeOfDates(12, "2020-01-01", "2021-12-08");
+            assertNotNull("List of items is null", items);
             // if another exception will be thrown, it will take place on next line
         }
         catch (CostManException err) {
-            Assertions.assertEquals(expected, err.getMessage());
+            assertEquals(null, expected, err.getMessage());
         }
 
     }
 
-    @org.junit.jupiter.api.Test
-    void insertNewItem() {
+    @org.junit.Test
+    public void insertNewItem() {
         LOGGER.info("Starting insertNewItem() Test");
         String expected = "Error while inserting into DataBase!";
 
         try {
-            DBModel.insertNewItem(new Item(5,2, 3, "2021-12-08", 50,
+            DBModel.getInstance().insertNewItem(new Item(5,2, 3, "2021-12-08", 50,
                     2.2f, "Hamburger"));
             // if an exception will occur, it would take place on next line
         }
         catch (CostManException err) {
-            Assertions.assertEquals(expected, err.getMessage());
+            assertEquals(null, expected, err.getMessage());
         }
 
     }
 
-    @org.junit.jupiter.api.Test
-    void deleteItem() {
+    @org.junit.Test
+    public void deleteItem() {
         LOGGER.info("Starting deleteItem() Test");
 
         String expected = "Error deleting item!";
 
         try {
-            DBModel.deleteItem(12, 12);
+            DBModel.getInstance().deleteItem(12, 12);
         }
         catch (CostManException err)
         {
-            Assertions.assertEquals(expected, err.getMessage());
+            assertEquals(null, expected, err.getMessage());
         }
-
     }
 
-    @org.junit.jupiter.api.Test
+    @org.junit.Test
     public void GetCategories_Primary_Test1()
     {
         boolean isExceptionThrown = false;
@@ -112,20 +105,20 @@ class DBModelTest {
 
         try
         {
-            List<String> primaries2 = DBModel.getCategoriesByCategoryType(EnumCategoryType.Primary);
+            List<String> primaries2 = DBModel.getInstance().getCategoriesByCategoryType(EnumCategoryType.Primary);
 
             assertNotEquals("List of primaries is null", primaries2, null);
-            Assertions.assertEquals("Wrong element at position 0", primaries2.get(0), "TstCat1_Primary");
+            assertEquals("Wrong element at position 0", primaries2.get(0), "TstCat1_Primary");
         }
         catch (CostManException err)
         {
             isExceptionThrown = true;
         }
 
-        Assertions.assertEquals(isExceptionThrown, false);
+        assertEquals(isExceptionThrown, false);
     }
 
-    @org.junit.jupiter.api.Test
+    @org.junit.Test
     public void GetCategories_Secondary_Test1()
     {
         boolean isExceptionThrown = false;
@@ -133,20 +126,20 @@ class DBModelTest {
 
         try
         {
-            List<String> secondaries2 = DBModel.getCategoriesByCategoryType(EnumCategoryType.Secondary);
+            List<String> secondaries2 = DBModel.getInstance().getCategoriesByCategoryType(EnumCategoryType.Secondary);
 
-            Assertions.assertNotEquals(secondaries2, null, "List of primaries is null");
-            Assertions.assertEquals(secondaries2.get(0), ("TstCat1_Secondary"), "Wrong element at position 0");
+            assertNotEquals("List of primaries is null", secondaries2, null);
+            assertEquals("Wrong element at position 0", secondaries2.get(0), ("TstCat1_Secondary"));
         }
         catch (CostManException err)
         {
             isExceptionThrown = true;
         }
 
-        Assertions.assertEquals(isExceptionThrown, false);
+        assertEquals(isExceptionThrown, false);
     }
 
-    @org.junit.jupiter.api.Test
+    @org.junit.Test
     public void InsertNewCategory_Primary_Test1()
     {
         boolean isExceptionThrown = false;
@@ -154,8 +147,8 @@ class DBModelTest {
 
         try
         {
-            DBModel.insertNewCategory("ProgramPrimary", null);
-            List<String> primaries1 = DBModel.getCategoriesByCategoryType(EnumCategoryType.Primary);
+            DBModel.getInstance().insertNewCategory("ProgramPrimary", null);
+            List<String> primaries1 = DBModel.getInstance().getCategoriesByCategoryType(EnumCategoryType.Primary);
 
             assertEquals("Wrong number of elements", primaries1.size(), 2);
             assertEquals("Wrong element at position 0", primaries1.get(0), "ProgramPrimary");
@@ -169,7 +162,7 @@ class DBModelTest {
         assertEquals(isExceptionThrown, false);
     }
 
-    @org.junit.jupiter.api.Test
+    @org.junit.Test
     public void InsertNewCategory_Secondary_Test1()
     {
         boolean isExceptionThrown = false;
@@ -177,8 +170,8 @@ class DBModelTest {
 
         try
         {
-            DBModel.insertNewCategory("ProgramSecondary", "ProgramPrimary");
-            List<String> secondaries1 = DBModel.getCategoriesByCategoryType(EnumCategoryType.Secondary);
+            DBModel.getInstance().insertNewCategory("ProgramSecondary", "ProgramPrimary");
+            List<String> secondaries1 = DBModel.getInstance().getCategoriesByCategoryType(EnumCategoryType.Secondary);
 
             assertEquals("Wrong number of elements", secondaries1.size(), 2);
             assertEquals("Wrong element at position 0", secondaries1.get(0), "ProgramSecondary");
