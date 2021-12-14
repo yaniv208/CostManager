@@ -7,6 +7,9 @@ import java.util.List;
 
 import static java.sql.Types.NULL;
 
+/**
+ * This class represents the Database Component of the Model
+ */
 public class DBModel implements IModel
 {
     private String dbDriverName = "com.mysql.jdbc.Driver";
@@ -87,8 +90,8 @@ public class DBModel implements IModel
 
         try
         {
-            Class.forName(dbDriverName);
-            connection = DriverManager.getConnection(dbProtocol, dbUserName, dbPassword);
+            Class.forName(this.dbDriverName);
+            connection = DriverManager.getConnection(this.dbProtocol, this.dbUserName, this.dbPassword);
             ps = connection.prepareStatement("INSERT INTO users VALUES (?, ?,?)");
 
             ps.setInt(1, NULL);
@@ -131,8 +134,8 @@ public class DBModel implements IModel
 
         try
         {
-            Class.forName(dbDriverName);
-            connection = DriverManager.getConnection(dbProtocol, dbUserName, dbPassword);
+            Class.forName(this.dbDriverName);
+            connection = DriverManager.getConnection(this.dbProtocol, this.dbUserName, this.dbPassword);
             ps = connection.prepareStatement("SELECT UserID from users WHERE Email = ? AND Password = ?");
 
             ps.setString(1, email);
@@ -163,7 +166,7 @@ public class DBModel implements IModel
      ****************************************/
 
     /**
-     *
+     * Retrieve categories by their specified type (PRIMARY or SECONDARY)
      * @param requestedCategoriesType - The type of the requested categories which should be retrieved.
      * @return - The list of the categories from the requested type.
      * @throws CostManException
@@ -194,8 +197,8 @@ public class DBModel implements IModel
 
         try {
 
-            Class.forName(dbDriverName);
-            connection = DriverManager.getConnection(dbProtocol, dbUserName, dbPassword);
+            Class.forName(this.dbDriverName);
+            connection = DriverManager.getConnection(this.dbProtocol, this.dbUserName, this.dbPassword);
             ps = connection.prepareStatement(finalQuery);
 
             // Run the query
@@ -222,7 +225,7 @@ public class DBModel implements IModel
     }
 
     /**
-     *
+     * Insert new category to the Database
      * @param newCategoryName - The new category name
      * @param ownerCategoryName - The Owner of the current category.
      *                          If the current category is a PRIMARY category, this value should be null,
@@ -244,8 +247,8 @@ public class DBModel implements IModel
         }
 
         try {
-            Class.forName(dbDriverName);
-            connection = DriverManager.getConnection(dbProtocol, dbUserName, dbPassword);
+            Class.forName(this.dbDriverName);
+            connection = DriverManager.getConnection(this.dbProtocol, this.dbUserName, this.dbPassword);
 
             ps = connection.prepareStatement(finalQueryTemplate);
             ps.setString(1, newCategoryName);
@@ -266,7 +269,7 @@ public class DBModel implements IModel
     }
 
     /**
-     *
+     * Retrieve the requested category ID by its name
      * @param categoryName - The name of the category which should be resolved to it's corresponding ID
      * @return - The corresponding ID of the given category name
      * @throws CostManException
@@ -282,8 +285,8 @@ public class DBModel implements IModel
         int returnValue = 0;
 
         try {
-            Class.forName(dbDriverName);
-            connection = DriverManager.getConnection(dbProtocol, dbUserName, dbPassword);
+            Class.forName(this.dbDriverName);
+            connection = DriverManager.getConnection(this.dbProtocol, this.dbUserName, this.dbPassword);
             ps = connection.prepareStatement(finalQueryTemplate);
 
             ps.setString(1, categoryName);
@@ -307,7 +310,7 @@ public class DBModel implements IModel
     }
 
     /**
-     *
+     * Retrieve the requested category name by its ID
      * @param categoryId - The ID of the category which should be resolved to it's corresponding name
      * @return - The corresponding name of the given category ID
      * @throws CostManException
@@ -320,8 +323,8 @@ public class DBModel implements IModel
         String returnValue = null;
 
         try {
-            Class.forName(dbDriverName);
-            connection = DriverManager.getConnection(dbProtocol, dbUserName, dbPassword);
+            Class.forName(this.dbDriverName);
+            connection = DriverManager.getConnection(this.dbProtocol, this.dbUserName, this.dbPassword);
             ps = connection.prepareStatement(finalQueryTemplate);
             ps.setInt(1, categoryId);
 
@@ -357,8 +360,8 @@ public class DBModel implements IModel
 
         try
         {
-            Class.forName(dbDriverName);
-            connection = DriverManager.getConnection(dbProtocol, dbUserName, dbPassword);
+            Class.forName(this.dbDriverName);
+            connection = DriverManager.getConnection(this.dbProtocol, this.dbUserName, this.dbPassword);
             ps = connection.prepareStatement("SELECT * FROM items WHERE OwnerUserID = ? AND (Date BETWEEN ? AND ?)");
 
             ps.setInt(1, userId);
@@ -407,8 +410,8 @@ public class DBModel implements IModel
 
         try
         {
-            Class.forName(dbDriverName);
-            connection = DriverManager.getConnection(dbProtocol, dbUserName, dbPassword);
+            Class.forName(this.dbDriverName);
+            connection = DriverManager.getConnection(this.dbProtocol, this.dbUserName, this.dbPassword);
             ps = connection.prepareStatement("INSERT INTO items VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
 
             ps.setInt(1, NULL);
@@ -442,8 +445,8 @@ public class DBModel implements IModel
 
         try
         {
-            Class.forName(dbDriverName);
-            connection = DriverManager.getConnection(dbProtocol, dbUserName, dbPassword);
+            Class.forName(this.dbDriverName);
+            connection = DriverManager.getConnection(this.dbProtocol, this.dbUserName, this.dbPassword);
             ps = connection.prepareStatement("DELETE FROM items WHERE ItemID = ? AND OwnerUserID = ?");
 
             ps.setInt(1, itemId);
