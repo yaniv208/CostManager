@@ -34,7 +34,7 @@ public class DBModel implements IModel
      * @param inputPreparedStatement - The prepared statement which should be terminated
      * @param inputConnection        - The connection which should be terminated
      * @param inputResultSet         - The result set which should be terminated
-     * @throws CostManException
+     * @throws CostManException if there was any problem closing resources
      */
     private void cleanupUpdateUsageProcess(PreparedStatement inputPreparedStatement, Connection inputConnection, ResultSet inputResultSet) throws CostManException
     {
@@ -73,7 +73,7 @@ public class DBModel implements IModel
     /**
      * A function that inserts a new user to the database.
      * @param user - A parameter representing user, containing strings of email address and a password.
-     * @throws CostManException
+     * @throws CostManException if there was any problem creating a user
      */
     public void insertNewUser(User user) throws CostManException
     {
@@ -111,7 +111,7 @@ public class DBModel implements IModel
      * @param email - email address written on login page
      * @param password - email address written on login page
      * @return ID of the specific user on the database, 0 if null/not found
-     * @throws CostManException
+     * @throws CostManException if there was any problem retrieving user ID
      */
     public int selectUserCredentials(String email, String password) throws CostManException
     {
@@ -155,7 +155,7 @@ public class DBModel implements IModel
      * Retrieve categories by their specified type (PRIMARY or SECONDARY)
      * @param requestedCategoriesType - The type of the requested categories which should be retrieved.
      * @return The list of the categories from the requested type.
-     * @throws CostManException
+     * @throws CostManException if there was any problem retrieving categories
      */
 
     public List<String> getCategoriesByCategoryType(EnumCategoryType requestedCategoriesType) throws CostManException {
@@ -215,7 +215,7 @@ public class DBModel implements IModel
      * @param ownerCategoryName - The Owner of the current category.
      *                          If the current category is a PRIMARY category, this value should be null,
      *                          otherwise the name of the category owner.
-     * @throws CostManException
+     * @throws CostManException if there was any problem inserting a new category
      */
     public void insertNewCategory(String newCategoryName, String ownerCategoryName) throws CostManException {
         Connection connection = null;
@@ -256,7 +256,7 @@ public class DBModel implements IModel
      * Retrieve the requested category ID by its name
      * @param categoryName - The name of the category which should be resolved to it's corresponding ID
      * @return - The corresponding ID of the given category name
-     * @throws CostManException
+     * @throws CostManException if there was any problem retrieving category ID
      */
     public int getCategoryIDByCategoryName(String categoryName) throws CostManException {
         Connection connection = null;
@@ -297,7 +297,7 @@ public class DBModel implements IModel
      * Retrieve the requested category name by its ID
      * @param categoryId - The ID of the category which should be resolved to it's corresponding name
      * @return - The corresponding name of the given category ID
-     * @throws CostManException
+     * @throws CostManException if there was any problem retrieving category name
      */
     public String getCategoryNameByCategoryID(int categoryId) throws CostManException {
         Connection connection = null;
@@ -340,7 +340,7 @@ public class DBModel implements IModel
      * @param from - origin date
      * @param to - destination date
      * @return - A specific list of items selected by range of dates
-     * @throws CostManException
+     * @throws CostManException if there was any problem getting data between specified dates
      */
     public Collection<Item> getDataByRangeOfDates(int userId, String from, String to) throws CostManException
     {
@@ -374,7 +374,7 @@ public class DBModel implements IModel
                 itemToAdd.setCurrencyRate(rs.getFloat("CurrencyRate"));
                 itemToAdd.setDescription(rs.getString("Description"));
                 items.add(itemToAdd);
-                itemToAdd = null; // initializing the temp variable, so we can create it again with new values.
+                //itemToAdd = null; // initializing the temp variable, so we can create it again with new values.
                                   // Otherwise, it causes itemToAdd to get corrupted.
             }
         }
@@ -396,7 +396,7 @@ public class DBModel implements IModel
     /**
      * A function that inserts a new item into the database
      * @param item - represents an item that would be inserted into database
-     * @throws CostManException
+     * @throws CostManException if there was any problem inserting a new item
      */
     public void insertNewItem(Item item) throws CostManException
     {
@@ -434,7 +434,7 @@ public class DBModel implements IModel
      * A function that deletes a specific item from the database
      * @param OwnerUserId - represents specific user ID whose belonged item to be deleted.
      * @param itemId - represents specific item ID to be deleted.
-     * @throws CostManException
+     * @throws CostManException if there was any problem deleting an item from database
      */
     public void deleteItem(int OwnerUserId, int itemId) throws CostManException
     {
