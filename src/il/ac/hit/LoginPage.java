@@ -75,7 +75,7 @@ public class LoginPage {
         setFrameSettings(frame, panelCenter, panelNorth, panelSouth);
     }
 
-    static void setFrameSettings(JFrame frame, JPanel panelCenter, JPanel panelNorth, JPanel panelSouth) {
+    void setFrameSettings(JFrame frame, JPanel panelCenter, JPanel panelNorth, JPanel panelSouth) {
         frame.setLayout(new BorderLayout());
         frame.add(panelCenter, BorderLayout.CENTER);
         frame.add(panelNorth, BorderLayout.NORTH);

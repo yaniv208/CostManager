@@ -28,7 +28,7 @@ public class RegistrationPage implements IView{
         fullNameLabel = new JLabel("Full Name: ");
         fullNameTextField = new JTextField(20);
 
-        registerBtn = new JButton("Register Account");
+        registerBtn = new JButton("Create Account");
 
         panelCenter = new JPanel();
         panelCenter.setBorder(BorderFactory.createTitledBorder("Details"));
@@ -83,20 +83,18 @@ public class RegistrationPage implements IView{
         setMyConstraints(constraints, 0,0, GridBagConstraints.CENTER, 10, 15);
         panelSouth.add(registerBtn, constraints);
 
-        LoginPage.setFrameSettings(frame, panelCenter, panelNorth, panelSouth);
+        setFrameSettings(frame, panelCenter, panelNorth, panelSouth);
+    }
 
-        registerBtn.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                //frame.setVisible(false);
-                String email = emailTextField.getText();
-                String password = String.valueOf(passwordTextField.getPassword());
-                String fullName = fullNameTextField.getText();
-                //user = new User(email, password, fullName);
-                //vm.registerUser(user);
-                //changeView(new LoginPage());
-            }
-        });
+    void setFrameSettings(JFrame frame, JPanel panelCenter, JPanel panelNorth, JPanel panelSouth) {
+        frame.setLayout(new BorderLayout());
+        frame.add(panelCenter, BorderLayout.CENTER);
+        frame.add(panelNorth, BorderLayout.NORTH);
+        frame.add(panelSouth, BorderLayout.SOUTH);
+
+        frame.setSize(500, 500);
+        frame.setVisible(true);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
     private void setMyConstraints(GridBagConstraints c, int gridx, int gridy, int anchor, int ipadx, int ipady) {
