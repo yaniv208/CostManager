@@ -93,6 +93,7 @@ public class RegistrationPage implements IView{
         frame.add(panelSouth, BorderLayout.SOUTH);
 
         frame.setSize(500, 500);
+        frame.setResizable(false);
         frame.setVisible(true);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
