@@ -9,20 +9,20 @@ import static java.sql.Types.NULL;
 /**
  * This class represents the Database Component of the Model
  */
-public class DBModel implements IModel
+public class Model implements IModel
 {
     private final String dbDriverName = "com.mysql.jdbc.Driver";
     private final String dbProtocol = "jdbc:mysql://localhost:3306/costman";
     private final String dbUserName = "root";
     private final String dbPassword = "123456";
-    private static final DBModel instance = new DBModel();
+    private static final Model instance = new Model();
 
     /**
      * Singleton method, in order to use it on DBModelTest
      * @return an instance of DBModel
      */
-    public static DBModel getInstance() {
-        return DBModel.instance;
+    public static Model getInstance() {
+        return Model.instance;
     }
 
     /************************
@@ -83,11 +83,12 @@ public class DBModel implements IModel
         try {
             Class.forName(this.dbDriverName);
             connection = DriverManager.getConnection(this.dbProtocol, this.dbUserName, this.dbPassword);
-            ps = connection.prepareStatement("INSERT INTO users VALUES (?, ?,?)");
+            ps = connection.prepareStatement("INSERT INTO users VALUES (?, ?,?, ?)");
 
             ps.setInt(1, NULL);
             ps.setString(2, user.getEmail());
             ps.setString(3, user.getPassword());
+            ps.setString(4, user.getFullName());
 
             if (ps.executeUpdate() != 1) {
                 throw new CostManException("Problem with registering user!");
@@ -137,7 +138,7 @@ public class DBModel implements IModel
         }
 
         catch (SQLException | ClassNotFoundException e) {
-            throw new CostManException("Error logging in!", e);
+            throw new CostManException("Error logging in! (User not found/Wrong password)", e);
         }
 
         finally {

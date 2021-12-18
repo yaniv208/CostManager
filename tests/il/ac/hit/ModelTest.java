@@ -18,9 +18,9 @@ assertNotEquals - Asserts that two objects are not equals.
 /**
  * A class that contains all of the unit tests for the functions in Model
  */
-public class DBModelTest
+public class ModelTest
 {
-    private static final Logger LOGGER = Logger.getLogger(DBModelTest.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(ModelTest.class.getName());
 
     @org.junit.Test
     public void insertNewUser() {
@@ -28,8 +28,8 @@ public class DBModelTest
         String expected = "Problem with registering user!";
 
         try {
-            User user = new User("test@gmail.com", "testPass");
-            DBModel.getInstance().insertNewUser(user);
+            User user = new User("test@gmail.com", "testPass", "Yossi Cohen");
+            Model.getInstance().insertNewUser(user);
             // if an exception will occur, it would take place on next line
         }
         catch (CostManException e) {
@@ -40,10 +40,10 @@ public class DBModelTest
     @org.junit.Test
     public void selectUserCredentials() {
         LOGGER.info("Starting selectUserCredentials() Test");
-        String expected = "Error logging in!";
+        String expected = "Error logging in! (User not found/Wrong password)";
 
         try {
-            DBModel.getInstance().selectUserCredentials("test@gmail.com", "testPass");
+            Model.getInstance().selectUserCredentials("test@gmail.com", "testPass");
             // if an exception will occur, it would take place on next line
         }
         catch (CostManException err) {
@@ -58,7 +58,7 @@ public class DBModelTest
         String expected = "Error getting data between dates!";
 
         try {
-            Collection<Item> items = DBModel.getInstance().getDataByRangeOfDates(12, "2020-01-01", "2021-12-08");
+            Collection<Item> items = Model.getInstance().getDataByRangeOfDates(12, "2020-01-01", "2021-12-08");
             assertNotNull("List of items is null", items);
             // if another exception will be thrown, it will take place on next line
         }
@@ -74,7 +74,7 @@ public class DBModelTest
         String expected = "Error while inserting into DataBase!";
 
         try {
-            DBModel.getInstance().insertNewItem(new Item(5,2, 3, "2021-12-08", 50,
+            Model.getInstance().insertNewItem(new Item(5,2, 3, "2021-12-08", 50,
                     2.2f, "Hamburger"));
             // if an exception will occur, it would take place on next line
         }
@@ -91,7 +91,7 @@ public class DBModelTest
         String expected = "Error deleting item!";
 
         try {
-            DBModel.getInstance().deleteItem(12, 12);
+            Model.getInstance().deleteItem(12, 12);
         }
         catch (CostManException err) {
             assertEquals(null, expected, err.getMessage());
@@ -105,7 +105,7 @@ public class DBModelTest
         LOGGER.info("Starting GetCategories_Primary_Test1()");
 
         try {
-            List<String> primaries2 = DBModel.getInstance().getCategoriesByCategoryType(EnumCategoryType.Primary);
+            List<String> primaries2 = Model.getInstance().getCategoriesByCategoryType(EnumCategoryType.Primary);
 
             assertNotEquals("List of primaries is null", primaries2, null);
             assertEquals("Wrong element at position 0", primaries2.get(0), "TstCat1_Primary");
@@ -124,7 +124,7 @@ public class DBModelTest
         LOGGER.info("Starting GetCategories_Secondary_Test1()");
 
         try {
-            List<String> secondaries2 = DBModel.getInstance().getCategoriesByCategoryType(EnumCategoryType.Secondary);
+            List<String> secondaries2 = Model.getInstance().getCategoriesByCategoryType(EnumCategoryType.Secondary);
 
             assertNotEquals("List of primaries is null", secondaries2, null);
             assertEquals("Wrong element at position 0", secondaries2.get(0), ("TstCat1_Secondary"));
@@ -143,8 +143,8 @@ public class DBModelTest
         LOGGER.info("Starting InsertNewCategory_Primary_Test1()");
 
         try {
-            DBModel.getInstance().insertNewCategory("ProgramPrimary", null);
-            List<String> primaries1 = DBModel.getInstance().getCategoriesByCategoryType(EnumCategoryType.Primary);
+            Model.getInstance().insertNewCategory("ProgramPrimary", null);
+            List<String> primaries1 = Model.getInstance().getCategoriesByCategoryType(EnumCategoryType.Primary);
 
             assertEquals("Wrong number of elements", primaries1.size(), 2);
             assertEquals("Wrong element at position 0", primaries1.get(0), "ProgramPrimary");
@@ -164,8 +164,8 @@ public class DBModelTest
         LOGGER.info("Starting InsertNewCategory_Secondary_Test1()");
 
         try {
-            DBModel.getInstance().insertNewCategory("ProgramSecondary", "ProgramPrimary");
-            List<String> secondaries1 = DBModel.getInstance().getCategoriesByCategoryType(EnumCategoryType.Secondary);
+            Model.getInstance().insertNewCategory("ProgramSecondary", "ProgramPrimary");
+            List<String> secondaries1 = Model.getInstance().getCategoriesByCategoryType(EnumCategoryType.Secondary);
 
             assertEquals("Wrong number of elements", secondaries1.size(), 2);
             assertEquals("Wrong element at position 0", secondaries1.get(0), "ProgramSecondary");
@@ -184,7 +184,7 @@ public class DBModelTest
         LOGGER.info("Starting getCategoryNameByCategoryID()");
 
         try {
-            String categoryName = DBModel.getInstance().getCategoryNameByCategoryID(1);
+            String categoryName = Model.getInstance().getCategoryNameByCategoryID(1);
 
             assertEquals("Wrong category name at ID 1", categoryName, "TstCat1_Primary");
         }
