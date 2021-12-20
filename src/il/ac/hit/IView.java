@@ -3,7 +3,8 @@ package il.ac.hit;
 import java.util.Collection;
 
 public interface IView {
-    public void setIViewModel(IViewModel vm);
-    public void init();
-    public void start();
+    void setIViewModel(IViewModel vm);
+    void init();
+    void start();
+
 }

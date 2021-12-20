@@ -9,14 +9,16 @@ import java.util.logging.Logger;
 import static org.junit.Assert.*;
 
 /*
-assertEquals    - Asserts that two objects are equal.
-assertNotEquals - Asserts that two objects are not equals.
+
 */
 
 @FixMethodOrder( MethodSorters.NAME_ASCENDING)
-
 /**
- * A class that contains all of the unit tests for the functions in Model
+ * A class that contains all the unit tests for the functions in Model
+ *
+ * assertEquals    - Asserts that two objects are equal.
+ * assertNotEquals - Asserts that two objects are not equals.
+ * assertFalse - Asserts that the actual parameter is false.
  */
 public class ModelTest
 {
@@ -114,7 +116,7 @@ public class ModelTest
             isExceptionThrown = true;
         }
 
-        assertEquals(isExceptionThrown, false);
+        assertFalse(isExceptionThrown);
     }
 
     @org.junit.Test
@@ -133,7 +135,7 @@ public class ModelTest
             isExceptionThrown = true;
         }
 
-        assertEquals(isExceptionThrown, false);
+        assertFalse(isExceptionThrown);
     }
 
     @org.junit.Test
@@ -154,7 +156,7 @@ public class ModelTest
             isExceptionThrown = true;
         }
 
-        assertEquals(isExceptionThrown, false);
+        assertFalse(isExceptionThrown);
     }
 
     @org.junit.Test
@@ -175,7 +177,7 @@ public class ModelTest
             isExceptionThrown = true;
         }
 
-        assertEquals(isExceptionThrown, false);
+        assertFalse(isExceptionThrown);
     }
 
     @org.junit.Test
@@ -192,6 +194,6 @@ public class ModelTest
             isExceptionThrown = true;
         }
 
-        assertEquals(isExceptionThrown, false);
+        assertFalse(isExceptionThrown);
     }
 }

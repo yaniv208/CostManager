@@ -1,10 +1,9 @@
 package il.ac.hit;
 
 public interface IViewModel {
-    public void setView(IView view);
-    public void setModel(IModel model);
-    public void addItem(Item item);
-    public void getItems();
-    public void deleteItem();
-    public void registerUser(User user);
+    void setView(IView view);
+    void setModel(IModel model);
+    void addItem(Item item);
+    void getItems();
+    void deleteItem();
 }
