@@ -13,7 +13,7 @@ public interface IModel {
      * @param user - A parameter representing user, containing strings of email address and a password.
      * @throws CostManException
      */
-    void insertNewUser(User user) throws CostManException;
+    public void insertNewUser(User user) throws CostManException;
 
     /**
      * A function that verifies the user's input with the database and showing corresponding message.
@@ -22,7 +22,7 @@ public interface IModel {
      * @return ID of the specific user on the database, 0 if null/not found
      * @throws CostManException
      */
-    int selectUserCredentials(String email, String password) throws CostManException;
+    public int selectUserCredentials(String email, String password) throws CostManException;
 
     /**
      * A function that returns data by a specific range of dates
@@ -32,14 +32,14 @@ public interface IModel {
      * @return - A specific list of items selected by range of dates
      * @throws CostManException
      */
-    Collection<Item> getDataByRangeOfDates(int userId, String from, String to) throws CostManException;
+    public Collection<Item> getDataByRangeOfDates(int userId, String from, String to) throws CostManException;
 
     /**
      * A function that inserts a new item into the database
      * @param item - represents an item that would be inserted into database
      * @throws CostManException
      */
-    void insertNewItem(Item item) throws CostManException;
+    public void insertNewItem(Item item) throws CostManException;
 
     /**
      * A function that deletes a specific item from the database
@@ -47,7 +47,7 @@ public interface IModel {
      * @param itemId - represents specific item ID to be deleted.
      * @throws CostManException
      */
-    void deleteItem(int OwnerUserId, int itemId) throws CostManException;
+    public void deleteItem(int OwnerUserId, int itemId) throws CostManException;
 
     /**
      * Retrieve categories by their specified type (PRIMARY or SECONDARY)
@@ -55,7 +55,7 @@ public interface IModel {
      * @return - The list of the categories from the requested type.
      * @throws CostManException
      */
-    List<String> getCategoriesByCategoryType(EnumCategoryType requestedCategoriesType) throws CostManException;
+    public List<String> getCategoriesByCategoryType(EnumCategoryType requestedCategoriesType) throws CostManException;
 
     /**
      * Insert new category to the Database
@@ -65,7 +65,7 @@ public interface IModel {
      *                          otherwise the name of the category owner.
      * @throws CostManException
      */
-    void insertNewCategory(String newCategoryName, String ownerCategoryName) throws CostManException;
+    public void insertNewCategory(String newCategoryName, String ownerCategoryName) throws CostManException;
 
     /**
      * Retrieve the requested category ID by its name
@@ -73,7 +73,7 @@ public interface IModel {
      * @return - The corresponding ID of the given category name
      * @throws CostManException
      */
-    int getCategoryIDByCategoryName(String categoryName) throws CostManException;
+    public int getCategoryIDByCategoryName(String categoryName) throws CostManException;
 
     /**
      * Retrieve the requested category name by its ID
@@ -81,5 +81,5 @@ public interface IModel {
      * @return - The corresponding name of the given category ID
      * @throws CostManException
      */
-    String getCategoryNameByCategoryID(int categoryId) throws CostManException;
+    public String getCategoryNameByCategoryID(int categoryId) throws CostManException;
 }

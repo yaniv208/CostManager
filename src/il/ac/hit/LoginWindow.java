@@ -107,6 +107,7 @@ public class LoginWindow
         GUIUtils.setConstraintsSettings(constraints, 0, 0, GridBagConstraints.CENTER, 10, 40);
         panelNorth.add(note, constraints);
 
+        // Handling Center Panel
         panelCenter.setLayout(new GridBagLayout());
         panelCenter.setBorder(BorderFactory.createTitledBorder("Please enter your login information: "));
         GUIUtils.setConstraintsSettings(constraints, 0, 0, GridBagConstraints.EAST, 10, 10);
