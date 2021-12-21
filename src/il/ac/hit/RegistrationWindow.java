@@ -5,7 +5,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class RegistrationPage implements IView{
+public class RegistrationWindow implements IView{
     private User user;
     private JFrame frame;
     private IViewModel vm;
@@ -16,7 +16,7 @@ public class RegistrationPage implements IView{
     private JPasswordField passwordTextField;
     private JPanel panelCenter, panelNorth, panelSouth;
 
-    RegistrationPage() {
+    RegistrationWindow() {
         frame = new JFrame("Registration page");
 
         note = new JLabel("Please fill the following form:");

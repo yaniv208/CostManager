@@ -6,5 +6,5 @@ public interface IView {
     void setIViewModel(IViewModel vm);
     void init();
     void start();
-
+    // void finish();
 }
