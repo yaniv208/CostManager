@@ -1,16 +1,20 @@
 package il.ac.hit;
 
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.util.Collection;
-import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class ViewModel implements IViewModel
 {
     private IView view;
     private IModel model;
     private int currentID;
+    private ExecutorService executorService;
 
-    public ViewModel()
-    {
+    public ViewModel() {
+        this.executorService = Executors.newFixedThreadPool(3);
     }
 
     @Override
@@ -20,23 +24,39 @@ public class ViewModel implements IViewModel
     }
 
     @Override
-    public void handleAuthentications(String userName, String password)
+    public void setModel(IModel model)
     {
-        boolean isAuthenticated;
-        try
-        {
-            this.currentID = this.model.selectUserCredentials(userName, password);
+        this.model = model;
+    }
 
-            isAuthenticated = currentID != 0;
+    @Override
+    public void handleAuthentication(String email, String password)
+    {
+        executorService.submit(new Runnable() {
+            @Override
+            public void run() {
 
-            if(isAuthenticated == true)
-            {
-                // Activate main menu
+                try
+                {
+                    boolean isAuthenticated;
+                    currentID = model.selectUserCredentials(email, password);
+                    isAuthenticated = currentID != 0;
+
+                    if (isAuthenticated)
+                    {
+                        // Activate main menu
+                        view.setUserID(currentID);
+
+                        // close login window and open main window
+                    }
+                }
+                catch (CostManException err)
+                {
+
+                }
             }
-        }
-        catch (CostManException err)
-        {
-        }
+        });
+
     }
 
     @Override
@@ -61,18 +81,24 @@ public class ViewModel implements IViewModel
     @Override
     public void getItems(String fromDate, String toDate)
     {
-        Collection<Item> itemsInRangeOfDates;
+        DefaultTableModel itemsInRangeOfDates;
         try
         {
-            itemsInRangeOfDates = this.model.getDataByRangeOfDates(this.currentID, fromDate, toDate);
+            itemsInRangeOfDates = this.model.getItemsByRangeOfDates(this.currentID, fromDate, toDate);
+
+            SwingUtilities.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    view.showItems(itemsInRangeOfDates);
+                }
+            });
         }
         catch (CostManException err)
         {
-            // Popup a messagebox in the ui
-            GUIUtils.ShowErrorMessageBox("Wowwwww THIS IS A STRONG MESSAGE", err.toString());
+            // Popup a messagebox in the UI
+            GUIUtils.showErrorMessageBox("Error fetching items!", err.toString());
         }
-        finally
-        {
+        finally {
         }
     }
 
@@ -149,9 +175,4 @@ public class ViewModel implements IViewModel
         */
     }
 
-    @Override
-    public void setModel(IModel model)
-    {
-        this.model = model;
-    }
 }

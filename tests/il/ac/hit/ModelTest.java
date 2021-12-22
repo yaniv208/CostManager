@@ -2,24 +2,20 @@ package il.ac.hit;
 
 import org.junit.FixMethodOrder;
 import org.junit.runners.MethodSorters;
-import java.util.Collection;
+import javax.swing.table.DefaultTableModel;
 import java.util.List;
 import java.util.logging.Logger;
-
 import static org.junit.Assert.*;
 
-/*
-
-*/
-
-@FixMethodOrder( MethodSorters.NAME_ASCENDING)
 /**
  * A class that contains all the unit tests for the functions in Model
- *
  * assertEquals    - Asserts that two objects are equal.
  * assertNotEquals - Asserts that two objects are not equals.
  * assertFalse - Asserts that the actual parameter is false.
  */
+
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+
 public class ModelTest
 {
     private static final Logger LOGGER = Logger.getLogger(ModelTest.class.getName());
@@ -54,13 +50,30 @@ public class ModelTest
 
     }
 
-    @org.junit.Test
+    /*@org.junit.Test
     public void getDataByRangeOfDates() {
         LOGGER.info("Starting getRangeOfDatesByUser() Test");
         String expected = "Error getting data between dates!";
 
         try {
             Collection<Item> items = Model.getInstance().getDataByRangeOfDates(12, "2020-01-01", "2021-12-08");
+            assertNotNull("List of items is null", items);
+            // if another exception will be thrown, it will take place on next line
+        }
+        catch (CostManException err) {
+            assertEquals(null, expected, err.getMessage());
+        }
+
+    }*/
+
+    @org.junit.Test
+    public void getItemsByRangeOfDates() {
+        LOGGER.info("Starting getRangeOfDatesByUser() Test");
+        String expected = "Error getting data between dates!";
+
+        try {
+            DefaultTableModel items = Model.getInstance().getItemsByRangeOfDates(12,
+                    "2020-01-01", "2021-12-08");
             assertNotNull("List of items is null", items);
             // if another exception will be thrown, it will take place on next line
         }
@@ -197,3 +210,4 @@ public class ModelTest
         assertFalse(isExceptionThrown);
     }
 }
+

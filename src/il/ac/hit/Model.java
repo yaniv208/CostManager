@@ -1,8 +1,8 @@
 package il.ac.hit;
 
+import javax.swing.table.DefaultTableModel;
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import static java.sql.Types.NULL;
 
@@ -24,10 +24,6 @@ public class Model implements IModel
     public static Model getInstance() {
         return Model.instance;
     }
-
-    /************************
-     General Functions
-     ************************/
 
     /**
      * A code block that will be executed during "final" block, in order to prevent code redundancy
@@ -66,10 +62,6 @@ public class Model implements IModel
         }
     }
 
-    /************************************************
-     Functions for Users Registration Handling
-     ************************************************/
-
     /**
      * A function that inserts a new user to the database.
      * @param user - A parameter representing user, containing strings of email address and a password.
@@ -103,10 +95,6 @@ public class Model implements IModel
         }
     }
 
-    /*****************************************
-     Functions for Users Login Handling
-     ****************************************/
-
     /**
      * A function that verifies the user's input with the database and showing corresponding message.
      * @param email - email address written on login page
@@ -119,7 +107,8 @@ public class Model implements IModel
         PreparedStatement ps = null;
         Connection connection = null;
         ResultSet rs = null;
-        int userId = 0;
+
+        int userId; // default value of int in Java is 0.
 
         try {
             Class.forName(this.dbDriverName);
@@ -148,22 +137,17 @@ public class Model implements IModel
         return userId;
     }
 
-    /****************************************
-     Functions for Categories Handling
-     ****************************************/
-
     /**
      * Retrieve categories by their specified type (PRIMARY or SECONDARY)
      * @param requestedCategoriesType - The type of the requested categories which should be retrieved.
      * @return The list of the categories from the requested type.
      * @throws CostManException if there was any problem retrieving categories
      */
-
     public List<String> getCategoriesByCategoryType(EnumCategoryType requestedCategoriesType) throws CostManException {
         Connection connection = null;
         ResultSet rs = null;
         PreparedStatement ps = null;
-        List<String> allRequestedCategories = null;
+        List<String> allRequestedCategories;
 
         String finalQueryTemplate = "SELECT CategoryName FROM categories WHERE OwnerCategoryID IS%sNULL ORDER BY CategoryName ASC";
         String finalQuery;
@@ -192,7 +176,7 @@ public class Model implements IModel
             rs = ps.executeQuery();
 
             // Initialize the returned list
-            allRequestedCategories = new ArrayList<String>();
+            allRequestedCategories = new ArrayList<>();
 
             // Get all the categories
             while (rs.next()) {
@@ -221,7 +205,6 @@ public class Model implements IModel
     public void insertNewCategory(String newCategoryName, String ownerCategoryName) throws CostManException {
         Connection connection = null;
         PreparedStatement ps = null;
-        ResultSet rs = null;
 
         String finalQueryTemplate = "INSERT INTO Categories VALUES (NULL, ?, ?)";
         String categoryPrimaryIndicator;
@@ -249,7 +232,7 @@ public class Model implements IModel
             throw new CostManException("Cannot insert the new category to the DB", e);
         }
         finally {
-            cleanupUpdateUsageProcess(ps, connection, rs);
+            cleanupUpdateUsageProcess(ps, connection, null);
         }
     }
 
@@ -267,7 +250,7 @@ public class Model implements IModel
         String finalQueryTemplate = "SELECT CategoryID FROM categories WHERE CategoryName=?";
 
         // In case where the input category name doesn't exist, this default value should be returned.
-        int returnValue = 0;
+        int returnValue; // default value of an integer in Java is 0.
 
         try {
             Class.forName(this.dbDriverName);
@@ -304,10 +287,12 @@ public class Model implements IModel
         Connection connection = null;
         ResultSet rs = null;
         PreparedStatement ps = null;
-        String finalQueryTemplate = "SELECT CategoryName FROM categories WHERE CategoryID=?";
-        String returnValue = null;
+        String finalQueryTemplate;
+        String returnValue;
 
         try {
+            finalQueryTemplate = "SELECT CategoryName FROM categories WHERE CategoryID=?";
+
             Class.forName(this.dbDriverName);
             connection = DriverManager.getConnection(this.dbProtocol, this.dbUserName, this.dbPassword);
             ps = connection.prepareStatement(finalQueryTemplate);
@@ -331,19 +316,7 @@ public class Model implements IModel
         return returnValue;
     }
 
-    /**********************************
-     Functions for Reports Handling
-     **********************************/
-
-    /**
-     * A function that returns data by a specific range of dates
-     * @param userId - user ID of the requesting user
-     * @param from - origin date
-     * @param to - destination date
-     * @return - A specific list of items selected by range of dates
-     * @throws CostManException if there was any problem getting data between specified dates
-     */
-    public Collection<Item> getDataByRangeOfDates(int userId, String from, String to) throws CostManException
+    /*public Collection<Item> getDataByRangeOfDates(int userId, String from, String to) throws CostManException
     {
         PreparedStatement ps = null;
         Connection connection = null;
@@ -375,8 +348,6 @@ public class Model implements IModel
                 itemToAdd.setCurrencyRate(rs.getFloat("CurrencyRate"));
                 itemToAdd.setDescription(rs.getString("Description"));
                 items.add(itemToAdd);
-                //itemToAdd = null; // initializing the temp variable, so we can create it again with new values.
-                                  // Otherwise, it causes itemToAdd to get corrupted.
             }
         }
 
@@ -388,11 +359,63 @@ public class Model implements IModel
         }
 
         return items;
-    }
+    }*/
+    /**
+     * A function that returns data by a specific range of dates
+     * @param userId - user ID of the requesting user
+     * @param from - origin date
+     * @param to - destination date
+     * @return - A specific TableModel of items selected by range of dates
+     * @throws CostManException if there was any problem getting data between specified dates
+     */
+    public DefaultTableModel getItemsByRangeOfDates(int userId, String from, String to) throws CostManException
+    {
+        PreparedStatement ps = null;
+        Connection connection = null;
+        ResultSet rs = null;
+        String[] columnNames;
+        DefaultTableModel model;
+        Object[] rowToAdd;
+        try {
+            Class.forName(this.dbDriverName);
+            connection = DriverManager.getConnection(this.dbProtocol, this.dbUserName, this.dbPassword);
+            ps = connection.prepareStatement("SELECT * FROM items WHERE OwnerUserID = ? AND (Date BETWEEN ? AND ?)");
 
-    /***********************************
-     Functions for Items Handling
-     ***********************************/
+            columnNames = new String[]{"ItemID", "Category", "SubCategory", "Date",
+                    "Price", "Currency", "Description"};
+            model = new DefaultTableModel(columnNames, 0);
+
+            ps.setInt(1, userId);
+            ps.setString(2, from);
+            ps.setString(3, to);
+
+            rs = ps.executeQuery();
+
+            while (rs.next())
+            { // assign variables of each item, and adding it to collection
+                rowToAdd = new Object[7];
+                rowToAdd[0] = rs.getInt("ItemID");
+                rowToAdd[1] = rs.getInt("CategoryID");
+                rowToAdd[2] = rs.getInt("SubCategoryID");
+                rowToAdd[3] = rs.getString("Date");
+                rowToAdd[4] = rs.getInt("Price");
+                rowToAdd[5] = rs.getFloat("CurrencyRate");
+                rowToAdd[6] = rs.getString("Description");
+
+                model.addRow(rowToAdd);
+            }
+        }
+        catch (SQLException | ClassNotFoundException e) {
+            throw new CostManException("Error getting data between dates!", e);
+        }
+        finally {
+            cleanupUpdateUsageProcess(ps, connection, rs);
+        }
+
+        System.out.println("Items table has " + model.getRowCount() + "rows");
+
+        return model;
+    }
 
     /**
      * A function that inserts a new item into the database

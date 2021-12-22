@@ -29,7 +29,9 @@ public class Program
         vm.setView(view);
         view.setIViewModel(vm);
 
-        LoginWindow lp = new LoginWindow();
-        lp.start();
+       /*MainWindow mainWindow = new MainWindow();
+       mainWindow.show();*/
+        ReportsWindow reportsWindow = new ReportsWindow();
+        reportsWindow.Show();
     }
 }

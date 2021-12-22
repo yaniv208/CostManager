@@ -1,5 +1,6 @@
 package il.ac.hit;
 
+import javax.swing.table.DefaultTableModel;
 import java.util.Collection;
 import java.util.List;
 
@@ -24,16 +25,25 @@ public interface IModel {
      */
     public int selectUserCredentials(String email, String password) throws CostManException;
 
-    /**
+/*    *//**
      * A function that returns data by a specific range of dates
      * @param userId - user ID of the requesting user
      * @param from - origin date
      * @param to - destination date
      * @return - A specific list of items selected by range of dates
      * @throws CostManException
-     */
-    public Collection<Item> getDataByRangeOfDates(int userId, String from, String to) throws CostManException;
+     *//*
+    public Collection<Item> getDataByRangeOfDates(int userId, String from, String to) throws CostManException;*/
 
+    /**
+     * A function that returns data by a specific range of dates
+     * @param userId - user ID of the requesting user
+     * @param from - origin date
+     * @param to - destination date
+     * @return - A specific TableModel of items selected by range of dates
+     * @throws CostManException
+     */
+    public DefaultTableModel getItemsByRangeOfDates(int userId, String from, String to) throws CostManException;
     /**
      * A function that inserts a new item into the database
      * @param item - represents an item that would be inserted into database

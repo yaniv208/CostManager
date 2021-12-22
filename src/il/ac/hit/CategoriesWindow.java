@@ -2,7 +2,12 @@ package il.ac.hit;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
+/**
+ * @author Yaniv
+ */
 public class CategoriesWindow
 {
     private JFrame frame;
@@ -86,6 +91,14 @@ public class CategoriesWindow
         frame.setSize(500, 500);
         frame.setResizable(false);
         frame.setVisible(true);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        frame.addWindowListener(new WindowAdapter()
+        {
+            @Override
+            public void windowClosing(WindowEvent e)
+            {
+                GUIUtils.handleGoOutFromWindows(CategoriesWindow.this.frame);
+            }
+        });
     }
 }

@@ -2,7 +2,7 @@ package il.ac.hit;
 
 public interface IViewModel {
     // Login form
-    void handleAuthentications(String userName, String password);
+    void handleAuthentication(String email, String password);
 
     // Registration form
     void handleRegistrationRequest();

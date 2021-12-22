@@ -5,6 +5,9 @@ import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
+/**
+ * @author Aviv
+ */
 public class TransactionsWindow {
     private JFrame frame;
     private JPanel panelNorth, panelCenter, panelSouth;
@@ -137,7 +140,15 @@ public class TransactionsWindow {
         frame.setSize(500, 500);
         frame.setResizable(false);
         frame.setVisible(true);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        frame.addWindowListener(new WindowAdapter()
+        {
+            @Override
+            public void windowClosing(WindowEvent e)
+            {
+                GUIUtils.handleGoOutFromWindows(TransactionsWindow.this.frame);
+            }
+        });
     }
 
     private void setMyConstraints(GridBagConstraints c, int gridx, int gridy, int anchor, int ipadx, int ipady) {

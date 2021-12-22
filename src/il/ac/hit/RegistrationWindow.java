@@ -1,10 +1,14 @@
 package il.ac.hit;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
+/**
+ * @author Yaniv
+ */
 public class RegistrationWindow implements IView{
     private User user;
     private JFrame frame;
@@ -80,10 +84,22 @@ public class RegistrationWindow implements IView{
 
         // Handling South Panel
         panelSouth.setLayout(new GridBagLayout());
-        setMyConstraints(constraints, 0,0, GridBagConstraints.CENTER, 10, 15);
+        setMyConstraints(constraints, 0,0, GridBagConstraints.CENTER, 15, 15);
         panelSouth.add(registerBtn, constraints);
 
         setFrameSettings(frame, panelCenter, panelNorth, panelSouth);
+    }
+
+    // TODO DELETE AFTER COMBINING TO ONE FILE
+    @Override
+    public void showItems(DefaultTableModel model) {
+        //
+    }
+
+    // TODO DELETE AFTER COMBINING TO ONE FILE
+    @Override
+    public void setUserID(int userID) {
+
     }
 
     void setFrameSettings(JFrame frame, JPanel panelCenter, JPanel panelNorth, JPanel panelSouth) {
@@ -96,6 +112,15 @@ public class RegistrationWindow implements IView{
         frame.setResizable(false);
         frame.setVisible(true);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        frame.addWindowListener(new WindowAdapter()
+        {
+            @Override
+            public void windowClosing(WindowEvent e)
+            {
+                GUIUtils.handleGoOutFromWindows(RegistrationWindow.this.frame);
+            }
+        });
     }
 
     private void setMyConstraints(GridBagConstraints c, int gridx, int gridy, int anchor, int ipadx, int ipady) {

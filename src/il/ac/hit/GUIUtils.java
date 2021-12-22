@@ -4,45 +4,45 @@ import java.awt.*;
 
 public class GUIUtils
 {
-    public static boolean ShowYesNoMessageBox(String title, String message)
+    public static boolean showYesNoMessageBox(String title, String message)
     {
         boolean isYes = true;
-        int dialogButton = JOptionPane.YES_NO_OPTION;
-        int dialogResult = JOptionPane.showConfirmDialog(null, message, title, dialogButton);
-        if(dialogResult == JOptionPane.NO_OPTION)
-        {
+        int dialogButtons = JOptionPane.YES_NO_OPTION;
+        int dialogResult = JOptionPane.showConfirmDialog(null, message, title, dialogButtons);
+        if (dialogResult == JOptionPane.NO_OPTION) {
             isYes = false;
         }
 
         return isYes;
     }
 
-    public static void ShowOkMessageBox(String title, String message)
+    public static void showOkMessageBox(String title, String message)
     {
         JOptionPane.showMessageDialog(null, message, title, JOptionPane.INFORMATION_MESSAGE);
     }
 
-    public static void ShowExitMessageBox()
+    public static void showExitMessageBox()
     {
-        if (GUIUtils.ShowYesNoMessageBox("Exit? Really? Dafuck?", "Do you **REALLY SURE** that you want to exit?") == true)
+        if (GUIUtils.showYesNoMessageBox("Exit?", "Are you sure that you want to exit?"))
         {
             System.exit(0);
         }
+        // TODO FIX BUG, CHOOSING NO ALWAYS CLOSING PROGRAM
     }
 
-    public static void ShowErrorMessageBox(String title, String message)
+    public static void showErrorMessageBox(String title, String message)
     {
         JOptionPane.showMessageDialog(null, message, title, JOptionPane.ERROR_MESSAGE);
     }
 
-    public static void HandleGoOutFromWindows(JFrame currentActiveWindow)
+    public static void handleGoOutFromWindows(JFrame currentActiveWindow)
     {
-        boolean result = GUIUtils.ShowYesNoMessageBox("Get out of this window?", "Are you sure you want to get out of this window?\nAll unsaved changes will be lost !");
+        boolean result = GUIUtils.showYesNoMessageBox("Get out of this window?",
+                "Are you sure you want to get out of this window?\nAll unsaved changes will be lost!");
 
-        if (result == true)
-        {
+        if (result) {
             MainWindow mainWindow = new MainWindow();
-            mainWindow.Show();
+            mainWindow.show();
 
             // Close current window (Source: https://stackoverflow.com/a/17716008/2196301)
             currentActiveWindow.dispose();
