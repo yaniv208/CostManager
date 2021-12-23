@@ -8,8 +8,8 @@ import java.awt.event.WindowEvent;
 /**
  * @author Aviv
  */
-public class TransactionsWindow {
-    private JFrame frame;
+public class TransactionsWindow extends JFrame
+{
     private JPanel panelNorth, panelCenter, panelSouth;
     private JLabel note, categoryLabel, subCategoryLabel, sumLabel, currencyLabel, idLabel,
     dateLabel, descriptionLabel;
@@ -21,18 +21,18 @@ public class TransactionsWindow {
     private SpinnerListModel spinnerListModel;
     private JSpinner currencySpinner;
 
-    public TransactionsWindow(){
-
+    public TransactionsWindow()
+    {
         // Handling currency spinner
         currencies = new String[]{"ILS", "USD", "EUR", "GBP"};
         spinnerListModel = new SpinnerListModel(currencies);
         currencySpinner = new JSpinner(spinnerListModel);
 
         // Generating frame
-        frame = new JFrame("CostMan - Transactions Window");
+        this.setTitle("CostMan - Transactions Window");
 
         // Define event handlers
-        this.frame.addWindowListener(new WindowAdapter()
+        this.addWindowListener(new WindowAdapter()
         {
             @Override
             public void windowClosing(WindowEvent e)
@@ -73,13 +73,13 @@ public class TransactionsWindow {
         constraints = new GridBagConstraints();
     }
 
-    public void start() {
+    public void showWindow() {
         // Set the visual properties of the window
-        frame.setSize(500, 800);
-        frame.setResizable(false);
+        this.setSize(500, 800);
+        this.setResizable(false);
 
         // Place the window in the center of the screen (Source: https://stackoverflow.com/a/2442614/2196301)
-        frame.setLocationRelativeTo(null);
+        this.setLocationRelativeTo(null);
 
         // Handling North Panel
         panelNorth.setLayout(new GridBagLayout());
@@ -128,7 +128,7 @@ public class TransactionsWindow {
         setMyConstraints(constraints, 0, 1, GridBagConstraints.WEST, 10, 10);
         panelSouth.add(logOutBtn, constraints);
 
-        setFrameSettings(frame, panelCenter, panelNorth, panelSouth);
+        setFrameSettings(this, panelCenter, panelNorth, panelSouth);
     }
 
     void setFrameSettings(JFrame frame, JPanel panelCenter, JPanel panelNorth, JPanel panelSouth) {

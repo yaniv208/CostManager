@@ -1,5 +1,7 @@
 package il.ac.hit;
 
+import il.ac.hit.GUIUtils;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
@@ -8,17 +10,17 @@ import java.awt.event.WindowEvent;
 /**
  * @author Yaniv
  */
-public class CategoriesWindow
+public class CategoriesWindow extends JFrame
 {
-    private JFrame frame;
     private GridBagConstraints constraints;
     private JLabel addNewCategory, addNewSubCategory, categoryName, rootCategoryName, subCategoryName, backSlash;
     private JButton newCategoryBtn, newSubCategoryBtn, logOutBtn;
     private JTextField categoryTextField, rootCategoryTextField, subCategoryTextField;
     private JPanel panelCenter, panelSouth;
 
-    CategoriesWindow() {
-        frame = new JFrame("Categories & Sub-Categories Page");
+    CategoriesWindow()
+    {
+        this.setTitle("Categories & Sub-Categories Page");
 
         backSlash = new JLabel("\n");
 
@@ -42,7 +44,7 @@ public class CategoriesWindow
         constraints = new GridBagConstraints();
     }
 
-    public void start() {
+    public void showWindow() {
         panelCenter.setLayout(new GridBagLayout());
         panelCenter.setBorder(BorderFactory.createTitledBorder("Insert a new Category or a Sub-Category: "));
 
@@ -79,9 +81,8 @@ public class CategoriesWindow
         GUIUtils.setConstraintsSettings(constraints, 0, 0, GridBagConstraints.CENTER, 10, 10);
         panelSouth.add(logOutBtn, constraints);
 
-        setFrameSettings(frame, panelCenter, panelSouth);
+        setFrameSettings(this, panelCenter, panelSouth);
     }
-
 
     void setFrameSettings(JFrame frame, JPanel panelCenter, JPanel panelSouth) {
         frame.setLayout(new BorderLayout());

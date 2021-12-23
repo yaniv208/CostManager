@@ -2,11 +2,11 @@ package il.ac.hit;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 
-/**
- * @author Yaniv
- */
 public class LoginWindow
 {
     private GridBagConstraints constraints;
@@ -47,7 +47,7 @@ public class LoginWindow
             @Override
             public void actionPerformed(ActionEvent e)
             {
-                vm.handleAuthentication(emailTextField.getText(), passwordField.getPassword().toString());
+                vm.handleAuthentications(emailTextField.getText(), passwordField.getPassword().toString());
             }
         });
 
@@ -141,14 +141,6 @@ public class LoginWindow
         frame.setSize(500, 500);
         frame.setResizable(false);
         frame.setVisible(true);
-
-        frame.addWindowListener(new WindowAdapter()
-        {
-            @Override
-            public void windowClosing(WindowEvent e)
-            {
-                GUIUtils.handleGoOutFromWindows(LoginWindow.this.frame);
-            }
-        });
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 }
