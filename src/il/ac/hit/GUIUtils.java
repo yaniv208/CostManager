@@ -35,6 +35,8 @@ public class GUIUtils
         JOptionPane.showMessageDialog(null, message, title, JOptionPane.ERROR_MESSAGE);
     }
 
+    // TODO: move this to viewmodel and do all necessary changes
+    /*
     public static void HandleGoOutFromWindows(JFrame currentActiveWindow)
     {
         boolean result = GUIUtils.ShowYesNoMessageBox("Get out of this window?", "Are you sure you want to get out of this window?\nAll unsaved changes will be lost !");
@@ -48,6 +50,7 @@ public class GUIUtils
             currentActiveWindow.dispose();
         }
     }
+    */
 
     public static void setConstraintsSettings(GridBagConstraints currentConstraintsObject, int columnNumberInGrid, int lineNumberInGrid, int anchor, int ipadx, int ipady) {
         currentConstraintsObject.gridx = columnNumberInGrid;

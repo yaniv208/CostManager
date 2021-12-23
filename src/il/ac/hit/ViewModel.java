@@ -45,7 +45,7 @@ public class ViewModel implements IViewModel
                     if (isAuthenticated)
                     {
                         // Activate main menu
-                        view.setUserID(currentID);
+                        // view.setUserID(currentID);
 
                         // close login window and open main window
                     }
@@ -89,14 +89,14 @@ public class ViewModel implements IViewModel
             SwingUtilities.invokeLater(new Runnable() {
                 @Override
                 public void run() {
-                    view.showItems(itemsInRangeOfDates);
+                    // view.showItems(itemsInRangeOfDates);
                 }
             });
         }
         catch (CostManException err)
         {
             // Popup a messagebox in the UI
-            GUIUtils.showErrorMessageBox("Error fetching items!", err.toString());
+            // GUIUtils.showErrorMessageBox("Error fetching items!", err.toString());
         }
         finally {
         }
