@@ -24,7 +24,7 @@ public class GUIUtils
 
     public static void ShowExitMessageBox()
     {
-        if (GUIUtils.ShowYesNoMessageBox("Exit? Really? Dafuck?", "Do you **REALLY SURE** that you want to exit?") == true)
+        if (GUIUtils.ShowYesNoMessageBox("Exit?", "Are you sure that you want to exit?"))
         {
             System.exit(0);
         }
@@ -35,7 +35,7 @@ public class GUIUtils
         JOptionPane.showMessageDialog(null, message, title, JOptionPane.ERROR_MESSAGE);
     }
 
-    // TODO: move this to viewmodel and do all necessary changes
+    // TODO: move this to VM and do all necessary changes
     /*
     public static void HandleGoOutFromWindows(JFrame currentActiveWindow)
     {

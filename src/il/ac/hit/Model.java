@@ -206,7 +206,7 @@ public class Model implements IModel
         Connection connection = null;
         PreparedStatement ps = null;
 
-        String finalQueryTemplate = "INSERT INTO Categories VALUES (NULL, ?, ?)";
+        String finalQueryTemplate = "INSERT INTO categories VALUES (NULL, ?, ?)";
         String categoryPrimaryIndicator;
 
         if (ownerCategoryName == null) {

@@ -10,19 +10,20 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 public class View implements IView
 {
-    IViewModel viewModel;
-    User currentLoggedOnUser;
-
-    LoginWindow loginWindow;
-    RegistrationWindow registrationWindow;
-    MainWindow mainWindow;
-    TransactionsWindow transactionsWindow;
-    CategoriesWindow categoriesWindow;
-    ReportsWindow reportsWindow;
+    private IViewModel viewModel;
+    private User currentLoggedOnUser;
+    
+    private LoginWindow loginWindow;
+    private RegistrationWindow registrationWindow;
+    private MainWindow mainWindow;
+    private TransactionsWindow transactionsWindow;
+    private CategoriesWindow categoriesWindow;
+    private ReportsWindow reportsWindow;
 
     @Override
     public void setIViewModel(IViewModel vm)
@@ -173,13 +174,14 @@ public class View implements IView
             frame.setSize(500, 500);
             frame.setResizable(false);
             frame.setVisible(true);
+            
+            // TODO CHANGE 
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         }
     }
 
     public class RegistrationWindow
     {
-        private User user;
         private JFrame frame;
         private GridBagConstraints constraints;
         private JLabel note, fullNameLabel, emailLabel, passwordLabel;
@@ -263,70 +265,61 @@ public class View implements IView
 
     public class MainWindow
     {
-        private JFrame  m_Window                                 = null;
-        private JLabel  m_WindowTitle                            = null;
-        private JButton m_ManageTransactionsButton               = null;
-        private JButton m_GenerateReportButton                   = null;
-        private JButton m_ManageCategoriesAndSubCategoriesButton = null;
-        private JButton m_LogoutButton                           = null;
-        private JPanel  m_MenuSection                            = null;
-        private JPanel  m_TitleSection                           = null;
-        private JPanel  m_LogoutSection                          = null;
-        private GridBagConstraints m_Constraints                 = null;
+        private JFrame frame;
+        private JLabel frameTitle;
+        private JButton manageTransactionsButton, generateReportButton, manageCategoriesAndSubCategoriesButton,
+                logoutButton;
+        private JPanel centerPanel, northPanel, southPanel;
+        private GridBagConstraints constraints;
 
-        public MainWindow()
-        {
+        public MainWindow() {
             this.InitializeComponents();
             this.PrepareWindowProperties();
-
             this.PrepareTitleSection();
-            // this.PrepareTitleProperties();
             this.PrepareMenuSection();
             this.PrepareLogoutSection();
-            // this.m_Window.add(this.m_WindowTitle);
-            // this.m_Window.add(this.m_MenuSection);
         }
 
-        private void InitializeComponents()
-        {
-            this.m_Window = new JFrame();
+        private void InitializeComponents() {
+            // Initializing the Frame
+            this.frame = new JFrame();
 
             // Components of the Title Section:
-            this.m_TitleSection  = new JPanel();
-            this.m_WindowTitle   = new JLabel();
+            this.northPanel = new JPanel();
+            this.frameTitle = new JLabel();
 
             // Components of the Menu Section:
-            this.m_MenuSection                            = new JPanel();
-            this.m_ManageTransactionsButton               = new JButton("Manage Transactions");
-            this.m_GenerateReportButton                   = new JButton("Generate Transactions Report");
-            this.m_ManageCategoriesAndSubCategoriesButton = new JButton("Edit Categories & Sub-Categories");
-            this.m_LogoutButton                           = new JButton("Logout");
+            this.centerPanel = new JPanel();
+            this.manageTransactionsButton = new JButton("Manage Transactions");
+            this.generateReportButton = new JButton("Generate Transactions Report");
+            this.manageCategoriesAndSubCategoriesButton = new JButton("Edit Categories & Sub-Categories");
+            this.logoutButton = new JButton("Logout");
 
             // Components of the Logout Section:
-            this.m_LogoutSection = new JPanel();
+            this.southPanel = new JPanel();
 
-            this.m_Constraints        = new GridBagConstraints();
-            this.m_Constraints.insets = new Insets(5, 0, 5, 0);
+            this.constraints = new GridBagConstraints();
+            this.constraints.insets = new Insets(5, 0, 5, 0);
         }
 
         private void PrepareWindowProperties()
         {
             // Add the different sections to the window
-            this.m_Window.setLayout(new BorderLayout());
-            this.m_Window.add(this.m_TitleSection , BorderLayout.NORTH);
-            this.m_Window.add(this.m_MenuSection  , BorderLayout.CENTER);
-            this.m_Window.add(this.m_LogoutSection, BorderLayout.SOUTH);
+            this.frame.setLayout(new BorderLayout());
+            this.frame.add(this.northPanel, BorderLayout.NORTH);
+            this.frame.add(this.centerPanel, BorderLayout.CENTER);
+            this.frame.add(this.southPanel, BorderLayout.SOUTH);
 
             // Set the visual properties of the window
-            this.m_Window.setTitle("CostMan - Main Window");
-            this.m_Window.setSize(500, 800);
-            this.m_Window.setResizable(false);
+            this.frame.setTitle("CostMan - Main Window");
+            this.frame.setSize(500, 800);
+            this.frame.setResizable(false);
 
             // Place the window in the center of the screen (Source: https://stackoverflow.com/a/2442614/2196301)
-            this.m_Window.setLocationRelativeTo(null);
+            this.frame.setLocationRelativeTo(null);
 
             // Define event handlers
-            this.m_Window.addWindowListener(new WindowAdapter()
+            this.frame.addWindowListener(new WindowAdapter()
             {
                 @Override
                 public void windowClosing(WindowEvent e)
@@ -338,30 +331,30 @@ public class View implements IView
 
         private void PrepareTitleSection()
         {
-            this.m_TitleSection.setLayout(new GridBagLayout());
+            this.northPanel.setLayout(new GridBagLayout());
 
-            // Set the futural location of the window's title
-            GUIUtils.setConstraintsSettings(this.m_Constraints, 0, 0, GridBagConstraints.CENTER, 10, 10);
+            // Set the future location of the window's title
+            GUIUtils.setConstraintsSettings(this.constraints, 0, 0, GridBagConstraints.CENTER, 10, 10);
 
             // Set the properties of the title
             this.PrepareTitleProperties();
 
             // Add the title to it's section with the current constraints
-            this.m_TitleSection.add(this.m_WindowTitle, this.m_Constraints);
+            this.northPanel.add(this.frameTitle, this.constraints);
         }
 
         private void PrepareTitleProperties()
         {
-            this.m_WindowTitle.setText("CostMan - Main Window");
-            this.m_WindowTitle.setFont(new Font("Consolas", Font.BOLD, 24));
+            this.frameTitle.setText("CostMan - Main Window");
+            this.frameTitle.setFont(new Font("Consolas", Font.BOLD, 24));
         }
 
         private void PrepareMenuSection()
         {
-            this.m_MenuSection.setLayout(new GridBagLayout());
-            GUIUtils.setConstraintsSettings(this.m_Constraints, 0, 0, GridBagConstraints.CENTER, 10, 10);
-            this.m_ManageTransactionsButton.setPreferredSize(new Dimension(230, this.m_ManageTransactionsButton.getPreferredSize().height));
-            this.m_ManageTransactionsButton.addActionListener(new ActionListener()
+            this.centerPanel.setLayout(new GridBagLayout());
+            GUIUtils.setConstraintsSettings(this.constraints, 0, 0, GridBagConstraints.CENTER, 10, 10);
+            this.manageTransactionsButton.setPreferredSize(new Dimension(230, this.manageTransactionsButton.getPreferredSize().height));
+            this.manageTransactionsButton.addActionListener(new ActionListener()
             {
                 @Override
                 public void actionPerformed(ActionEvent e)
@@ -369,11 +362,11 @@ public class View implements IView
                 }
             });
 
-            this.m_MenuSection.add(this.m_ManageTransactionsButton, this.m_Constraints);
+            this.centerPanel.add(this.manageTransactionsButton, this.constraints);
 
-            GUIUtils.setConstraintsSettings(this.m_Constraints, 0, 1, GridBagConstraints.CENTER, 10, 10);
-            this.m_GenerateReportButton.setPreferredSize(new Dimension(230, this.m_GenerateReportButton.getPreferredSize().height));
-            this.m_GenerateReportButton.addActionListener(new ActionListener()
+            GUIUtils.setConstraintsSettings(this.constraints, 0, 1, GridBagConstraints.CENTER, 10, 10);
+            this.generateReportButton.setPreferredSize(new Dimension(230, this.generateReportButton.getPreferredSize().height));
+            this.generateReportButton.addActionListener(new ActionListener()
             {
                 @Override
                 public void actionPerformed(ActionEvent e)
@@ -381,11 +374,11 @@ public class View implements IView
                 }
             });
 
-            this.m_MenuSection.add(this.m_GenerateReportButton, this.m_Constraints);
+            this.centerPanel.add(this.generateReportButton, this.constraints);
 
-            GUIUtils.setConstraintsSettings(this.m_Constraints, 0, 2, GridBagConstraints.CENTER, 10, 10);
-            this.m_ManageCategoriesAndSubCategoriesButton.setPreferredSize(new Dimension(230, this.m_ManageCategoriesAndSubCategoriesButton.getPreferredSize().height));
-            this.m_ManageCategoriesAndSubCategoriesButton.addActionListener(new ActionListener()
+            GUIUtils.setConstraintsSettings(this.constraints, 0, 2, GridBagConstraints.CENTER, 10, 10);
+            this.manageCategoriesAndSubCategoriesButton.setPreferredSize(new Dimension(230, this.manageCategoriesAndSubCategoriesButton.getPreferredSize().height));
+            this.manageCategoriesAndSubCategoriesButton.addActionListener(new ActionListener()
             {
                 @Override
                 public void actionPerformed(ActionEvent e)
@@ -393,13 +386,13 @@ public class View implements IView
                 }
             });
 
-            this.m_MenuSection.add(this.m_ManageCategoriesAndSubCategoriesButton, this.m_Constraints);
+            this.centerPanel.add(this.manageCategoriesAndSubCategoriesButton, this.constraints);
         }
 
         private void PrepareLogoutSection()
         {
-            this.m_LogoutButton.setPreferredSize(new Dimension(100, this.m_ManageTransactionsButton.getPreferredSize().height));
-            this.m_LogoutButton.addActionListener(new ActionListener()
+            this.logoutButton.setPreferredSize(new Dimension(100, this.manageTransactionsButton.getPreferredSize().height));
+            this.logoutButton.addActionListener(new ActionListener()
             {
                 @Override
                 public void actionPerformed(ActionEvent e)
@@ -409,15 +402,15 @@ public class View implements IView
             });
 
             // Place the button in the bottom-right of the window (Source: https://stackoverflow.com/a/11165906/2196301)
-            this.m_LogoutSection.setLayout(new BorderLayout());
+            this.southPanel.setLayout(new BorderLayout());
             JPanel subPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-            subPanel.add(this.m_LogoutButton);
-            this.m_LogoutSection.add(subPanel, BorderLayout.SOUTH);
+            subPanel.add(this.logoutButton);
+            this.southPanel.add(subPanel, BorderLayout.SOUTH);
         }
 
         public void Show()
         {
-            this.m_Window.setVisible(true);
+            this.frame.setVisible(true);
         }
     }
 
@@ -563,6 +556,7 @@ public class View implements IView
                 @Override
                 public void windowClosing(WindowEvent e)
                 {
+                    // TODO ADD
                 }
             });
         }
@@ -582,7 +576,7 @@ public class View implements IView
 
         CategoriesWindow()
         {
-            this.frame.setTitle("Categories & Sub-Categories Page");
+            frame = new JFrame("Categories & Sub-Categories Page");
 
             backSlash = new JLabel("\n");
 
@@ -660,6 +654,7 @@ public class View implements IView
                 @Override
                 public void windowClosing(WindowEvent e)
                 {
+                    // TODO ADD
                 }
             });
         }
@@ -667,51 +662,55 @@ public class View implements IView
 
     public class ReportsWindow
     {
-        private JFrame m_Window                   = null;
-        private JPanel m_ReportsGenerationSection = null;
-        private GridBagConstraints m_Constraints  = null;
+        private JFrame frame;
+        private JPanel reportsGenerationSection;
+        private GridBagConstraints constraints;
 
-        private JLabel m_LabelFromDate        = null;
-        private JComboBox m_ComboBoxFromDay   = null;
-        private JComboBox m_ComboBoxFromMonth = null;
-        private JComboBox m_ComboBoxFromYear  = null;
+        private JLabel labelFromDate;
+        private JComboBox<String> comboBoxFromDay;
+        private JComboBox<String> comboBoxFromMonth;
+        private JComboBox<String> comboBoxFromYear;
 
-        private JLabel m_LabelToDate        = null;
-        private JComboBox m_ComboBoxToDay   = null;
-        private JComboBox m_ComboBoxToMonth = null;
-        private JComboBox m_ComboBoxToYear  = null;
+        private JLabel labelToDate;
+        private JComboBox<String> comboBoxToDay;
+        private JComboBox<String> comboBoxToMonth;
+        private JComboBox<String> comboBoxToYear;
 
-        private JCheckBox m_CheckBoxSelectAllItems = null;
-        private JButton m_ButtonGenerateReport     = null;
+        private JCheckBox checkBoxSelectAllItems;
+        private JButton buttonGenerateReport;
 
-        private JPanel  m_LogoutSection = null;
-        private JButton m_LogoutButton  = null;
+        private JPanel logoutSection;
+        private JButton logoutButton;
 
-        private String[] m_days   = null;
-        private String[] m_months = null;
-        private String[] m_years  = null;
+        private String[] days;
+        private String[] months;
+        private String[] years;
 
-        private String m_FromDate = null;
-        private String m_ToDate   = null;
+        private String fromDate, toDate;
+        private String fromDay, fromMonth, fromYear, toDay, toMonth, toYear;
+
+        private Date firstDate, secondDate;
+        private SimpleDateFormat sdf;
+        private long diff, diffInMillis;
 
         public ReportsWindow()
         {
-            this.m_days = new String[31];
+            this.days = new String[31];
             for (int i = 0; i < 31; i++)
             {
-                this.m_days[i] = String.valueOf(i + 1);
+                this.days[i] = String.valueOf(i + 1);
             }
 
-            this.m_months = new String[12];
+            this.months = new String[12];
             for (int i = 0; i < 12; i++)
             {
-                this.m_months[i] = String.valueOf(i + 1);
+                this.months[i] = String.valueOf(i + 1);
             }
 
-            this.m_years = new String[LocalDate.now().getYear() - 1970 + 1];
+            this.years = new String[LocalDate.now().getYear() - 1970 + 1];
             for (int i = 0; i < LocalDate.now().getYear() - 1970 + 1; i++)
             {
-                this.m_years[i] = String.valueOf(1970 + i);
+                this.years[i] = String.valueOf(1970 + i);
             }
 
             this.InitializeComponents();
@@ -722,46 +721,48 @@ public class View implements IView
 
         private void InitializeComponents()
         {
-            this.m_Window = new JFrame();
-            this.m_ReportsGenerationSection = new JPanel();
+            this.frame = new JFrame();
+            this.reportsGenerationSection = new JPanel();
 
-            this.m_LabelFromDate     = new JLabel();
-            this.m_ComboBoxFromDay   = new JComboBox();
-            this.m_ComboBoxFromMonth = new JComboBox();
-            this.m_ComboBoxFromYear  = new JComboBox();
+            this.labelFromDate = new JLabel();
+            this.comboBoxFromDay = new JComboBox<>();
+            this.comboBoxFromMonth = new JComboBox<>();
+            this.comboBoxFromYear = new JComboBox<>();
 
-            this.m_LabelToDate      = new JLabel();
-            this.m_ComboBoxToDay    = new JComboBox();
-            this.m_ComboBoxToMonth  = new JComboBox();
-            this.m_ComboBoxToYear   = new JComboBox();
+            this.labelToDate = new JLabel();
+            this.comboBoxToDay = new JComboBox<>();
+            this.comboBoxToMonth = new JComboBox<>();
+            this.comboBoxToYear = new JComboBox<>();
 
-            this.m_CheckBoxSelectAllItems = new JCheckBox("Show all transactions");
-            this.m_LogoutSection = new JPanel();
-            this.m_LogoutButton = new JButton("Logout");
+            this.checkBoxSelectAllItems = new JCheckBox("Show all transactions");
+            this.logoutSection = new JPanel();
+            this.logoutButton = new JButton("Logout");
 
-            this.m_ButtonGenerateReport = new JButton();
+            this.buttonGenerateReport = new JButton();
 
-            this.m_Constraints        = new GridBagConstraints();
-            this.m_Constraints.insets = new Insets(5, 0, 5, 5);
+            this.constraints = new GridBagConstraints();
+            this.constraints.insets = new Insets(5, 0, 5, 5);
+
+            this.sdf = new SimpleDateFormat("MM-dd-yyyy", Locale.ENGLISH);
         }
 
         private void PrepareWindowProperties()
         {
             // Add the different sections to the window
-            this.m_Window.setLayout(new BorderLayout());
-            this.m_Window.add(this.m_ReportsGenerationSection , BorderLayout.NORTH);
-            this.m_Window.add(this.m_LogoutSection, BorderLayout.SOUTH);
+            this.frame.setLayout(new BorderLayout());
+            this.frame.add(this.reportsGenerationSection, BorderLayout.NORTH);
+            this.frame.add(this.logoutSection, BorderLayout.SOUTH);
 
             // Set the visual properties of the window
-            this.m_Window.setTitle("CostMan - Reports Window");
-            this.m_Window.setSize(500, 280);
-            this.m_Window.setResizable(false);
+            this.frame.setTitle("CostMan - Reports Window");
+            this.frame.setSize(500, 280);
+            this.frame.setResizable(false);
 
             // Place the window in the center of the screen (Source: https://stackoverflow.com/a/2442614/2196301)
-            this.m_Window.setLocationRelativeTo(null);
+            this.frame.setLocationRelativeTo(null);
 
             // Define event handlers
-            this.m_Window.addWindowListener(new WindowAdapter()
+            this.frame.addWindowListener(new WindowAdapter()
             {
                 @Override
                 public void windowClosing(WindowEvent e)
@@ -772,10 +773,10 @@ public class View implements IView
 
         private void PrepareReportsGenerationSection()
         {
-            this.m_ReportsGenerationSection.setLayout(new GridBagLayout());
-            this.m_ReportsGenerationSection.setBorder(BorderFactory.createTitledBorder("Generate a report"));
+            this.reportsGenerationSection.setLayout(new GridBagLayout());
+            this.reportsGenerationSection.setBorder(BorderFactory.createTitledBorder("Generate a report"));
 
-            this.m_CheckBoxSelectAllItems.addItemListener(new ItemListener()
+            this.checkBoxSelectAllItems.addItemListener(new ItemListener()
             {
                 @Override
                 public void itemStateChanged(ItemEvent e)
@@ -783,106 +784,107 @@ public class View implements IView
                     // Check if the checkbox is checked (Source: https://www.javatpoint.com/java-jcheckbox)
                     if (e.getStateChange() == 1)
                     {
-                        ReportsWindow.this.m_LabelFromDate.setEnabled(false);
-                        ReportsWindow.this.m_ComboBoxFromDay.setEnabled(false);
-                        ReportsWindow.this.m_ComboBoxFromMonth.setEnabled(false);
-                        ReportsWindow.this.m_ComboBoxFromYear.setEnabled(false);
+                        ReportsWindow.this.labelFromDate.setEnabled(false);
+                        ReportsWindow.this.comboBoxFromDay.setEnabled(false);
+                        ReportsWindow.this.comboBoxFromMonth.setEnabled(false);
+                        ReportsWindow.this.comboBoxFromYear.setEnabled(false);
 
-                        ReportsWindow.this.m_LabelToDate.setEnabled(false);
-                        ReportsWindow.this.m_ComboBoxToDay.setEnabled(false);
-                        ReportsWindow.this.m_ComboBoxToMonth.setEnabled(false);
-                        ReportsWindow.this.m_ComboBoxToYear.setEnabled(false);
+                        ReportsWindow.this.labelToDate.setEnabled(false);
+                        ReportsWindow.this.comboBoxToDay.setEnabled(false);
+                        ReportsWindow.this.comboBoxToMonth.setEnabled(false);
+                        ReportsWindow.this.comboBoxToYear.setEnabled(false);
                     }
                     else
                     {
-                        ReportsWindow.this.m_LabelFromDate.setEnabled(true);
-                        ReportsWindow.this.m_ComboBoxFromDay.setEnabled(true);
-                        ReportsWindow.this.m_ComboBoxFromMonth.setEnabled(true);
-                        ReportsWindow.this.m_ComboBoxFromYear.setEnabled(true);
+                        ReportsWindow.this.labelFromDate.setEnabled(true);
+                        ReportsWindow.this.comboBoxFromDay.setEnabled(true);
+                        ReportsWindow.this.comboBoxFromMonth.setEnabled(true);
+                        ReportsWindow.this.comboBoxFromYear.setEnabled(true);
 
-                        ReportsWindow.this.m_LabelToDate.setEnabled(true);
-                        ReportsWindow.this.m_ComboBoxToDay.setEnabled(true);
-                        ReportsWindow.this.m_ComboBoxToMonth.setEnabled(true);
-                        ReportsWindow.this.m_ComboBoxToYear.setEnabled(true);
+                        ReportsWindow.this.labelToDate.setEnabled(true);
+                        ReportsWindow.this.comboBoxToDay.setEnabled(true);
+                        ReportsWindow.this.comboBoxToMonth.setEnabled(true);
+                        ReportsWindow.this.comboBoxToYear.setEnabled(true);
                     }
                 }
             });
 
-            this.setMyConstraints(this.m_Constraints, 0, 0, GridBagConstraints.FIRST_LINE_START, 0, 10);
-            this.m_ReportsGenerationSection.add(this.m_CheckBoxSelectAllItems, this.m_Constraints);
+            GUIUtils.setConstraintsSettings(this.constraints, 0, 0, GridBagConstraints.FIRST_LINE_START, 0, 10);
+            this.reportsGenerationSection.add(this.checkBoxSelectAllItems, this.constraints);
 
             this.PrepareFromAndToLabelsProperties();
             this.PrepareFromComboBoxesProperties();
             this.PrepareToComboBoxesProperties();
 
-            this.m_ButtonGenerateReport.setText("Generate Report");
-            this.m_ButtonGenerateReport.addActionListener(new ActionListener()
+            this.buttonGenerateReport.setText("Generate Report");
+            this.buttonGenerateReport.addActionListener(new ActionListener()
             {
                 @Override
                 public void actionPerformed(ActionEvent e)
                 {
                     // If the "Generate all transactions" checkbox is checked
-                    if (ReportsWindow.this.m_CheckBoxSelectAllItems.isSelected() == true)
+                    if (ReportsWindow.this.checkBoxSelectAllItems.isSelected())
                     {
-                        ReportsWindow.this.m_FromDate = "01-01-1970";
+                        ReportsWindow.this.fromDate = "01-01-1970";
 
-                        String toDay   = String.valueOf(LocalDate.now().getDayOfMonth());
-                        String toMonth = String.valueOf(LocalDate.now().getMonth().getValue());
-                        String toYear  = String.valueOf(LocalDate.now().getYear());
-                        ReportsWindow.this.m_ToDate = toDay + "-" + toMonth + "-" + toYear;
+                        toDay = String.valueOf(LocalDate.now().getDayOfMonth());
+                        toMonth = String.valueOf(LocalDate.now().getMonth().getValue());
+                        toYear = String.valueOf(LocalDate.now().getYear());
+                        ReportsWindow.this.toDate = toDay + "-" + toMonth + "-" + toYear;
                     }
                     else
                     {
-                        String fromDay   = ReportsWindow.this.m_ComboBoxFromDay.getSelectedItem().toString();
-                        String fromMonth = ReportsWindow.this.m_ComboBoxFromMonth.getSelectedItem().toString();
-                        String fromYear  = ReportsWindow.this.m_ComboBoxFromYear.getSelectedItem().toString();
-                        ReportsWindow.this.m_FromDate = fromDay + "-" + fromMonth + "-" + fromYear;
+                        fromDay = Objects.requireNonNull(ReportsWindow.this.comboBoxFromDay.getSelectedItem()).toString();
+                        fromMonth = Objects.requireNonNull(ReportsWindow.this.comboBoxFromMonth.getSelectedItem()).toString();
+                        fromYear = Objects.requireNonNull(ReportsWindow.this.comboBoxFromYear.getSelectedItem()).toString();
+                        ReportsWindow.this.fromDate = fromDay + "-" + fromMonth + "-" + fromYear;
 
-                        String toDay   = ReportsWindow.this.m_ComboBoxToDay.getSelectedItem().toString();
-                        String toMonth = ReportsWindow.this.m_ComboBoxToMonth.getSelectedItem().toString();
-                        String toYear  = ReportsWindow.this.m_ComboBoxToYear.getSelectedItem().toString();
-                        ReportsWindow.this.m_ToDate = toDay + "-" + toMonth + "-" + toYear;
+                        toDay = Objects.requireNonNull(ReportsWindow.this.comboBoxToDay.getSelectedItem()).toString();
+                        toMonth = Objects.requireNonNull(ReportsWindow.this.comboBoxToMonth.getSelectedItem()).toString();
+                        toYear = Objects.requireNonNull(ReportsWindow.this.comboBoxToYear.getSelectedItem()).toString();
+                        ReportsWindow.this.toDate = toDay + "-" + toMonth + "-" + toYear;
                     }
 
 
                     // Check that the dates are valid
-                    // TODO: move this to the viewmmodel
+                    // TODO: move this to the VM
                     try
                     {
-                        SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-yyyy", Locale.ENGLISH);
+                        sdf = new SimpleDateFormat("MM-dd-yyyy", Locale.ENGLISH);
 
-                        Date firstDate = sdf.parse(ReportsWindow.this.m_FromDate);
-                        Date secondDate = sdf.parse(ReportsWindow.this.m_ToDate);
+                        firstDate = sdf.parse(ReportsWindow.this.fromDate);
+                        secondDate = sdf.parse(ReportsWindow.this.toDate);
 
-                        long diffInMillies = secondDate.getTime() - firstDate.getTime();
-                        long diff = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
+                        diffInMillis = secondDate.getTime() - firstDate.getTime();
+                        diff = TimeUnit.DAYS.convert(diffInMillis, TimeUnit.MILLISECONDS);
 
-                        GUIUtils.ShowOkMessageBox("", String.valueOf(diffInMillies) + "\n" + String.valueOf(diff));
+                        GUIUtils.ShowOkMessageBox("Difference between dates",
+                                diffInMillis + "\n" + diff);
                     }
                     catch (ParseException ex)
-                    {
+                    { // TODO CHANGE EXCEPTION
                         ex.printStackTrace();
                     }
 
 
-                    GUIUtils.ShowOkMessageBox("Selected Dates", "FromDate: " + ReportsWindow.this.m_FromDate + "\nToDate: " + ReportsWindow.this.m_ToDate);
+                    GUIUtils.ShowOkMessageBox("Selected Dates", "FromDate: " + ReportsWindow.this.fromDate + "\nToDate: " + ReportsWindow.this.toDate);
                 }
             });
-            this.setMyConstraints(this.m_Constraints, 4, 3, GridBagConstraints.CENTER, 0, 10);
-            this.m_ReportsGenerationSection.add(this.m_ButtonGenerateReport, this.m_Constraints);
+            GUIUtils.setConstraintsSettings(this.constraints, 4, 3, GridBagConstraints.CENTER, 0, 10);
+            this.reportsGenerationSection.add(this.buttonGenerateReport, this.constraints);
         }
 
         private void PrepareFromAndToLabelsProperties()
         {
-            this.m_LabelFromDate.setText("Start Date:");
-            this.m_LabelFromDate.setFont(new Font("Consolas", Font.BOLD, 14));
-            this.setMyConstraints(this.m_Constraints, 0, 1, GridBagConstraints.CENTER, 10, 10);
-            this.m_ReportsGenerationSection.add(this.m_LabelFromDate, this.m_Constraints);
+            this.labelFromDate.setText("Start Date:");
+            this.labelFromDate.setFont(new Font("Consolas", Font.BOLD, 14));
+            GUIUtils.setConstraintsSettings(this.constraints, 0, 1, GridBagConstraints.CENTER, 10, 10);
+            this.reportsGenerationSection.add(this.labelFromDate, this.constraints);
 
-            this.m_LabelToDate.setText("End Date:");
-            this.m_LabelToDate.setFont(new Font("Consolas", Font.BOLD, 14));
-            this.setMyConstraints(this.m_Constraints, 0, 2, GridBagConstraints.CENTER, 10, 10);
-            this.m_ReportsGenerationSection.add(this.m_LabelToDate, this.m_Constraints);
+            this.labelToDate.setText("End Date:");
+            this.labelToDate.setFont(new Font("Consolas", Font.BOLD, 14));
+            GUIUtils.setConstraintsSettings(this.constraints, 0, 2, GridBagConstraints.CENTER, 10, 10);
+            this.reportsGenerationSection.add(this.labelToDate, this.constraints);
         }
 
         private void PrepareFromComboBoxesProperties()
@@ -891,20 +893,20 @@ public class View implements IView
             In this method the values of the days, months and years are loaded after the constructor
             (Source: http://www.java2s.com/Tutorials/Java/javax.swing/JComboBox/1500__JComboBox.setModel_ComboBoxModel_lt_E_gt_aModel_.htm)
         */
-            this.m_ComboBoxFromDay   = new JComboBox();
-            this.m_ComboBoxFromDay.setModel(new DefaultComboBoxModel(this.m_days));
-            this.setMyConstraints(this.m_Constraints, 1, 1, GridBagConstraints.CENTER, 10, 10);
-            this.m_ReportsGenerationSection.add(this.m_ComboBoxFromDay, this.m_Constraints);
+            this.comboBoxFromDay = new JComboBox<>();
+            this.comboBoxFromDay.setModel(new DefaultComboBoxModel<>(this.days));
+            GUIUtils.setConstraintsSettings(this.constraints, 1, 1, GridBagConstraints.CENTER, 10, 10);
+            this.reportsGenerationSection.add(this.comboBoxFromDay, this.constraints);
 
-            this.m_ComboBoxFromMonth = new JComboBox();
-            this.m_ComboBoxFromMonth.setModel(new DefaultComboBoxModel(this.m_months));
-            this.setMyConstraints(this.m_Constraints, 2, 1, GridBagConstraints.CENTER, 10, 10);
-            this.m_ReportsGenerationSection.add(this.m_ComboBoxFromMonth, this.m_Constraints);
+            this.comboBoxFromMonth = new JComboBox<>();
+            this.comboBoxFromMonth.setModel(new DefaultComboBoxModel<>(this.months));
+            GUIUtils.setConstraintsSettings(this.constraints, 2, 1, GridBagConstraints.CENTER, 10, 10);
+            this.reportsGenerationSection.add(this.comboBoxFromMonth, this.constraints);
 
-            this.m_ComboBoxFromYear  = new JComboBox();
-            this.m_ComboBoxFromYear.setModel(new DefaultComboBoxModel(this.m_years));
-            this.setMyConstraints(this.m_Constraints, 3, 1, GridBagConstraints.CENTER, 10, 10);
-            this.m_ReportsGenerationSection.add(this.m_ComboBoxFromYear, this.m_Constraints);
+            this.comboBoxFromYear = new JComboBox<>();
+            this.comboBoxFromYear.setModel(new DefaultComboBoxModel<>(this.years));
+            GUIUtils.setConstraintsSettings(this.constraints, 3, 1, GridBagConstraints.CENTER, 10, 10);
+            this.reportsGenerationSection.add(this.comboBoxFromYear, this.constraints);
         }
 
         private void PrepareToComboBoxesProperties()
@@ -913,26 +915,27 @@ public class View implements IView
             In this method the values of the days, months and years are loaded after the constructor
             (Source: http://www.java2s.com/Tutorials/Java/javax.swing/JComboBox/1500__JComboBox.setModel_ComboBoxModel_lt_E_gt_aModel_.htm)
         */
-            this.m_ComboBoxToDay   = new JComboBox();
-            this.m_ComboBoxToDay.setModel(new DefaultComboBoxModel(this.m_days));
-            this.setMyConstraints(this.m_Constraints, 1, 2, GridBagConstraints.CENTER, 10, 10);
-            this.m_ReportsGenerationSection.add(this.m_ComboBoxToDay, this.m_Constraints);
+            this.comboBoxToDay = new JComboBox<>();
+            this.comboBoxToDay.setModel(new DefaultComboBoxModel<>(this.days));
+            GUIUtils.setConstraintsSettings(this.constraints, 1, 2,
+                    GridBagConstraints.CENTER, 10, 10);
+            this.reportsGenerationSection.add(this.comboBoxToDay, this.constraints);
 
-            this.m_ComboBoxToMonth = new JComboBox();
-            this.m_ComboBoxToMonth.setModel(new DefaultComboBoxModel(this.m_months));
-            this.setMyConstraints(this.m_Constraints, 2, 2, GridBagConstraints.CENTER, 10, 10);
-            this.m_ReportsGenerationSection.add(this.m_ComboBoxToMonth, this.m_Constraints);
+            this.comboBoxToMonth = new JComboBox<>();
+            this.comboBoxToMonth.setModel(new DefaultComboBoxModel<>(this.months));
+            GUIUtils.setConstraintsSettings(this.constraints, 2, 2, GridBagConstraints.CENTER, 10, 10);
+            this.reportsGenerationSection.add(this.comboBoxToMonth, this.constraints);
 
-            this.m_ComboBoxToYear  = new JComboBox();
-            this.m_ComboBoxToYear.setModel(new DefaultComboBoxModel(this.m_years));
-            this.setMyConstraints(this.m_Constraints, 3, 2, GridBagConstraints.CENTER, 10, 10);
-            this.m_ReportsGenerationSection.add(this.m_ComboBoxToYear, this.m_Constraints);
+            this.comboBoxToYear = new JComboBox<>();
+            this.comboBoxToYear.setModel(new DefaultComboBoxModel<>(this.years));
+            GUIUtils.setConstraintsSettings(this.constraints, 3, 2, GridBagConstraints.CENTER, 10, 10);
+            this.reportsGenerationSection.add(this.comboBoxToYear, this.constraints);
         }
 
         private void PrepareLogoutSection()
         {
-            this.m_LogoutButton.setPreferredSize(new Dimension(100, this.m_LogoutButton.getPreferredSize().height));
-            this.m_LogoutButton.addActionListener(new ActionListener()
+            this.logoutButton.setPreferredSize(new Dimension(100, this.logoutButton.getPreferredSize().height));
+            this.logoutButton.addActionListener(new ActionListener()
             {
                 @Override
                 public void actionPerformed(ActionEvent e)
@@ -942,24 +945,15 @@ public class View implements IView
             });
 
             // Place the button in the bottom-right of the window (Source: https://stackoverflow.com/a/11165906/2196301)
-            this.m_LogoutSection.setLayout(new BorderLayout());
+            this.logoutSection.setLayout(new BorderLayout());
             JPanel subPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-            subPanel.add(this.m_LogoutButton);
-            this.m_LogoutSection.add(subPanel, BorderLayout.SOUTH);
+            subPanel.add(this.logoutButton);
+            this.logoutSection.add(subPanel, BorderLayout.SOUTH);
         }
 
         public void Show()
         {
-            this.m_Window.setVisible(true);
-        }
-
-        // TODO: rename method to more indicative name
-        private void setMyConstraints(GridBagConstraints c, int gridx, int gridy, int anchor, int ipadx, int ipady) {
-            c.gridx = gridx;
-            c.gridy = gridy;
-            c.anchor = anchor;
-            c.ipadx = ipadx;
-            c.ipady = ipady;
+            this.frame.setVisible(true);
         }
     }
 }
