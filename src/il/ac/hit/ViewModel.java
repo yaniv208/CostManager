@@ -123,20 +123,29 @@ public class ViewModel implements IViewModel
     @Override
     public void addItem(Item item)
     {
-        /*
-        try
-        {
-            this.model.deleteItem();
-        }
-        catch (CostManException err)
-        {
+       executorService.submit(new Runnable() {
+           @Override
+           public void run() {
+               try {
+                   model.insertNewItem(item);
 
-        }
-        finally
-        {
+                   SwingUtilities.invokeLater(new Runnable() {
+                       @Override
+                       public void run() {
+                           GUIUtils.ShowOkMessageBox("Success", "Item successfully added!");
+                       }
+                   });
 
-        }
-        */
+               } catch (CostManException e) {
+                   SwingUtilities.invokeLater(new Runnable() {
+                       @Override
+                       public void run() {
+                           GUIUtils.ShowErrorMessageBox("Error", "Error adding item!");
+                       }
+                   });
+               }
+           }
+       });
     }
 
     @Override

@@ -1,6 +1,7 @@
 package il.ac.hit;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.event.WindowAdapter;
@@ -767,6 +768,7 @@ public class View implements IView
                 @Override
                 public void windowClosing(WindowEvent e)
                 {
+                    // TODO ADD
                 }
             });
         }
@@ -830,7 +832,6 @@ public class View implements IView
                         toDay = String.valueOf(LocalDate.now().getDayOfMonth());
                         toMonth = String.valueOf(LocalDate.now().getMonth().getValue());
                         toYear = String.valueOf(LocalDate.now().getYear());
-                        ReportsWindow.this.toDate = toDay + "-" + toMonth + "-" + toYear;
                     }
                     else
                     {
@@ -842,9 +843,9 @@ public class View implements IView
                         toDay = Objects.requireNonNull(ReportsWindow.this.comboBoxToDay.getSelectedItem()).toString();
                         toMonth = Objects.requireNonNull(ReportsWindow.this.comboBoxToMonth.getSelectedItem()).toString();
                         toYear = Objects.requireNonNull(ReportsWindow.this.comboBoxToYear.getSelectedItem()).toString();
-                        ReportsWindow.this.toDate = toDay + "-" + toMonth + "-" + toYear;
                     }
 
+                    toDate = toDay + "-" + toMonth + "-" + toYear;
 
                     // Check that the dates are valid
                     // TODO: move this to the VM
@@ -861,12 +862,11 @@ public class View implements IView
                         GUIUtils.ShowOkMessageBox("Difference between dates",
                                 diffInMillis + "\n" + diff);
                     }
-                    catch (ParseException ex)
-                    { // TODO CHANGE EXCEPTION
-                        ex.printStackTrace();
+
+                    catch (ParseException ex) {
+                        GUIUtils.ShowErrorMessageBox("Error", "Error parsing dates!");
                     }
-
-
+                    
                     GUIUtils.ShowOkMessageBox("Selected Dates", "FromDate: " + ReportsWindow.this.fromDate + "\nToDate: " + ReportsWindow.this.toDate);
                 }
             });
