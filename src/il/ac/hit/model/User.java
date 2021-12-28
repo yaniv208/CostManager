@@ -1,4 +1,6 @@
-package il.ac.hit;
+package il.ac.hit.model;
+
+import il.ac.hit.CostManException;
 
 import java.util.Objects;
 

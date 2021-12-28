@@ -1,4 +1,6 @@
-package il.ac.hit;
+package il.ac.hit.model;
+
+import il.ac.hit.CostManException;
 
 import java.util.Objects;
 
@@ -21,19 +23,28 @@ public class Item {
     int subCategoryId;
     String date;
     int price;
+    String currency;
     float currencyRate;
     String description;
-
     public Item() {}
-
-    public Item(int userId, int categoryId, int subCategoryId, String date, int price, float currencyRate, String description) throws CostManException {
+    public Item(int userId, int categoryId, int subCategoryId, String date, int price, String currency,
+                float currencyRate, String description) throws CostManException {
         setUserId(userId);
         setCategoryId(categoryId);
         setSubCategoryId(subCategoryId);
         setDate(date);
         setPrice(price);
+        setCurrency(currency);
         setCurrencyRate(currencyRate);
         setDescription(description);
+    }
+
+    public String getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
     }
 
     public int getItemId() {
@@ -102,11 +113,11 @@ public class Item {
     }
 
     public void setDescription(String description) throws CostManException {
-        if (description.length() > 4) {
+        if (description.length() > 3) {
             this.description = description;
         }
         else {
-            throw new CostManException("Description must be longer than 4 chars!");
+            throw new CostManException("Description must be longer than 3 chars!");
         }
     }
 

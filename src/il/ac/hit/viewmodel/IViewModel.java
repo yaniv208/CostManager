@@ -1,4 +1,8 @@
-package il.ac.hit;
+package il.ac.hit.viewmodel;
+
+import il.ac.hit.model.IModel;
+import il.ac.hit.model.Item;
+import il.ac.hit.view.IView;
 
 public interface IViewModel {
     // Login form
@@ -8,7 +12,7 @@ public interface IViewModel {
     void handleRegistrationRequest();
 
     // Reports form
-    void getItems(String fromDate, String toDate);
+    void getItemsBetweenDates(String fromDate, String toDate);
 
     // Categories form
     void addCategory(String categoryName, String ownerCategoryName);

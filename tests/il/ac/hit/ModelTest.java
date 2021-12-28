@@ -1,5 +1,9 @@
 package il.ac.hit;
 
+import il.ac.hit.model.EnumCategoryType;
+import il.ac.hit.model.Item;
+import il.ac.hit.model.Model;
+import il.ac.hit.model.User;
 import org.junit.FixMethodOrder;
 import org.junit.runners.MethodSorters;
 import javax.swing.table.DefaultTableModel;
@@ -50,29 +54,13 @@ public class ModelTest
 
     }
 
-    /*@org.junit.Test
-    public void getDataByRangeOfDates() {
-        LOGGER.info("Starting getRangeOfDatesByUser() Test");
-        String expected = "Error getting data between dates!";
-
-        try {
-            Collection<Item> items = Model.getInstance().getDataByRangeOfDates(12, "2020-01-01", "2021-12-08");
-            assertNotNull("List of items is null", items);
-            // if another exception will be thrown, it will take place on next line
-        }
-        catch (CostManException err) {
-            assertEquals(null, expected, err.getMessage());
-        }
-
-    }*/
-
     @org.junit.Test
     public void getItemsByRangeOfDates() {
         LOGGER.info("Starting getRangeOfDatesByUser() Test");
         String expected = "Error getting data between dates!";
 
         try {
-            DefaultTableModel items = Model.getInstance().getItemsByRangeOfDates(12,
+            List<Item> items = Model.getInstance().getItemsByRangeOfDates(12,
                     "2020-01-01", "2021-12-08");
             assertNotNull("List of items is null", items);
             // if another exception will be thrown, it will take place on next line
@@ -89,14 +77,13 @@ public class ModelTest
         String expected = "Error while inserting into DataBase!";
 
         try {
-            Model.getInstance().insertNewItem(new Item(5,2, 3, "2021-12-08", 50,
-                    2.2f, "Hamburger"));
+            Model.getInstance().insertNewItem(new Item(5,2, 3, "2021-12-08",
+                    50, "USD", 2.2f, "Hamburger"));
             // if an exception will occur, it would take place on next line
         }
         catch (CostManException err) {
             assertEquals(null, expected, err.getMessage());
         }
-
     }
 
     @org.junit.Test
@@ -206,7 +193,6 @@ public class ModelTest
         catch (CostManException err) {
             isExceptionThrown = true;
         }
-
         assertFalse(isExceptionThrown);
     }
 }

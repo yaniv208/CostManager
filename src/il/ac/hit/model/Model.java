@@ -1,6 +1,7 @@
-package il.ac.hit;
+package il.ac.hit.model;
 
-import javax.swing.table.DefaultTableModel;
+import il.ac.hit.CostManException;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -108,10 +109,10 @@ public class Model implements IModel
         Connection connection = null;
         ResultSet rs = null;
 
-        int userId; // default value of int in Java is 0.
+        int userId = 0;
 
         try {
-            Class.forName(this.dbDriverName);
+            Class.forName(dbDriverName);
             connection = DriverManager.getConnection(this.dbProtocol, this.dbUserName, this.dbPassword);
             ps = connection.prepareStatement("SELECT UserID from users WHERE Email = ? AND Password = ?");
 
@@ -120,9 +121,10 @@ public class Model implements IModel
 
             rs = ps.executeQuery();
 
-            // getting ID of the specific user, only 1 ID returned.
-            rs.next();
-            userId = rs.getInt("UserID");
+            // getting ID of the specific user, so only 1 ID returned.
+            if(rs.next()){
+                userId = rs.getInt("UserID");
+            }
 
         }
 
@@ -316,25 +318,34 @@ public class Model implements IModel
         return returnValue;
     }
 
-    /*public Collection<Item> getDataByRangeOfDates(int userId, String from, String to) throws CostManException
+    /**
+     * A function that returns data by a specific range of dates
+     * @param userId - user ID of the requesting user
+     * @param from - origin date
+     * @param to - destination date
+     * @return - A specific TableModel of items selected by range of dates
+     * @throws CostManException if there was any problem getting data between specified dates
+     */
+    public List<Item> getItemsByRangeOfDates(int userId, String from, String to) throws CostManException
     {
         PreparedStatement ps = null;
         Connection connection = null;
         ResultSet rs = null;
-        Collection<Item> items = null;
-        Item itemToAdd = null;
+        List<Item> items;
+        Item itemToAdd;
 
         try {
             Class.forName(this.dbDriverName);
             connection = DriverManager.getConnection(this.dbProtocol, this.dbUserName, this.dbPassword);
             ps = connection.prepareStatement("SELECT * FROM items WHERE OwnerUserID = ? AND (Date BETWEEN ? AND ?)");
 
+            items = new ArrayList<>();
+
             ps.setInt(1, userId);
             ps.setString(2, from);
             ps.setString(3, to);
 
             rs = ps.executeQuery();
-            items = new ArrayList<Item>();
 
             while (rs.next())
             { // assign variables of each item, and adding it to collection
@@ -345,12 +356,12 @@ public class Model implements IModel
                 itemToAdd.setSubCategoryId(rs.getInt("SubCategoryID"));
                 itemToAdd.setDate(rs.getString("Date"));
                 itemToAdd.setPrice(rs.getInt("Price"));
+                itemToAdd.setCurrency(rs.getString("Currency"));
                 itemToAdd.setCurrencyRate(rs.getFloat("CurrencyRate"));
                 itemToAdd.setDescription(rs.getString("Description"));
                 items.add(itemToAdd);
             }
         }
-
         catch (SQLException | ClassNotFoundException e) {
             throw new CostManException("Error getting data between dates!", e);
         }
@@ -359,62 +370,6 @@ public class Model implements IModel
         }
 
         return items;
-    }*/
-    /**
-     * A function that returns data by a specific range of dates
-     * @param userId - user ID of the requesting user
-     * @param from - origin date
-     * @param to - destination date
-     * @return - A specific TableModel of items selected by range of dates
-     * @throws CostManException if there was any problem getting data between specified dates
-     */
-    public DefaultTableModel getItemsByRangeOfDates(int userId, String from, String to) throws CostManException
-    {
-        PreparedStatement ps = null;
-        Connection connection = null;
-        ResultSet rs = null;
-        String[] columnNames;
-        DefaultTableModel model;
-        Object[] rowToAdd;
-        try {
-            Class.forName(this.dbDriverName);
-            connection = DriverManager.getConnection(this.dbProtocol, this.dbUserName, this.dbPassword);
-            ps = connection.prepareStatement("SELECT * FROM items WHERE OwnerUserID = ? AND (Date BETWEEN ? AND ?)");
-
-            columnNames = new String[]{"ItemID", "Category", "SubCategory", "Date",
-                    "Price", "Currency", "Description"};
-            model = new DefaultTableModel(columnNames, 0);
-
-            ps.setInt(1, userId);
-            ps.setString(2, from);
-            ps.setString(3, to);
-
-            rs = ps.executeQuery();
-
-            while (rs.next())
-            { // assign variables of each item, and adding it to collection
-                rowToAdd = new Object[7];
-                rowToAdd[0] = rs.getInt("ItemID");
-                rowToAdd[1] = rs.getInt("CategoryID");
-                rowToAdd[2] = rs.getInt("SubCategoryID");
-                rowToAdd[3] = rs.getString("Date");
-                rowToAdd[4] = rs.getInt("Price");
-                rowToAdd[5] = rs.getFloat("CurrencyRate");
-                rowToAdd[6] = rs.getString("Description");
-
-                model.addRow(rowToAdd);
-            }
-        }
-        catch (SQLException | ClassNotFoundException e) {
-            throw new CostManException("Error getting data between dates!", e);
-        }
-        finally {
-            cleanupUpdateUsageProcess(ps, connection, rs);
-        }
-
-        System.out.println("Items table has " + model.getRowCount() + "rows");
-
-        return model;
     }
 
     /**
@@ -430,7 +385,7 @@ public class Model implements IModel
         try {
             Class.forName(this.dbDriverName);
             connection = DriverManager.getConnection(this.dbProtocol, this.dbUserName, this.dbPassword);
-            ps = connection.prepareStatement("INSERT INTO items VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+            ps = connection.prepareStatement("INSERT INTO items VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
             ps.setInt(1, NULL);
             ps.setInt(2, item.getUserId());
@@ -438,8 +393,9 @@ public class Model implements IModel
             ps.setInt(4, item.getSubCategoryId());
             ps.setString(5, item.getDate());
             ps.setInt(6, item.getPrice());
-            ps.setFloat(7, item.getCurrencyRate());
-            ps.setString(8, item.getDescription());
+            ps.setString(7, item.getCurrency());
+            ps.setFloat(8, item.getCurrencyRate());
+            ps.setString(9, item.getDescription());
 
             if (ps.executeUpdate() != 1) {
                 throw new CostManException("Error while inserting into DataBase!");

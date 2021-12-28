@@ -4,6 +4,27 @@ import java.awt.*;
 
 public class GUIUtils
 {
+    public static void ShowOkMessageBox(String title, String message)
+    {
+        SwingUtilities.invokeLater(() ->
+                JOptionPane.showMessageDialog(null, message, title, JOptionPane.INFORMATION_MESSAGE));
+    }
+
+    public static void ShowExitMessageBox()
+    {
+        SwingUtilities.invokeLater(() -> {
+            if (GUIUtils.ShowYesNoMessageBox("Exit?", "Are you sure that you want to exit?")) {
+                System.exit(0);
+            }
+        });
+    }
+
+    public static void ShowErrorMessageBox(String title, String message)
+    {
+        SwingUtilities.invokeLater(() ->
+                JOptionPane.showMessageDialog(null, message, title, JOptionPane.ERROR_MESSAGE));
+    }
+
     public static boolean ShowYesNoMessageBox(String title, String message)
     {
         boolean isYes = true;
@@ -15,24 +36,6 @@ public class GUIUtils
         }
 
         return isYes;
-    }
-
-    public static void ShowOkMessageBox(String title, String message)
-    {
-        JOptionPane.showMessageDialog(null, message, title, JOptionPane.INFORMATION_MESSAGE);
-    }
-
-    public static void ShowExitMessageBox()
-    {
-        if (GUIUtils.ShowYesNoMessageBox("Exit?", "Are you sure that you want to exit?"))
-        {
-            System.exit(0);
-        }
-    }
-
-    public static void ShowErrorMessageBox(String title, String message)
-    {
-        JOptionPane.showMessageDialog(null, message, title, JOptionPane.ERROR_MESSAGE);
     }
 
     // TODO: move this to VM and do all necessary changes
@@ -59,5 +62,14 @@ public class GUIUtils
         currentConstraintsObject.ipadx = ipadx;
         currentConstraintsObject.ipady = ipady;
     }
+
+    public static void showFrame(JFrame frame){
+        frame.setVisible(true);
+    }
+
+    public static void hideFrame(JFrame frame){
+        frame.setVisible(false);
+    }
+
 }
 
