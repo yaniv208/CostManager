@@ -66,12 +66,14 @@ public class Model implements IModel
     /**
      * A function that inserts a new user to the database.
      * @param user - A parameter representing user, containing strings of email address and a password.
+     * @return the ID of the inserted user
      * @throws CostManException if there was any problem creating a user
      */
-    public void insertNewUser(User user) throws CostManException
+    public int insertNewUser(User user) throws CostManException
     {
         PreparedStatement ps = null;
         Connection connection = null;
+        int id;
 
         try {
             Class.forName(this.dbDriverName);
@@ -91,9 +93,14 @@ public class Model implements IModel
         catch (SQLException | ClassNotFoundException e) {
             throw new CostManException("Problem with registering user!", e);
         }
+
         finally {
             cleanupUpdateUsageProcess(ps, connection, null);
         }
+
+        id = selectUserCredentials(user.email, user.password);
+
+        return id;
     }
 
     /**

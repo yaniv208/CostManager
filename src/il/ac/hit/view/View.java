@@ -19,8 +19,7 @@ public class View implements IView
 {
     private IViewModel viewModel;
     private int userID;
-    private boolean isConnected;
-    
+
     private LoginWindow loginWindow;
     private RegistrationWindow registrationWindow;
     private MainWindow mainWindow;
@@ -106,10 +105,12 @@ public class View implements IView
             defaultEchoChar = passwordField.getEchoChar();
             showPasswordCheckBox.setSelected(false);
             showPasswordCheckBox.addItemListener(e -> {
-                if (e.getStateChange() == ItemEvent.SELECTED) {
+                if (e.getStateChange() == ItemEvent.SELECTED)
+                {
                     passwordField.setEchoChar((char) 0);
                 }
-                else {
+                else
+                {
                     passwordField.setEchoChar(defaultEchoChar);
                 }
             });
@@ -118,23 +119,21 @@ public class View implements IView
             loginBtn.addActionListener(e -> {
                 viewModel.handleAuthentication(emailTextField.getText(), new String(passwordField.getPassword()));
 
-                // sleeping 200 ms so user won't have to click "login" twice
-                try {
-                    Thread.sleep(200);
-                } catch (InterruptedException ex) {
-                    GUIUtils.ShowErrorMessageBox("Error", "Problem with the sleeping thread");
+                // sleeping 250 ms so user won't have to click "login" twice
+                try
+                {
+                    Thread.sleep(250);
                 }
-
-                if (isConnected){
-                    frame.dispose();
-                    mainWindow.frame.setVisible(true);
+                catch (InterruptedException ex)
+                {
+                    GUIUtils.ShowErrorMessageBox("Error", "Problem with the sleeping thread");
                 }
             });
 
             // Handling "Create Account" button click
             createAccountBtn.addActionListener(e -> {
                 frame.setVisible(false);
-                registrationWindow.start();
+                registrationWindow.frame.setVisible(true);
             });
 
             // Handling North Panel
@@ -177,15 +176,7 @@ public class View implements IView
             frame.setResizable(false);
             frame.setVisible(true);
 
-            // Define event handlers
-            this.frame.addWindowListener(new WindowAdapter()
-            {
-                @Override
-                public void windowClosing(WindowEvent e)
-                {
-                    GUIUtils.ShowExitMessageBox();
-                }
-            });
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         }
     }
 
@@ -199,7 +190,8 @@ public class View implements IView
         private JPasswordField passwordTextField;
         private JPanel panelCenter, panelNorth, panelSouth;
 
-        RegistrationWindow() {
+        RegistrationWindow()
+        {
             // Creating Frame
             frame = new JFrame("Registration page");
 
@@ -227,15 +219,24 @@ public class View implements IView
             start();
         }
 
-        public void start() {
+        public void start()
+        {
             panelCenter.setFont(Font.getFont(Font.SANS_SERIF));
             panelSouth.setFont(Font.getFont(Font.SANS_SERIF));
             panelNorth.setFont(Font.getFont(Font.SANS_SERIF));
 
             // Handling create account button click
-            registerBtn.addActionListener(e -> {
-                //viewModel.handleRegistrationRequest();
-                // TODO WAIT FOR AVIV TO FINISH
+            registerBtn.addActionListener(new ActionListener()
+            {
+                @Override
+                public void actionPerformed(ActionEvent e)
+                {
+                    String email = emailTextField.getText();
+                    String password = new String(passwordTextField.getPassword());
+                    String fullName = fullNameTextField.getText();
+
+                    View.this.viewModel.handleRegistrationRequest(email, password, fullName);
+                }
             });
 
             // Handling North Panel
@@ -247,7 +248,7 @@ public class View implements IView
             panelCenter.setLayout(new GridBagLayout());
             panelCenter.setBorder(BorderFactory.createTitledBorder("Details"));
 
-            GUIUtils.setConstraintsSettings(constraints, 0,0, GridBagConstraints.EAST, 10, 10);
+            GUIUtils.setConstraintsSettings(constraints, 0, 0, GridBagConstraints.EAST, 10, 10);
             panelCenter.add(emailLabel, constraints);
             GUIUtils.setConstraintsSettings(constraints, 1, 0, GridBagConstraints.WEST, 10, 10);
             panelCenter.add(emailTextField, constraints);
@@ -257,20 +258,21 @@ public class View implements IView
             GUIUtils.setConstraintsSettings(constraints, 1, 1, GridBagConstraints.WEST, 10, 10);
             panelCenter.add(passwordTextField, constraints);
 
-            GUIUtils.setConstraintsSettings(constraints, 0,2, GridBagConstraints.EAST, 10, 10);
+            GUIUtils.setConstraintsSettings(constraints, 0, 2, GridBagConstraints.EAST, 10, 10);
             panelCenter.add(fullNameLabel, constraints);
-            GUIUtils.setConstraintsSettings(constraints, 1,2, GridBagConstraints.WEST, 10, 10);
+            GUIUtils.setConstraintsSettings(constraints, 1, 2, GridBagConstraints.WEST, 10, 10);
             panelCenter.add(fullNameTextField, constraints);
 
             // Handling South Panel
             panelSouth.setLayout(new GridBagLayout());
-            GUIUtils.setConstraintsSettings(constraints, 0,0, GridBagConstraints.CENTER, 10, 15);
+            GUIUtils.setConstraintsSettings(constraints, 0, 0, GridBagConstraints.CENTER, 10, 15);
             panelSouth.add(registerBtn, constraints);
 
             setFrameSettings(frame, panelCenter, panelNorth, panelSouth);
         }
 
-        void setFrameSettings(JFrame frame, JPanel panelCenter, JPanel panelNorth, JPanel panelSouth) {
+        void setFrameSettings(JFrame frame, JPanel panelCenter, JPanel panelNorth, JPanel panelSouth)
+        {
             frame.setLayout(new BorderLayout());
             frame.add(panelCenter, BorderLayout.CENTER);
             frame.add(panelNorth, BorderLayout.NORTH);
@@ -291,7 +293,8 @@ public class View implements IView
         private JPanel centerPanel, northPanel, southPanel;
         private GridBagConstraints constraints;
 
-        public MainWindow() {
+        public MainWindow()
+        {
             this.InitializeComponents();
             this.PrepareWindowProperties();
             this.PrepareTitleSection();
@@ -299,7 +302,8 @@ public class View implements IView
             this.PrepareLogoutSection();
         }
 
-        private void InitializeComponents() {
+        private void InitializeComponents()
+        {
             // Initializing the Frame
             this.frame = new JFrame();
 
@@ -333,6 +337,7 @@ public class View implements IView
             this.frame.setTitle("CostMan - Main Window");
             this.frame.setSize(500, 800);
             this.frame.setResizable(false);
+            this.frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 
             // Place the window in the center of the screen (Source: https://stackoverflow.com/a/2442614/2196301)
             this.frame.setLocationRelativeTo(null);
@@ -343,7 +348,8 @@ public class View implements IView
                 @Override
                 public void windowClosing(WindowEvent e)
                 {
-                    GUIUtils.ShowExitMessageBox();
+                    View.this.viewModel.logout();
+
                 }
             });
         }
@@ -407,7 +413,7 @@ public class View implements IView
                 @Override
                 public void actionPerformed(ActionEvent e)
                 {
-                    GUIUtils.ShowExitMessageBox();
+                    View.this.viewModel.logout();
                 }
             });
 
@@ -486,23 +492,13 @@ public class View implements IView
             setProperties();
         }
 
-        public void setProperties() {
-            this.frame.setTitle("CostMan - Transactions Window");
-
-            // Define event handlers
-            this.frame.addWindowListener(new WindowAdapter()
-            {
-                @Override
-                public void windowClosing(WindowEvent e)
-                {
-                    GUIUtils.ShowExitMessageBox();
-                }
-            });
-
+        public void setProperties()
+        {
             // Handling insert button click
             insertBtn.addActionListener(e -> {
                 Item item = null;
-                try {
+                try
+                {
                     // TODO FIX CHANGE FROM NUMBER TO CATEGORY STRING USING AVIV'S METHODS
                     item = new Item(userID,
                             1, 2,
@@ -513,25 +509,31 @@ public class View implements IView
                             descriptionTextField.getText());
 
                     viewModel.addItem(item);
-                } catch (CostManException ex) {
+                }
+                catch (CostManException ex)
+                {
                     GUIUtils.ShowErrorMessageBox("Error", "Error inserting new item!");
                 }
             });
 
             // Handling delete item button click
-            deleteBtn.addActionListener(new ActionListener() {
+            deleteBtn.addActionListener(new ActionListener()
+            {
                 @Override
-                public void actionPerformed(ActionEvent e) {
-                    viewModel.deleteItem(Integer.parseInt(idTextField.getText()));
+                public void actionPerformed(ActionEvent e)
+                {
+                    viewModel.deleteItem(idTextField.getText());
                 }
             });
 
-            // Set the visual properties of the window
-            this.frame.setSize(500, 800);
-            this.frame.setResizable(false);
-
-            // Place the window in the center of the screen (Source: https://stackoverflow.com/a/2442614/2196301)
-            this.frame.setLocationRelativeTo(null);
+            logOutBtn.addActionListener(new ActionListener()
+            {
+                @Override
+                public void actionPerformed(ActionEvent e)
+                {
+                    View.this.viewModel.logout();
+                }
+            });
 
             // Handling North Panel
             panelNorth.setLayout(new GridBagLayout());
@@ -588,21 +590,29 @@ public class View implements IView
             setFrameSettings(this.frame, panelCenter, panelNorth, panelSouth);
         }
 
-        void setFrameSettings(JFrame frame, JPanel panelCenter, JPanel panelNorth, JPanel panelSouth) {
+        void setFrameSettings(JFrame frame, JPanel panelCenter, JPanel panelNorth, JPanel panelSouth)
+        {
+            // Set the visual properties of the window
+            this.frame.setSize(500, 800);
+            this.frame.setResizable(false);
+            this.frame.setTitle("CostMan - Transactions Window");
+            this.frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+
+            // Place the window in the center of the screen (Source: https://stackoverflow.com/a/2442614/2196301)
+            this.frame.setLocationRelativeTo(null);
+
             frame.setLayout(new BorderLayout());
             frame.add(panelCenter, BorderLayout.CENTER);
             frame.add(panelNorth, BorderLayout.NORTH);
             frame.add(panelSouth, BorderLayout.SOUTH);
 
-            frame.setSize(500, 500);
-            frame.setResizable(false);
-
-            frame.addWindowListener(new WindowAdapter()
+            // Define event handlers
+            this.frame.addWindowListener(new WindowAdapter()
             {
                 @Override
                 public void windowClosing(WindowEvent e)
                 {
-                    GUIUtils.ShowExitMessageBox();
+                    View.this.viewModel.handleClosingOfFeatureWindow();
                 }
             });
         }
@@ -648,7 +658,8 @@ public class View implements IView
             setProperties();
         }
 
-        public void setProperties() {
+        public void setProperties()
+        {
             panelCenter.setLayout(new GridBagLayout());
             panelCenter.setBorder(BorderFactory.createTitledBorder("Insert a new Category or a Sub-Category: "));
 
@@ -688,20 +699,22 @@ public class View implements IView
             setFrameSettings(this.frame, panelCenter, panelSouth);
         }
 
-        void setFrameSettings(JFrame frame, JPanel panelCenter, JPanel panelSouth) {
+        void setFrameSettings(JFrame frame, JPanel panelCenter, JPanel panelSouth)
+        {
             frame.setLayout(new BorderLayout());
             frame.add(panelCenter, BorderLayout.CENTER);
             frame.add(panelSouth, BorderLayout.SOUTH);
 
             frame.setSize(500, 500);
             frame.setResizable(false);
+            frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 
             frame.addWindowListener(new WindowAdapter()
             {
                 @Override
                 public void windowClosing(WindowEvent e)
                 {
-                    GUIUtils.ShowExitMessageBox();
+                    View.this.viewModel.handleClosingOfFeatureWindow();
                 }
             });
         }
@@ -797,7 +810,8 @@ public class View implements IView
             this.subPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         }
 
-        private void prepareTable() {
+        private void prepareTable()
+        {
             reportsPanel.add(new JScrollPane(reportsTable));
 
             reportsTable.setLayout(new FlowLayout());
@@ -823,6 +837,7 @@ public class View implements IView
             this.frame.setTitle("CostMan - Reports Window");
             this.frame.setSize(1000, 900);
             this.frame.setResizable(false);
+            this.frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 
             // Place the window in the center of the screen (Source: https://stackoverflow.com/a/2442614/2196301)
             this.frame.setLocationRelativeTo(null);
@@ -833,7 +848,7 @@ public class View implements IView
                 @Override
                 public void windowClosing(WindowEvent e)
                 {
-                    GUIUtils.ShowExitMessageBox();
+                    View.this.viewModel.handleClosingOfFeatureWindow();
                 }
             });
         }
@@ -857,7 +872,8 @@ public class View implements IView
                     ReportsWindow.this.comboBoxToMonth.setEnabled(false);
                     ReportsWindow.this.comboBoxToYear.setEnabled(false);
                 }
-                else {
+                else
+                {
                     ReportsWindow.this.labelFromDate.setEnabled(true);
                     ReportsWindow.this.comboBoxFromDay.setEnabled(true);
                     ReportsWindow.this.comboBoxFromMonth.setEnabled(true);
@@ -973,7 +989,14 @@ public class View implements IView
         private void PrepareLogoutSection()
         {
             this.logoutButton.setPreferredSize(new Dimension(100, this.logoutButton.getPreferredSize().height));
-            this.logoutButton.addActionListener(e -> GUIUtils.ShowExitMessageBox());
+            this.logoutButton.addActionListener(new ActionListener()
+            {
+                @Override
+                public void actionPerformed(ActionEvent e)
+                {
+                    View.this.viewModel.logout();
+                }
+            });
 
             // Place the button in the bottom-right of the window (Source: https://stackoverflow.com/a/11165906/2196301)
             this.logoutSection.setLayout(new BorderLayout());
@@ -981,13 +1004,15 @@ public class View implements IView
             this.logoutSection.add(subPanel, BorderLayout.SOUTH);
         }
 
-        public void populateTable(List<Item> data) {
+        public void populateTable(List<Item> data)
+        {
             // Initialize table
             tableModel.setRowCount(0);
 
             // Re-populating table using for-each loop
-            for(Item item : data) {
-                tableModel.addRow(new Object[] {
+            for (Item item : data)
+            {
+                tableModel.addRow(new Object[]{
                         item.getItemId(), item.getCategoryId(), item.getSubCategoryId(), item.getDate(),
                         item.getPrice(), item.getCategoryId(), item.getDescription()});
             }
@@ -995,17 +1020,56 @@ public class View implements IView
     }
 
     @Override
-    public void showItems(List<Item> data) {
+    public void showItems(List<Item> data)
+    {
         reportsWindow.populateTable(data);
     }
 
     @Override
-    public void setID(int id) {
+    public void setID(int id)
+    {
         this.userID = id;
     }
 
     @Override
-    public void setIsConnected(boolean answer) {
-        this.isConnected = answer;
+    public void openMainWindowOnlyAndCloseOtherWindows()
+    {
+        // Leave only this window "open"
+        this.mainWindow.frame.setVisible(true);
+
+        // "Close" (hide) all the other windows
+        this.loginWindow.frame.setVisible(false);
+        this.registrationWindow.frame.setVisible(false);
+        this.transactionsWindow.frame.setVisible(false);
+        this.categoriesWindow.frame.setVisible(false);
+        this.reportsWindow.frame.setVisible(false);
+    }
+
+    @Override
+    public void switchFromLoginWindowToMainWindow()
+    {
+        this.loginWindow.frame.setVisible(false);
+        this.mainWindow.frame.setVisible(true);
+    }
+
+    @Override
+    public void switchFromRegistrationWindowToMainWindow()
+    {
+        this.registrationWindow.frame.setVisible(false);
+        this.mainWindow.frame.setVisible(true);
+    }
+
+    @Override
+    public void openLoginWindowOnlyAndCloseOtherWindows()
+    {
+        // Leave only this window "open"
+        this.loginWindow.frame.setVisible(true);
+
+        // "Close" (hide) all the other windows
+        this.registrationWindow.frame.setVisible(false);
+        this.mainWindow.frame.setVisible(false);
+        this.transactionsWindow.frame.setVisible(false);
+        this.categoriesWindow.frame.setVisible(false);
+        this.reportsWindow.frame.setVisible(false);
     }
 }

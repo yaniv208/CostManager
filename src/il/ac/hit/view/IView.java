@@ -12,5 +12,8 @@ public interface IView {
     void start();
     void showItems(List<Item> data);
     void setID (int id);
-    void setIsConnected(boolean answer);
+    void openMainWindowOnlyAndCloseOtherWindows();
+    void switchFromLoginWindowToMainWindow();
+    void switchFromRegistrationWindowToMainWindow();
+    void openLoginWindowOnlyAndCloseOtherWindows();
 }

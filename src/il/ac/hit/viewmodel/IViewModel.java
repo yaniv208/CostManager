@@ -9,7 +9,7 @@ public interface IViewModel {
     void handleAuthentication(String email, String password);
 
     // Registration form
-    void handleRegistrationRequest();
+    void handleRegistrationRequest(String email, String password, String fullName);
 
     // Reports form
     void getItemsBetweenDates(String fromDate, String toDate);
@@ -19,7 +19,7 @@ public interface IViewModel {
 
     // Add items form
     void addItem(Item item);
-    void deleteItem(int itemID);
+    void deleteItem(String itemID);
 
     // All forms
     void logout();
@@ -27,4 +27,5 @@ public interface IViewModel {
     // Kernelic methods
     void setView(IView view);
     void setModel(IModel model);
+    void handleClosingOfFeatureWindow();
 }
