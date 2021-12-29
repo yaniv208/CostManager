@@ -9,11 +9,11 @@ import java.util.List;
 public interface IModel {
 
     /**
-    * A function that inserts a new user to the database.
-    * @param user - A parameter representing user, containing strings of email address and a password.
-    * @return the ID of the inserted user
-    * @throws CostManException if there was any problem creating a user
-    */
+     * A function that inserts a new user to the database.
+     * @param user - A parameter representing user, containing strings of email address and a password.
+     * @return ID of the inserted user, if successful
+     * @throws CostManException if insertion wasn't successful
+     */
     public int insertNewUser(User user) throws CostManException;
 
     /**

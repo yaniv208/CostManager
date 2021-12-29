@@ -163,6 +163,7 @@ public class View implements IView
             panelSouth.add(createAccountBtn, constraints);
 
             setFrameSettings(frame, panelCenter, panelNorth, panelSouth);
+            setFonts();
         }
 
         void setFrameSettings(JFrame frame, JPanel panelCenter, JPanel panelNorth, JPanel panelSouth)
@@ -175,8 +176,19 @@ public class View implements IView
             frame.setSize(500, 500);
             frame.setResizable(false);
             frame.setVisible(true);
+            frame.setLocationRelativeTo(null);
 
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        }
+
+        private void setFonts() {
+            this.frame.setFont(new Font("Consolas", Font.BOLD, 24));
+            this.note.setFont(new Font("Consolas", Font.BOLD, 24));
+            this.emailLabel.setFont(new Font("Consolas", Font.PLAIN, 15));
+            this.passwordLabel.setFont(new Font("Consolas", Font.PLAIN, 15));
+            this.loginBtn.setFont(new Font("Consolas", Font.PLAIN, 15));
+            this.createAccountBtn.setFont(new Font("Consolas", Font.PLAIN, 15));
+            this.showPasswordCheckBox.setFont(new Font("Consolas", Font.PLAIN, 15));
         }
 
         public void clearAllFields()
@@ -222,27 +234,22 @@ public class View implements IView
             // Creating Grid Bag Constraints
             constraints = new GridBagConstraints();
 
-            start();
+            setProperties();
         }
 
-        public void start()
+        public void setProperties()
         {
             panelCenter.setFont(Font.getFont(Font.SANS_SERIF));
             panelSouth.setFont(Font.getFont(Font.SANS_SERIF));
             panelNorth.setFont(Font.getFont(Font.SANS_SERIF));
 
             // Handling create account button click
-            registerBtn.addActionListener(new ActionListener()
-            {
-                @Override
-                public void actionPerformed(ActionEvent e)
-                {
-                    String email = emailTextField.getText();
-                    String password = new String(passwordTextField.getPassword());
-                    String fullName = fullNameTextField.getText();
+            registerBtn.addActionListener(e -> {
+                String email = emailTextField.getText();
+                String password = new String(passwordTextField.getPassword());
+                String fullName = fullNameTextField.getText();
 
-                    View.this.viewModel.handleRegistrationRequest(email, password, fullName);
-                }
+                View.this.viewModel.handleRegistrationRequest(email, password, fullName);
             });
 
             // Handling North Panel
@@ -274,6 +281,7 @@ public class View implements IView
             GUIUtils.setConstraintsSettings(constraints, 0, 0, GridBagConstraints.CENTER, 10, 15);
             panelSouth.add(registerBtn, constraints);
 
+            setFonts();
             setFrameSettings(frame, panelCenter, panelNorth, panelSouth);
         }
 
@@ -286,6 +294,8 @@ public class View implements IView
 
             frame.setSize(500, 500);
             frame.setResizable(false);
+            frame.setLocationRelativeTo(null);
+
             frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
             frame.addWindowListener(new WindowAdapter()
             {
@@ -295,6 +305,14 @@ public class View implements IView
                     View.this.openLoginWindowOnlyAndCloseOtherWindows();
                 }
             });
+        }
+
+        private void setFonts() {
+            this.frame.setFont(new Font("Consolas", Font.BOLD, 24));
+            this.note.setFont(new Font("Consolas", Font.BOLD, 24));
+            this.fullNameLabel.setFont(new Font("Consolas", Font.PLAIN, 15));
+            this.emailLabel.setFont(new Font("Consolas", Font.PLAIN, 15));
+            this.passwordLabel.setFont(new Font("Consolas", Font.PLAIN, 15));
         }
 
         public void clearAllFields()
@@ -321,6 +339,16 @@ public class View implements IView
             this.PrepareTitleSection();
             this.PrepareMenuSection();
             this.PrepareLogoutSection();
+            this.setFonts();
+        }
+
+        private void setFonts() {
+            this.frame.setFont(new Font("Consolas", Font.BOLD, 24));
+            this.frameTitle.setFont(new Font("Consolas", Font.BOLD, 24));
+            this.manageTransactionsButton.setFont(new Font("Consolas", Font.PLAIN, 15));
+            this.generateReportButton.setFont(new Font("Consolas", Font.PLAIN, 15));
+            this.manageCategoriesAndSubCategoriesButton.setFont(new Font("Consolas", Font.PLAIN, 15));
+            this.logoutButton.setFont(new Font("Consolas", Font.PLAIN, 15));
         }
 
         private void InitializeComponents()
@@ -379,7 +407,8 @@ public class View implements IView
             this.northPanel.setLayout(new GridBagLayout());
 
             // Set the future location of the window's title
-            GUIUtils.setConstraintsSettings(this.constraints, 0, 0, GridBagConstraints.CENTER, 10, 10);
+            GUIUtils.setConstraintsSettings(this.constraints, 0, 0,
+                    GridBagConstraints.CENTER, 10, 10);
 
             // Set the properties of the title
             this.frameTitle.setText("CostMan - Main Window");
@@ -392,8 +421,10 @@ public class View implements IView
         private void PrepareMenuSection()
         {
             this.centerPanel.setLayout(new GridBagLayout());
-            GUIUtils.setConstraintsSettings(this.constraints, 0, 0, GridBagConstraints.CENTER, 10, 10);
-            this.manageTransactionsButton.setPreferredSize(new Dimension(230, this.manageTransactionsButton.getPreferredSize().height));
+            GUIUtils.setConstraintsSettings(this.constraints, 0,
+                    0, GridBagConstraints.CENTER, 10, 10);
+            this.manageTransactionsButton.setPreferredSize(new Dimension(300,
+                    this.manageTransactionsButton.getPreferredSize().height));
             this.manageTransactionsButton.addActionListener(e -> {
                 frame.setVisible(false);
                 transactionsWindow.frame.setVisible(true);
@@ -402,7 +433,7 @@ public class View implements IView
             this.centerPanel.add(this.manageTransactionsButton, this.constraints);
 
             GUIUtils.setConstraintsSettings(this.constraints, 0, 1, GridBagConstraints.CENTER, 10, 10);
-            this.generateReportButton.setPreferredSize(new Dimension(230, this.generateReportButton.getPreferredSize().height));
+            this.generateReportButton.setPreferredSize(new Dimension(300, this.generateReportButton.getPreferredSize().height));
             this.generateReportButton.addActionListener(e -> {
                 frame.setVisible(false);
                 reportsWindow.frame.setVisible(true);
@@ -411,15 +442,10 @@ public class View implements IView
             this.centerPanel.add(this.generateReportButton, this.constraints);
 
             GUIUtils.setConstraintsSettings(this.constraints, 0, 2, GridBagConstraints.CENTER, 10, 10);
-            this.manageCategoriesAndSubCategoriesButton.setPreferredSize(new Dimension(230, this.manageCategoriesAndSubCategoriesButton.getPreferredSize().height));
-            this.manageCategoriesAndSubCategoriesButton.addActionListener(new ActionListener()
-            {
-                @Override
-                public void actionPerformed(ActionEvent e)
-                {
-                    frame.setVisible(false);
-                    categoriesWindow.frame.setVisible(true);
-                }
+            this.manageCategoriesAndSubCategoriesButton.setPreferredSize(new Dimension(300, this.manageCategoriesAndSubCategoriesButton.getPreferredSize().height));
+            this.manageCategoriesAndSubCategoriesButton.addActionListener(e -> {
+                frame.setVisible(false);
+                categoriesWindow.frame.setVisible(true);
             });
 
             this.centerPanel.add(this.manageCategoriesAndSubCategoriesButton, this.constraints);
@@ -428,14 +454,7 @@ public class View implements IView
         private void PrepareLogoutSection()
         {
             this.logoutButton.setPreferredSize(new Dimension(100, this.manageTransactionsButton.getPreferredSize().height));
-            this.logoutButton.addActionListener(new ActionListener()
-            {
-                @Override
-                public void actionPerformed(ActionEvent e)
-                {
-                    View.this.viewModel.logout();
-                }
-            });
+            this.logoutButton.addActionListener(e -> View.this.viewModel.logout());
 
             // Place the button in the bottom-right of the window (Source: https://stackoverflow.com/a/11165906/2196301)
             this.southPanel.setLayout(new BorderLayout());
@@ -524,7 +543,7 @@ public class View implements IView
                             1, 2,
                             dateTextField.getText(),
                             Integer.parseInt(sumTextField.getText()),
-                            currenciesComboBox.getSelectedItem().toString(),
+                            Objects.requireNonNull(currenciesComboBox.getSelectedItem()).toString(),
                             Float.parseFloat(currencyRateTextField.getText()),
                             descriptionTextField.getText());
 
@@ -537,23 +556,9 @@ public class View implements IView
             });
 
             // Handling delete item button click
-            deleteBtn.addActionListener(new ActionListener()
-            {
-                @Override
-                public void actionPerformed(ActionEvent e)
-                {
-                    viewModel.deleteItem(idTextField.getText());
-                }
-            });
+            deleteBtn.addActionListener(e -> viewModel.deleteItem(idTextField.getText()));
 
-            logOutBtn.addActionListener(new ActionListener()
-            {
-                @Override
-                public void actionPerformed(ActionEvent e)
-                {
-                    View.this.viewModel.logout();
-                }
-            });
+            logOutBtn.addActionListener(e -> View.this.viewModel.logout());
 
             // Handling North Panel
             panelNorth.setLayout(new GridBagLayout());
@@ -660,7 +665,7 @@ public class View implements IView
         private JFrame frame;
         private GridBagConstraints constraints;
         private JLabel addNewCategory, addNewSubCategory, categoryName, rootCategoryName, subCategoryName, backSlash;
-        private JButton newCategoryBtn, newSubCategoryBtn, logOutBtn;
+        private JButton newCategoryBtn, newSubCategoryBtn, logoutButton;
         private JTextField categoryTextField, rootCategoryTextField, subCategoryTextField;
         private JPanel panelCenter, panelSouth;
 
@@ -682,7 +687,7 @@ public class View implements IView
             subCategoryTextField = new JTextField(15);
             newSubCategoryBtn = new JButton("Add New Sub-Category");
 
-            logOutBtn = new JButton("Log Out");
+            logoutButton = new JButton("Log Out");
 
             panelCenter = new JPanel();
             panelSouth = new JPanel();
@@ -728,9 +733,21 @@ public class View implements IView
             panelSouth.setLayout(new GridBagLayout());
             panelSouth.setBorder(BorderFactory.createEmptyBorder());
             GUIUtils.setConstraintsSettings(constraints, 0, 0, GridBagConstraints.CENTER, 10, 10);
-            panelSouth.add(logOutBtn, constraints);
+            panelSouth.add(logoutButton, constraints);
 
             setFrameSettings(this.frame, panelCenter, panelSouth);
+            setFonts();
+        }
+
+        private void setFonts(){
+            this.addNewCategory.setFont(new Font("Consolas", Font.PLAIN, 15));
+            this.addNewSubCategory.setFont(new Font("Consolas", Font.PLAIN, 15));
+            this.categoryName.setFont(new Font("Consolas", Font.PLAIN, 15));
+            this.rootCategoryName.setFont(new Font("Consolas", Font.PLAIN, 15));
+            this.subCategoryName.setFont(new Font("Consolas", Font.PLAIN, 15));
+            this.newCategoryBtn.setFont(new Font("Consolas", Font.PLAIN, 15));
+            this.newSubCategoryBtn.setFont(new Font("Consolas", Font.PLAIN, 15));
+            this.logoutButton.setFont(new Font("Consolas", Font.PLAIN, 15));
         }
 
         void setFrameSettings(JFrame frame, JPanel panelCenter, JPanel panelSouth)
@@ -743,8 +760,10 @@ public class View implements IView
             frame.setResizable(false);
             frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 
-            frame.addWindowListener(new WindowAdapter()
-            {
+            // Place the window in the center of the screen (Source: https://stackoverflow.com/a/2442614/2196301)
+            frame.setLocationRelativeTo(null);
+
+            frame.addWindowListener(new WindowAdapter() {
                 @Override
                 public void windowClosing(WindowEvent e)
                 {
@@ -786,7 +805,6 @@ public class View implements IView
         private String fromDate, toDate, fromDay, fromMonth, fromYear, toDay, toMonth, toYear;
 
         private DefaultTableModel tableModel;
-        private DefaultListModel<Item> listModel;
         private JTable reportsTable;
         private JPanel reportsPanel;
 
@@ -845,7 +863,7 @@ public class View implements IView
 
             this.tableModel = new DefaultTableModel();
             this.reportsTable = new JTable();
-            this.listModel = new DefaultListModel<>();
+            //this.listModel = new DefaultListModel<>();
 
             this.reportsPanel = new JPanel();
             this.subPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
@@ -876,7 +894,7 @@ public class View implements IView
 
             // Set the visual properties of the window
             this.frame.setTitle("CostMan - Reports Window");
-            this.frame.setSize(1000, 900);
+            this.frame.setSize(950, 750);
             this.frame.setResizable(false);
             this.frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 
@@ -1030,14 +1048,7 @@ public class View implements IView
         private void PrepareLogoutSection()
         {
             this.logoutButton.setPreferredSize(new Dimension(100, this.logoutButton.getPreferredSize().height));
-            this.logoutButton.addActionListener(new ActionListener()
-            {
-                @Override
-                public void actionPerformed(ActionEvent e)
-                {
-                    View.this.viewModel.logout();
-                }
-            });
+            this.logoutButton.addActionListener(e -> View.this.viewModel.logout());
 
             // Place the button in the bottom-right of the window (Source: https://stackoverflow.com/a/11165906/2196301)
             this.logoutSection.setLayout(new BorderLayout());
