@@ -178,6 +178,12 @@ public class View implements IView
 
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         }
+
+        public void clearAllFields()
+        {
+            this.emailTextField.setText("");
+            this.passwordField.setText("");
+        }
     }
 
     public class RegistrationWindow
@@ -280,7 +286,22 @@ public class View implements IView
 
             frame.setSize(500, 500);
             frame.setResizable(false);
-            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+            frame.addWindowListener(new WindowAdapter()
+            {
+                @Override
+                public void windowClosing(WindowEvent e)
+                {
+                    View.this.openLoginWindowOnlyAndCloseOtherWindows();
+                }
+            });
+        }
+
+        public void clearAllFields()
+        {
+            this.emailTextField.setText("");
+            this.passwordTextField.setText("");
+            this.fullNameTextField.setText("");
         }
     }
 
@@ -349,7 +370,6 @@ public class View implements IView
                 public void windowClosing(WindowEvent e)
                 {
                     View.this.viewModel.logout();
-
                 }
             });
         }
@@ -616,6 +636,20 @@ public class View implements IView
                 }
             });
         }
+
+        public void clearAllFields()
+        {
+            this.categoryTextField.setText("");
+            this.subCategoryTextField.setText("");
+            this.sumTextField.setText("");
+            this.currencyRateTextField.setText("");
+            this.dateTextField.setText("");
+            this.descriptionTextField.setText("");
+            this.idTextField.setText("");
+            this.categoriesComboBox.setSelectedIndex(0);
+            this.subCategoriesComboBox.setSelectedIndex(0);
+            this.currenciesComboBox.setSelectedIndex(0);
+        }
     }
 
     /**
@@ -717,6 +751,13 @@ public class View implements IView
                     View.this.viewModel.handleClosingOfFeatureWindow();
                 }
             });
+        }
+
+        public void clearAllFields()
+        {
+            this.categoryTextField.setText("");
+            this.rootCategoryTextField.setText("");
+            this.subCategoryTextField.setText("");
         }
     }
 
@@ -1017,6 +1058,27 @@ public class View implements IView
                         item.getPrice(), item.getCategoryId(), item.getDescription()});
             }
         }
+
+        public void clearAllFields()
+        {
+            this.comboBoxFromDay.setSelectedIndex(0);
+            this.comboBoxFromMonth.setSelectedIndex(0);
+            this.comboBoxFromYear.setSelectedIndex(0);
+
+            this.comboBoxToDay.setSelectedIndex(0);
+            this.comboBoxToMonth.setSelectedIndex(0);
+            this.comboBoxToYear.setSelectedIndex(0);
+
+            this.selectAllItemsCheckBox.setSelected(false);
+
+            for (int i = 0; i < reportsTable.getRowCount(); i++)
+            {
+                for(int j = 0; j < reportsTable.getColumnCount(); j++)
+                {
+                    reportsTable.setValueAt("", i, j);
+                }
+            }
+        }
     }
 
     @Override
@@ -1032,23 +1094,10 @@ public class View implements IView
     }
 
     @Override
-    public void openMainWindowOnlyAndCloseOtherWindows()
-    {
-        // Leave only this window "open"
-        this.mainWindow.frame.setVisible(true);
-
-        // "Close" (hide) all the other windows
-        this.loginWindow.frame.setVisible(false);
-        this.registrationWindow.frame.setVisible(false);
-        this.transactionsWindow.frame.setVisible(false);
-        this.categoriesWindow.frame.setVisible(false);
-        this.reportsWindow.frame.setVisible(false);
-    }
-
-    @Override
     public void switchFromLoginWindowToMainWindow()
     {
         this.loginWindow.frame.setVisible(false);
+        this.loginWindow.clearAllFields();
         this.mainWindow.frame.setVisible(true);
     }
 
@@ -1056,6 +1105,7 @@ public class View implements IView
     public void switchFromRegistrationWindowToMainWindow()
     {
         this.registrationWindow.frame.setVisible(false);
+        this.registrationWindow.clearAllFields();
         this.mainWindow.frame.setVisible(true);
     }
 
@@ -1067,9 +1117,32 @@ public class View implements IView
 
         // "Close" (hide) all the other windows
         this.registrationWindow.frame.setVisible(false);
+        this.registrationWindow.clearAllFields();
         this.mainWindow.frame.setVisible(false);
         this.transactionsWindow.frame.setVisible(false);
+        this.transactionsWindow.clearAllFields();
         this.categoriesWindow.frame.setVisible(false);
+        this.categoriesWindow.clearAllFields();
         this.reportsWindow.frame.setVisible(false);
+        this.reportsWindow.clearAllFields();
+    }
+
+    @Override
+    public void openMainWindowOnlyAndCloseOtherWindows()
+    {
+        // Leave only this window "open"
+        this.mainWindow.frame.setVisible(true);
+
+        // "Close" (hide) all the other windows
+        this.loginWindow.frame.setVisible(false);
+        this.loginWindow.clearAllFields();
+        this.registrationWindow.frame.setVisible(false);
+        this.registrationWindow.clearAllFields();
+        this.transactionsWindow.frame.setVisible(false);
+        this.transactionsWindow.clearAllFields();
+        this.categoriesWindow.frame.setVisible(false);
+        this.categoriesWindow.clearAllFields();
+        this.reportsWindow.frame.setVisible(false);
+        this.reportsWindow.clearAllFields();
     }
 }
