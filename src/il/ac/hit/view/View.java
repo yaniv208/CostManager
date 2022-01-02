@@ -2,6 +2,7 @@ package il.ac.hit.view;
 
 import il.ac.hit.CostManException;
 import il.ac.hit.GUIUtils;
+import il.ac.hit.model.EnumCategoryType;
 import il.ac.hit.model.Item;
 import il.ac.hit.viewmodel.IViewModel;
 
@@ -40,6 +41,8 @@ public class View implements IView
         this.registrationWindow = new RegistrationWindow();
         this.mainWindow = new MainWindow();
         this.transactionsWindow = new TransactionsWindow();
+        View.this.viewModel.getPrimaryCategories();
+        View.this.viewModel.getSubCategories(this.transactionsWindow.categoriesComboBox.getSelectedItem().toString());
         this.categoriesWindow = new CategoriesWindow();
         this.reportsWindow = new ReportsWindow();
     }
@@ -50,6 +53,9 @@ public class View implements IView
         this.loginWindow.start();
     }
 
+    /**
+     * LoginWindow - This class implements the UI of the login window of the program
+     */
     public class LoginWindow
     {
         private GridBagConstraints constraints;
@@ -198,6 +204,9 @@ public class View implements IView
         }
     }
 
+    /**
+     * RegistrationWindow - This class implements the UI of the registration window of the program
+     */
     public class RegistrationWindow
     {
         private JFrame frame;
@@ -323,6 +332,9 @@ public class View implements IView
         }
     }
 
+    /**
+     * MainWindow - This class implements the UI of the main menu window of the program
+     */
     public class MainWindow
     {
         private JFrame frame;
@@ -465,7 +477,8 @@ public class View implements IView
     }
 
     /**
-     * @author Aviv
+     * TransactionsWindow - This class implements the UI of the window in the program which responsible to
+     * allow the user to add and delete items
      */
     public class TransactionsWindow
     {
@@ -473,13 +486,12 @@ public class View implements IView
         private JFrame frame;
         private JLabel note, categoryLabel, subCategoryLabel, sumLabel, currencyLabel, currencyRateLabel, idLabel,
                 dateLabel, descriptionLabel;
-        private JTextField categoryTextField, subCategoryTextField, sumTextField, currencyRateTextField,
+        private JTextField sumTextField, currencyRateTextField,
                 dateTextField, descriptionTextField, idTextField;
         private JButton logOutBtn, insertBtn, deleteBtn;
         private GridBagConstraints constraints;
         private String[] currenciesArray, categoriesArray, subCategoriesArray;
         private JComboBox<String> categoriesComboBox, subCategoriesComboBox, currenciesComboBox;
-
 
         public TransactionsWindow()
         {
@@ -487,13 +499,13 @@ public class View implements IView
 
             // Handling Combo Boxes
             currenciesArray = new String[]{"ILS", "USD", "EUR", "GBP"};
-            categoriesArray = new String[]{"Bills", "House", "Entertainment"};
-            subCategoriesArray = new String[]{"Electricity bill", "Water bill",
-                    "Furniture", "Decoration", "Football games", "Bars"};
-
+            // categoriesArray = new String[]{"Bills", "House", "Entertainment"};
             currenciesComboBox = new JComboBox<>(currenciesArray);
-            categoriesComboBox = new JComboBox<>(categoriesArray);
-            subCategoriesComboBox = new JComboBox<>(subCategoriesArray);
+            // categoriesComboBox = new JComboBox<>(categoriesArray);
+            // subCategoriesComboBox = new JComboBox<>(subCategoriesArray);
+
+            categoriesComboBox = new JComboBox<>();
+            subCategoriesComboBox = new JComboBox<>();
 
             // Generating panels
             panelNorth = new JPanel();
@@ -517,8 +529,6 @@ public class View implements IView
             idLabel = new JLabel("ID: ");
 
             // Generating Text fields
-            categoryTextField = new JTextField(20);
-            subCategoryTextField = new JTextField(20);
             sumTextField = new JTextField(10);
             currencyRateTextField = new JTextField(10);
             dateTextField = new JTextField(20);
@@ -533,6 +543,16 @@ public class View implements IView
 
         public void setProperties()
         {
+            categoriesComboBox.addItemListener(new ItemListener()
+            {
+                @Override
+                public void itemStateChanged(ItemEvent e)
+                {
+                    // Load dynamically the sub categories which belongs to the current selected category
+                    View.this.viewModel.getSubCategories(e.getItem().toString());
+                }
+            });
+
             // Handling insert button click
             insertBtn.addActionListener(e -> {
                 Item item = null;
@@ -540,7 +560,7 @@ public class View implements IView
                 {
                     // TODO FIX CHANGE FROM NUMBER TO CATEGORY STRING USING AVIV'S METHODS
                     item = new Item(userID,
-                            1, 2,
+                            categoriesComboBox.getSelectedItem().toString(), subCategoriesComboBox.getSelectedItem().toString(),
                             dateTextField.getText(),
                             Integer.parseInt(sumTextField.getText()),
                             Objects.requireNonNull(currenciesComboBox.getSelectedItem()).toString(),
@@ -644,21 +664,21 @@ public class View implements IView
 
         public void clearAllFields()
         {
-            this.categoryTextField.setText("");
-            this.subCategoryTextField.setText("");
             this.sumTextField.setText("");
             this.currencyRateTextField.setText("");
             this.dateTextField.setText("");
             this.descriptionTextField.setText("");
             this.idTextField.setText("");
             this.categoriesComboBox.setSelectedIndex(0);
-            this.subCategoriesComboBox.setSelectedIndex(0);
+            this.subCategoriesComboBox.removeAllItems();
+            // this.subCategoriesComboBox.setSelectedIndex(0);
             this.currenciesComboBox.setSelectedIndex(0);
         }
     }
 
     /**
-     * @author Yaniv
+     * TransactionsWindow - This class implements the UI of the window in the program which responsible to
+     * allow the user to add and categories and sub-categories
      */
     public class CategoriesWindow
     {
@@ -737,6 +757,33 @@ public class View implements IView
 
             setFrameSettings(this.frame, panelCenter, panelSouth);
             setFonts();
+
+            newCategoryBtn.addActionListener(new ActionListener()
+            {
+                @Override
+                public void actionPerformed(ActionEvent e)
+                {
+                    String newCategoryName = categoryTextField.getText();
+                    String outputMessageFormat = "The category \"%s\" has been successfully added.";
+
+                    View.this.viewModel.addCategory(newCategoryName, null);
+                    GUIUtils.ShowOkMessageBox("Sub-Category added!", String.format(outputMessageFormat, newCategoryName));
+                }
+            });
+
+            newSubCategoryBtn.addActionListener(new ActionListener()
+            {
+                @Override
+                public void actionPerformed(ActionEvent e)
+                {
+                    String newSubCategoryName = subCategoryTextField.getText();
+                    String ownerOfNewSubCategoryName = categoryTextField.getText();
+                    String outputMessageFormat = "The sub-category \"%s\"(Parent: \"%s\") has been successfully added.";
+
+                    View.this.viewModel.addCategory(newSubCategoryName, ownerOfNewSubCategoryName);
+                    GUIUtils.ShowOkMessageBox("Sub-Category added!", String.format(outputMessageFormat, newSubCategoryName, ownerOfNewSubCategoryName));
+                }
+            });
         }
 
         private void setFonts(){
@@ -780,6 +827,10 @@ public class View implements IView
         }
     }
 
+    /**
+     * TransactionsWindow - This class implements the UI of the window in the program which responsible to
+     * allow the user to generate a report with his items within range of dates (or all of his items)
+     */
     public class ReportsWindow
     {
         private JFrame frame;
@@ -1092,18 +1143,60 @@ public class View implements IView
         }
     }
 
+    /**
+     * showItems
+     *     Purpose: This method is responsible to show the current user's items in the table within the reports window.
+     * @param data - A list of all the items which should be displayed.
+     */
     @Override
     public void showItems(List<Item> data)
     {
         reportsWindow.populateTable(data);
     }
 
+    /**
+     * showCategories
+     *     Purpose: This method is responsible to show categories to the user within the "TransactionsWindow" and
+     *              the "CategoriesWindow"
+     * @param categories - A list of all the categories which should be displayed.
+     * @param currentCategoriesType - An enum variable which indicates what is the type of the current incoming categories,
+     *                                where "Primary" stands for "Categories" and "Secondary" stands for "Sub-Categories".
+     */
+    @Override
+    public void showCategories(List<String> categories, EnumCategoryType currentCategoriesType)
+    {
+        String[] arrayOfCategories = new String[categories.size()];
+        categories.toArray(arrayOfCategories);
+
+        if (currentCategoriesType == EnumCategoryType.Primary)
+        {
+            transactionsWindow.categoriesComboBox.setModel(new DefaultComboBoxModel<>(categories.toArray(arrayOfCategories)));
+        }
+        else
+        {
+            transactionsWindow.subCategoriesComboBox.removeAllItems();
+            transactionsWindow.subCategoriesComboBox.setModel(new DefaultComboBoxModel<>(categories.toArray(arrayOfCategories)));
+        }
+
+    }
+
+    /**
+     * setID
+     *     Purpose: This method is responsible to save the current userID in the view.
+     * @param id - The id of the current logged-on user.
+     */
     @Override
     public void setID(int id)
     {
         this.userID = id;
     }
 
+    /**
+     * switchFromLoginWindowToMainWindow
+     *     Purpose: This method is responsible to "close" (hide) the login window and "open" (show) the main window
+     *              of the program.
+     *              In addition, this method clears all the fields of the login window.
+     */
     @Override
     public void switchFromLoginWindowToMainWindow()
     {
@@ -1112,6 +1205,12 @@ public class View implements IView
         this.mainWindow.frame.setVisible(true);
     }
 
+    /**
+     * switchFromRegistrationWindowToMainWindow
+     *     Purpose: This method is responsible to "close" (hide) the registration window and "open" (show) the main window
+     *              of the program.
+     *              In addition, this method clears all the fields of the registration window.
+     */
     @Override
     public void switchFromRegistrationWindowToMainWindow()
     {
@@ -1120,6 +1219,12 @@ public class View implements IView
         this.mainWindow.frame.setVisible(true);
     }
 
+    /**
+     * openMainWindowOnlyAndCloseOtherWindows
+     *     Purpose: This method is responsible to "open" (show) the login window of the program
+     *              and "close" (hide) all the windows.
+     *              In addition, this method clears all the fields of all the windows of the program.
+     */
     @Override
     public void openLoginWindowOnlyAndCloseOtherWindows()
     {
@@ -1138,6 +1243,12 @@ public class View implements IView
         this.reportsWindow.clearAllFields();
     }
 
+    /**
+     * openMainWindowOnlyAndCloseOtherWindows
+     *     Purpose: This method is responsible to "open" (show) the main window of the program
+     *              and "close" (hide) all the windows.
+     *              In addition, this method clears all the fields of all the windows of the program.
+     */
     @Override
     public void openMainWindowOnlyAndCloseOtherWindows()
     {

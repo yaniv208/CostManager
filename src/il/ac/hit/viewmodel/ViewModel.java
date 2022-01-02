@@ -1,6 +1,7 @@
 package il.ac.hit.viewmodel;
 
 import il.ac.hit.*;
+import il.ac.hit.model.EnumCategoryType;
 import il.ac.hit.model.IModel;
 import il.ac.hit.model.Item;
 import il.ac.hit.model.User;
@@ -100,17 +101,17 @@ public class ViewModel implements IViewModel
     {
         executorService.submit(() -> {
             // Check if the 2 input string are letters-only (Source: https://stackoverflow.com/a/29836318/2196301)
-            boolean isCategoryHasLettersOnly = categoryName.chars().allMatch(Character::isLetter);
-            boolean isOwnerCategoryHasLettersOnly = ownerCategoryName.chars().allMatch(Character::isLetter);
+            boolean isCategoryValid = (ownerCategoryName.equals("") == false);
+            boolean isOwnerCategoryValid = (ownerCategoryName.equals("") == false) || (ownerCategoryName == null);
 
             CostManException illegalCategoryOrOwnerCategory = null;
 
-            if (!isCategoryHasLettersOnly)
+            if (!isCategoryValid)
             {
                 illegalCategoryOrOwnerCategory = new CostManException("Invalid Category Name !",
                         new IllegalArgumentException());
             }
-            if (!isOwnerCategoryHasLettersOnly)
+            if (!isOwnerCategoryValid)
             {
                 illegalCategoryOrOwnerCategory = new CostManException("Invalid Owner Category Name !",
                         new IllegalArgumentException());
@@ -202,4 +203,34 @@ public class ViewModel implements IViewModel
         }));
     }
 
+    /**
+     * Retrieve categories by their specified type (PRIMARY or SECONDARY)
+     */
+    @Override
+    public void getPrimaryCategories()
+    {
+        try
+        {
+            List<String> categories = this.model.getPrimaryCategories();
+            this.view.showCategories(categories, EnumCategoryType.Primary);
+        }
+        catch (CostManException e)
+        {
+            GUIUtils.ShowErrorMessageBox("Error", e.toString());
+        }
+    }
+
+    @Override
+    public void getSubCategories(String currentSelectedPrimaryCagtegory)
+    {
+        try
+        {
+            List<String> categories = this.model.getSecondaryCategories(currentSelectedPrimaryCagtegory);
+            this.view.showCategories(categories, EnumCategoryType.Secondary);
+        }
+        catch (CostManException e)
+        {
+            GUIUtils.ShowErrorMessageBox("Error", e.toString());
+        }
+    }
 }

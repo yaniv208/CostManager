@@ -1,5 +1,6 @@
 package il.ac.hit.viewmodel;
 
+import il.ac.hit.model.EnumCategoryType;
 import il.ac.hit.model.IModel;
 import il.ac.hit.model.Item;
 import il.ac.hit.view.IView;
@@ -28,4 +29,6 @@ public interface IViewModel {
     void setView(IView view);
     void setModel(IModel model);
     void handleClosingOfFeatureWindow();
+    void getPrimaryCategories();
+    void getSubCategories(String currentSelectedPrimaryCagtegory);
 }

@@ -58,6 +58,10 @@ public interface IModel {
      */
     public List<String> getCategoriesByCategoryType(EnumCategoryType requestedCategoriesType) throws CostManException;
 
+    public List<String> getPrimaryCategories() throws CostManException;
+
+    public List<String> getSecondaryCategories(String currentPrimaryCategory) throws CostManException;
+
     /**
      * Insert new category to the Database
      * @param newCategoryName - The new category name

@@ -205,6 +205,90 @@ public class Model implements IModel
     }
 
     /**
+     * Retrieve all the primary categories
+     * @return The list of the categories from the requested type.
+     * @throws CostManException if there was any problem retrieving categories
+     */
+    public List<String> getPrimaryCategories() throws CostManException {
+        Connection connection = null;
+        ResultSet rs = null;
+        PreparedStatement ps = null;
+        List<String> allRequestedCategories;
+
+        String finalQuery = "SELECT CategoryName FROM categories WHERE OwnerCategoryID IS NULL ORDER BY CategoryName ASC";
+
+        try {
+            Class.forName(this.dbDriverName);
+            connection = DriverManager.getConnection(this.dbProtocol, this.dbUserName, this.dbPassword);
+            ps = connection.prepareStatement(finalQuery);
+
+            // Run the query
+            rs = ps.executeQuery();
+
+            // Initialize the returned list
+            allRequestedCategories = new ArrayList<>();
+
+            // Get all the categories
+            while (rs.next()) {
+                allRequestedCategories.add(rs.getString("CategoryName"));
+            }
+
+        }
+        catch (Exception e) {
+            throw new CostManException("Can't retrieve the categories from the DB.", e);
+        }
+        finally {
+            cleanupUpdateUsageProcess(ps, connection, rs);
+        }
+
+        return allRequestedCategories;
+    }
+
+    /**
+     * Retrieve all the sub-categories which belongs to the current given primary category
+     * @return The list of the categories from the requested type.
+     * @throws CostManException if there was any problem retrieving categories
+     */
+    public List<String> getSecondaryCategories(String currentPrimaryCategory) throws CostManException {
+        Connection connection = null;
+        ResultSet rs = null;
+        PreparedStatement ps = null;
+        List<String> allRequestedCategories;
+
+        String finalQueryTemplate = "SELECT CategoryName FROM categories WHERE OwnerCategoryID=? ORDER BY CategoryName ASC";
+        String finalQuery;
+        int primaryCategoryID = this.getCategoryIDByCategoryName(currentPrimaryCategory);
+
+        try {
+            Class.forName(this.dbDriverName);
+            connection = DriverManager.getConnection(this.dbProtocol, this.dbUserName, this.dbPassword);
+            ps = connection.prepareStatement(finalQueryTemplate);
+
+            ps.setInt(1, primaryCategoryID);
+
+            // Run the query
+            rs = ps.executeQuery();
+
+            // Initialize the returned list
+            allRequestedCategories = new ArrayList<>();
+
+            // Get all the categories
+            while (rs.next()) {
+                allRequestedCategories.add(rs.getString("CategoryName"));
+            }
+
+        }
+        catch (Exception e) {
+            throw new CostManException("Can't retrieve the categories from the DB.", e);
+        }
+        finally {
+            cleanupUpdateUsageProcess(ps, connection, rs);
+        }
+
+        return allRequestedCategories;
+    }
+
+    /**
      * Insert new category to the Database
      * @param newCategoryName The new category name
      * @param ownerCategoryName The Owner of the current category.

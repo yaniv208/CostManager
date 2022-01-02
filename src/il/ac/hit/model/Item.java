@@ -39,6 +39,18 @@ public class Item {
         setDescription(description);
     }
 
+    public Item(int userId, String category, String subCategory, String date, int price, String currency,
+                float currencyRate, String description) throws CostManException {
+        setUserId(userId);
+        setCategoryId(Model.getInstance().getCategoryIDByCategoryName(category));
+        setSubCategoryId(Model.getInstance().getCategoryIDByCategoryName(subCategory));
+        setDate(date);
+        setPrice(price);
+        setCurrency(currency);
+        setCurrencyRate(currencyRate);
+        setDescription(description);
+    }
+
     public String getCurrency() {
         return currency;
     }

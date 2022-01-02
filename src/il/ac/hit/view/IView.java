@@ -1,5 +1,6 @@
 package il.ac.hit.view;
 
+import il.ac.hit.model.EnumCategoryType;
 import il.ac.hit.model.Item;
 import il.ac.hit.viewmodel.IViewModel;
 
@@ -16,4 +17,5 @@ public interface IView {
     void switchFromLoginWindowToMainWindow();
     void switchFromRegistrationWindowToMainWindow();
     void openLoginWindowOnlyAndCloseOtherWindows();
+    void showCategories(List<String> categories, EnumCategoryType currentCategoriesType);
 }
