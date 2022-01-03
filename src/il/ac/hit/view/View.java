@@ -41,8 +41,11 @@ public class View implements IView
         this.registrationWindow = new RegistrationWindow();
         this.mainWindow = new MainWindow();
         this.transactionsWindow = new TransactionsWindow();
-        View.this.viewModel.getPrimaryCategories();
-        View.this.viewModel.getSubCategories(this.transactionsWindow.categoriesComboBox.getSelectedItem().toString());
+        this.viewModel.getPrimaryCategories();
+
+        // TODO CHECK WHY THIS LINE DROPS US OUT OF THE PROGRAM
+        //this.viewModel.getSubCategories(this.transactionsWindow.categoriesComboBox.getSelectedItem().toString());
+
         this.categoriesWindow = new CategoriesWindow();
         this.reportsWindow = new ReportsWindow();
     }
@@ -543,6 +546,7 @@ public class View implements IView
 
         public void setProperties()
         {
+
             categoriesComboBox.addItemListener(new ItemListener()
             {
                 @Override
@@ -560,7 +564,8 @@ public class View implements IView
                 {
                     // TODO FIX CHANGE FROM NUMBER TO CATEGORY STRING USING AVIV'S METHODS
                     item = new Item(userID,
-                            categoriesComboBox.getSelectedItem().toString(), subCategoriesComboBox.getSelectedItem().toString(),
+                            Objects.requireNonNull(categoriesComboBox.getSelectedItem()).toString(),
+                            Objects.requireNonNull(subCategoriesComboBox.getSelectedItem()).toString(),
                             dateTextField.getText(),
                             Integer.parseInt(sumTextField.getText()),
                             Objects.requireNonNull(currenciesComboBox.getSelectedItem()).toString(),
@@ -771,18 +776,14 @@ public class View implements IView
                 }
             });
 
-            newSubCategoryBtn.addActionListener(new ActionListener()
-            {
-                @Override
-                public void actionPerformed(ActionEvent e)
-                {
-                    String newSubCategoryName = subCategoryTextField.getText();
-                    String ownerOfNewSubCategoryName = categoryTextField.getText();
-                    String outputMessageFormat = "The sub-category \"%s\"(Parent: \"%s\") has been successfully added.";
+            newSubCategoryBtn.addActionListener(e -> {
+                String newSubCategoryName = subCategoryTextField.getText();
+                String ownerOfNewSubCategoryName = categoryTextField.getText();
+                String outputMessageFormat = "The sub-category \"%s\"(Parent: \"%s\") has been successfully added.";
 
-                    View.this.viewModel.addCategory(newSubCategoryName, ownerOfNewSubCategoryName);
-                    GUIUtils.ShowOkMessageBox("Sub-Category added!", String.format(outputMessageFormat, newSubCategoryName, ownerOfNewSubCategoryName));
-                }
+                View.this.viewModel.addCategory(newSubCategoryName, ownerOfNewSubCategoryName);
+                GUIUtils.ShowOkMessageBox("Sub-Category added!", String.format(outputMessageFormat,
+                        newSubCategoryName, ownerOfNewSubCategoryName));
             });
         }
 
@@ -914,7 +915,6 @@ public class View implements IView
 
             this.tableModel = new DefaultTableModel();
             this.reportsTable = new JTable();
-            //this.listModel = new DefaultListModel<>();
 
             this.reportsPanel = new JPanel();
             this.subPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));

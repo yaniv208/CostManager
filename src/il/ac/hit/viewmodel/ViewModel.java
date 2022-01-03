@@ -44,7 +44,6 @@ public class ViewModel implements IViewModel
                 if (currentID != 0) { // Login successful
                     view.switchFromLoginWindowToMainWindow();
 
-                    // TODO CHECK IF SHOULD BE REMOVED
                     view.setID(currentID);
                 }
 
@@ -101,31 +100,22 @@ public class ViewModel implements IViewModel
     {
         executorService.submit(() -> {
             // Check if the 2 input string are letters-only (Source: https://stackoverflow.com/a/29836318/2196301)
-            boolean isCategoryValid = (ownerCategoryName.equals("") == false);
-            boolean isOwnerCategoryValid = (ownerCategoryName.equals("") == false) || (ownerCategoryName == null);
-
-            CostManException illegalCategoryOrOwnerCategory = null;
+            boolean isCategoryValid = (!ownerCategoryName.equals(""));
+            boolean isOwnerCategoryValid = !ownerCategoryName.equals("");
 
             if (!isCategoryValid)
             {
-                illegalCategoryOrOwnerCategory = new CostManException("Invalid Category Name !",
-                        new IllegalArgumentException());
+                GUIUtils.ShowErrorMessageBox("Error", "Invalid Category Name!");
             }
             if (!isOwnerCategoryValid)
             {
-                illegalCategoryOrOwnerCategory = new CostManException("Invalid Owner Category Name !",
-                        new IllegalArgumentException());
-            }
-
-            if (illegalCategoryOrOwnerCategory != null)
-            {
-                GUIUtils.ShowErrorMessageBox("Invalid Parameter !", illegalCategoryOrOwnerCategory.toString());
-                return;
+                GUIUtils.ShowErrorMessageBox("Error", "Invalid Owner Category Name!");
             }
 
             try
             {
-                ViewModel.this.model.insertNewCategory(categoryName, ownerCategoryName);
+                ViewModel.this.model.insertNewCategory(categoryName, null);
+                GUIUtils.ShowOkMessageBox("Success", "The category \"%s\" has been successfully added.");
             }
             catch (CostManException err)
             {
@@ -183,8 +173,8 @@ public class ViewModel implements IViewModel
 
             if (result)
             {
-                ViewModel.this.currentID = 0;
-                ViewModel.this.view.openLoginWindowOnlyAndCloseOtherWindows();
+                currentID = 0;
+                view.openLoginWindowOnlyAndCloseOtherWindows();
             }
         });
     }
@@ -198,7 +188,7 @@ public class ViewModel implements IViewModel
                             "All unsaved changes will be lost !");
 
             if (result) {
-                ViewModel.this.view.openMainWindowOnlyAndCloseOtherWindows();
+                view.openMainWindowOnlyAndCloseOtherWindows();
             }
         }));
     }
@@ -209,28 +199,40 @@ public class ViewModel implements IViewModel
     @Override
     public void getPrimaryCategories()
     {
-        try
-        {
-            List<String> categories = this.model.getPrimaryCategories();
-            this.view.showCategories(categories, EnumCategoryType.Primary);
-        }
-        catch (CostManException e)
-        {
-            GUIUtils.ShowErrorMessageBox("Error", e.toString());
-        }
+        executorService.submit(new Runnable() {
+            @Override
+            public void run() {
+                try
+                {
+                    List<String> categories = model.getPrimaryCategories();
+                    view.showCategories(categories, EnumCategoryType.Primary);
+                }
+                catch (CostManException e)
+                {
+                    GUIUtils.ShowErrorMessageBox("Error", e.toString());
+                }
+            }
+        });
+
     }
 
     @Override
     public void getSubCategories(String currentSelectedPrimaryCagtegory)
     {
-        try
-        {
-            List<String> categories = this.model.getSecondaryCategories(currentSelectedPrimaryCagtegory);
-            this.view.showCategories(categories, EnumCategoryType.Secondary);
-        }
-        catch (CostManException e)
-        {
-            GUIUtils.ShowErrorMessageBox("Error", e.toString());
-        }
+        executorService.submit(new Runnable() {
+            @Override
+            public void run() {
+                try
+                {
+                    List<String> categories = model.getSecondaryCategories(currentSelectedPrimaryCagtegory);
+                    view.showCategories(categories, EnumCategoryType.Secondary);
+                }
+                catch (CostManException e)
+                {
+                    GUIUtils.ShowErrorMessageBox("Error", e.toString());
+                }
+            }
+        });
+
     }
 }
