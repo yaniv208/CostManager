@@ -41,13 +41,11 @@ public class View implements IView
         this.registrationWindow = new RegistrationWindow();
         this.mainWindow = new MainWindow();
         this.transactionsWindow = new TransactionsWindow();
-        this.viewModel.getPrimaryCategories();
-
-        // TODO CHECK WHY THIS LINE DROPS US OUT OF THE PROGRAM
-        //this.viewModel.getSubCategories(this.transactionsWindow.categoriesComboBox.getSelectedItem().toString());
-
         this.categoriesWindow = new CategoriesWindow();
         this.reportsWindow = new ReportsWindow();
+
+        this.viewModel.getPrimaryCategories();
+        this.viewModel.getCurrenciesRates();
     }
 
     @Override
@@ -495,25 +493,24 @@ public class View implements IView
         private GridBagConstraints constraints;
         private String[] currenciesArray, categoriesArray, subCategoriesArray;
         private JComboBox<String> categoriesComboBox, subCategoriesComboBox, currenciesComboBox;
+        private float[] currencyRatesValues;
 
         public TransactionsWindow()
         {
             frame = new JFrame();
 
             // Handling Combo Boxes
-            currenciesArray = new String[]{"ILS", "USD", "EUR", "GBP"};
-            // categoriesArray = new String[]{"Bills", "House", "Entertainment"};
-            currenciesComboBox = new JComboBox<>(currenciesArray);
-            // categoriesComboBox = new JComboBox<>(categoriesArray);
-            // subCategoriesComboBox = new JComboBox<>(subCategoriesArray);
+            currenciesArray       = new String[]{"ILS", "USD", "EUR", "GBP"};
+            currencyRatesValues   = new float[4];
+            currenciesComboBox    = new JComboBox<>(currenciesArray);
 
-            categoriesComboBox = new JComboBox<>();
+            categoriesComboBox    = new JComboBox<>();
             subCategoriesComboBox = new JComboBox<>();
 
             // Generating panels
-            panelNorth = new JPanel();
+            panelNorth  = new JPanel();
             panelCenter = new JPanel();
-            panelSouth = new JPanel();
+            panelSouth  = new JPanel();
 
             // Generating buttons
             logOutBtn = new JButton("Log out");
@@ -546,8 +543,10 @@ public class View implements IView
 
         public void setProperties()
         {
+            // In order to block the user from changing the displayed rate of the selected currency.
+            this.currencyRateTextField.setEnabled(false);
 
-            categoriesComboBox.addItemListener(new ItemListener()
+            this.categoriesComboBox.addItemListener(new ItemListener()
             {
                 @Override
                 public void itemStateChanged(ItemEvent e)
@@ -557,8 +556,23 @@ public class View implements IView
                 }
             });
 
+            String stringRepresentsationOfSelectedCurrencyRate = String.valueOf(TransactionsWindow.this.currencyRatesValues[0]);
+            TransactionsWindow.this.currencyRateTextField.setText(stringRepresentsationOfSelectedCurrencyRate);
+
+            this.currenciesComboBox.addItemListener(new ItemListener()
+            {
+                @Override
+                public void itemStateChanged(ItemEvent e)
+                {
+                    // Show the currrency rate of the selected currency
+                    int indexOfSelectedCurrency = TransactionsWindow.this.currenciesComboBox.getSelectedIndex();
+                    String stringRepresentsationOfSelectedCurrencyRate = String.valueOf(TransactionsWindow.this.currencyRatesValues[indexOfSelectedCurrency]);
+                    TransactionsWindow.this.currencyRateTextField.setText(stringRepresentsationOfSelectedCurrencyRate);
+                }
+            });
+
             // Handling insert button click
-            insertBtn.addActionListener(e -> {
+            this.insertBtn.addActionListener(e -> {
                 Item item = null;
                 try
                 {
@@ -572,7 +586,7 @@ public class View implements IView
                             Float.parseFloat(currencyRateTextField.getText()),
                             descriptionTextField.getText());
 
-                    viewModel.addItem(item);
+                    View.this.viewModel.addItem(item);
                 }
                 catch (CostManException ex)
                 {
@@ -691,7 +705,8 @@ public class View implements IView
         private GridBagConstraints constraints;
         private JLabel addNewCategory, addNewSubCategory, categoryName, rootCategoryName, subCategoryName, backSlash;
         private JButton newCategoryBtn, newSubCategoryBtn, logoutButton;
-        private JTextField categoryTextField, rootCategoryTextField, subCategoryTextField;
+        private JTextField categoryTextField, subCategoryTextField;
+        private JComboBox categoriesComboBox;
         private JPanel panelCenter, panelSouth;
 
         CategoriesWindow()
@@ -707,7 +722,7 @@ public class View implements IView
 
             addNewSubCategory = new JLabel("Add a new Sub-Category: ");
             rootCategoryName = new JLabel("Root Category: ");
-            rootCategoryTextField = new JTextField(15);
+            categoriesComboBox = new JComboBox();
             subCategoryName = new JLabel("Sub-Category name: ");
             subCategoryTextField = new JTextField(15);
             newSubCategoryBtn = new JButton("Add New Sub-Category");
@@ -745,7 +760,7 @@ public class View implements IView
             GUIUtils.setConstraintsSettings(constraints, 0, 5, GridBagConstraints.EAST, 10, 10);
             panelCenter.add(rootCategoryName, constraints);
             GUIUtils.setConstraintsSettings(constraints, 1, 5, GridBagConstraints.EAST, 10, 10);
-            panelCenter.add(rootCategoryTextField, constraints);
+            panelCenter.add(categoriesComboBox, constraints);
             GUIUtils.setConstraintsSettings(constraints, 0, 6, GridBagConstraints.WEST, 10, 10);
             panelCenter.add(subCategoryName, constraints);
             GUIUtils.setConstraintsSettings(constraints, 1, 6, GridBagConstraints.EAST, 10, 10);
@@ -769,21 +784,16 @@ public class View implements IView
                 public void actionPerformed(ActionEvent e)
                 {
                     String newCategoryName = categoryTextField.getText();
-                    String outputMessageFormat = "The category \"%s\" has been successfully added.";
 
-                    View.this.viewModel.addCategory(newCategoryName, null);
-                    GUIUtils.ShowOkMessageBox("Sub-Category added!", String.format(outputMessageFormat, newCategoryName));
+                    View.this.viewModel.addCategory(newCategoryName, null, EnumCategoryType.Primary);
                 }
             });
 
             newSubCategoryBtn.addActionListener(e -> {
                 String newSubCategoryName = subCategoryTextField.getText();
-                String ownerOfNewSubCategoryName = categoryTextField.getText();
-                String outputMessageFormat = "The sub-category \"%s\"(Parent: \"%s\") has been successfully added.";
+                String ownerOfNewSubCategoryName = categoriesComboBox.getSelectedItem().toString();
 
-                View.this.viewModel.addCategory(newSubCategoryName, ownerOfNewSubCategoryName);
-                GUIUtils.ShowOkMessageBox("Sub-Category added!", String.format(outputMessageFormat,
-                        newSubCategoryName, ownerOfNewSubCategoryName));
+                View.this.viewModel.addCategory(newSubCategoryName, ownerOfNewSubCategoryName, EnumCategoryType.Secondary);
             });
         }
 
@@ -823,7 +833,7 @@ public class View implements IView
         public void clearAllFields()
         {
             this.categoryTextField.setText("");
-            this.rootCategoryTextField.setText("");
+            this.categoriesComboBox.setSelectedIndex(0);
             this.subCategoryTextField.setText("");
         }
     }
@@ -1165,19 +1175,45 @@ public class View implements IView
     @Override
     public void showCategories(List<String> categories, EnumCategoryType currentCategoriesType)
     {
+
+        /*
+        TODO:
+        If primary:
+        1. Update the categories that transactionsWindow.categoriesComboBox knows (with setModel)
+        2. Update the categories that categoriesWindow.categoriesComboBox knows (with setModel)
+        */
         String[] arrayOfCategories = new String[categories.size()];
         categories.toArray(arrayOfCategories);
 
         if (currentCategoriesType == EnumCategoryType.Primary)
         {
+            /*
+            1. Update the categories that transactionsWindow.categoriesComboBox knows (with setModel)
+            */
             transactionsWindow.categoriesComboBox.setModel(new DefaultComboBoxModel<>(categories.toArray(arrayOfCategories)));
+
+            // Set the default value of this text combo box to the first primary category
+            this.transactionsWindow.categoriesComboBox.setSelectedIndex(0);
+
+            // Load the sub-categories of the default first primary category which is "default-selected"
+            this.viewModel.getSubCategories(this.transactionsWindow.categoriesComboBox.getSelectedItem().toString());
+
+            /*
+            2. Update the categories that categoriesWindow.categoriesComboBox knows (with setModel)
+            */
+
+            categoriesWindow.categoriesComboBox.setModel(new DefaultComboBoxModel<>(categories.toArray(arrayOfCategories)));
+
+            // Set the default value of this text combo box to the first primary category
+            this.categoriesWindow.categoriesComboBox.setSelectedIndex(0);
         }
         else
         {
+            transactionsWindow.categoriesComboBox.setSelectedIndex(0);
             transactionsWindow.subCategoriesComboBox.removeAllItems();
             transactionsWindow.subCategoriesComboBox.setModel(new DefaultComboBoxModel<>(categories.toArray(arrayOfCategories)));
+            transactionsWindow.subCategoriesComboBox.setSelectedIndex(0);
         }
-
     }
 
     /**
@@ -1266,5 +1302,14 @@ public class View implements IView
         this.categoriesWindow.clearAllFields();
         this.reportsWindow.frame.setVisible(false);
         this.reportsWindow.clearAllFields();
+    }
+
+    @Override
+    public void saveCurrenciesRates(float[] currencies)
+    {
+        this.transactionsWindow.currencyRatesValues = currencies;
+
+        // Set the default value of this text fiedl to 1.0 because the default currency is ILS.
+        this.transactionsWindow.currencyRateTextField.setText(String.valueOf(currencies[0]));
     }
 }

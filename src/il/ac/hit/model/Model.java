@@ -533,4 +533,43 @@ public class Model implements IModel
             cleanupUpdateUsageProcess(ps, connection, null);
         }
     }
+
+    /**
+     * Get the currency rates of the DB
+     * @return List of currencies
+     * @throws CostManException if there was any problem fetching the currencies
+     */
+    public float[] getCurrencies() throws CostManException {
+        PreparedStatement ps = null;
+        Connection connection = null;
+        ResultSet rs = null;
+
+        float[] currencies;
+
+        try {
+            currencies = new float[4];
+
+            Class.forName(dbDriverName);
+            connection = DriverManager.getConnection(this.dbProtocol, this.dbUserName, this.dbPassword);
+            ps = connection.prepareStatement("SELECT * from currencies");
+
+            rs = ps.executeQuery();
+
+            // Getting the value of specific currency
+            for (int i = 0; rs.next(); i++)
+            {
+                currencies[i] = rs.getFloat("Value");
+            }
+        }
+
+        catch (SQLException | ClassNotFoundException e) {
+            throw new CostManException("Error fetching values!", e);
+        }
+
+        finally {
+            cleanupUpdateUsageProcess(ps, connection, rs);
+        }
+
+        return currencies;
+    }
 }

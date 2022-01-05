@@ -16,11 +16,13 @@ public interface IViewModel {
     void getItemsBetweenDates(String fromDate, String toDate);
 
     // Categories form
-    void addCategory(String categoryName, String ownerCategoryName);
+    public void addCategory(String categoryName, String ownerCategoryName, EnumCategoryType currentCategoryTypeToInsert);
 
     // Add items form
     void addItem(Item item);
     void deleteItem(String itemID);
+
+    void getCurrenciesRates();
 
     // All forms
     void logout();

@@ -7,6 +7,9 @@ import il.ac.hit.model.Item;
 import il.ac.hit.model.User;
 import il.ac.hit.view.IView;
 import javax.swing.*;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -44,6 +47,7 @@ public class ViewModel implements IViewModel
                 if (currentID != 0) { // Login successful
                     view.switchFromLoginWindowToMainWindow();
 
+                    // TODO CHECK IF SHOULD BE REMOVED
                     view.setID(currentID);
                 }
 
@@ -83,8 +87,18 @@ public class ViewModel implements IViewModel
     {
         executorService.submit(() -> {
             List<Item> itemsInRangeOfDates;
+            boolean areTwoDatesValid = true;
             try
             {
+                areTwoDatesValid = isDateValid(fromDate) || isDateValid(toDate);
+
+                // If one of the dates is invalid
+                if (areTwoDatesValid == false)
+                {
+                    GUIUtils.ShowErrorMessageBox("Invalid Date parameter", "One of the given dates is invalid, please retry.");
+                    return;
+                }
+
                 itemsInRangeOfDates = model.getItemsByRangeOfDates(currentID, fromDate, toDate);
                 SwingUtilities.invokeLater(() -> view.showItems(itemsInRangeOfDates));
             }
@@ -95,31 +109,89 @@ public class ViewModel implements IViewModel
         });
     }
 
+    /**
+     * Checks if the given input date is valid date or not.
+     * @param date - The given date which should be checked.
+     * @return true if valid, otherwise false
+     */
+    public static boolean isDateValid(String date)
+    {
+        try {
+            DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+
+            // order to do a strict-check with the format and not relying on heuristics.
+            df.setLenient(false);
+            df.parse(date);
+            return true;
+        } catch (ParseException e) {
+            return false;
+        }
+    }
+
     @Override
-    public void addCategory(String categoryName, String ownerCategoryName)
+    public void getCurrenciesRates() {
+        executorService.submit(new Runnable() {
+            @Override
+            public void run() {
+                try{
+                    float[] currencies = model.getCurrencies();
+                    ViewModel.this.view.saveCurrenciesRates(currencies);
+                }
+                catch (CostManException e){
+                    GUIUtils.ShowErrorMessageBox("Error", e.toString());
+                }
+            }
+        });
+    }
+
+    @Override
+    public void addCategory(String categoryName, String ownerCategoryName, EnumCategoryType currentCategoryTypeToInsert)
     {
         executorService.submit(() -> {
-            // Check if the 2 input string are letters-only (Source: https://stackoverflow.com/a/29836318/2196301)
-            boolean isCategoryValid = (!ownerCategoryName.equals(""));
-            boolean isOwnerCategoryValid = !ownerCategoryName.equals("");
 
-            if (!isCategoryValid)
+            boolean isCategoryValid = (categoryName != null) && (categoryName.equals("") == false);
+            String outputMessageFormat = "The category \"%s\" has been successfully added.";
+
+            /*
+            Primary:
+                categoryName is not null and not ""
+                +
+                ownerCategoryName is null
+
+            Sub-Category:
+                categoryName is not null and not ""
+                +
+                ownerCategoryName is not null and not ""
+            */
+
+            // There is an insertion of "primary" category
+            if (currentCategoryTypeToInsert == EnumCategoryType.Primary)
             {
-                GUIUtils.ShowErrorMessageBox("Error", "Invalid Category Name!");
+                isCategoryValid = isCategoryValid && (ownerCategoryName == null);
             }
-            if (!isOwnerCategoryValid)
+            // There is an insertion of sub-category
+            else
             {
-                GUIUtils.ShowErrorMessageBox("Error", "Invalid Owner Category Name!");
+                isCategoryValid = isCategoryValid && (ownerCategoryName != null) && (ownerCategoryName.equals("") == false);
             }
 
-            try
+            // If the categories matches the conditions above accroding to their types
+            if (isCategoryValid == true)
             {
-                ViewModel.this.model.insertNewCategory(categoryName, null);
-                GUIUtils.ShowOkMessageBox("Success", "The category \"%s\" has been successfully added.");
+                try
+                {
+                    ViewModel.this.model.insertNewCategory(categoryName, ownerCategoryName);
+                    GUIUtils.ShowOkMessageBox("Sub-Category added!", String.format(outputMessageFormat, categoryName));
+                    this.getPrimaryCategories();
+                }
+                catch (CostManException err)
+                {
+                    GUIUtils.ShowErrorMessageBox("An Error Occurred", err.toString());
+                }
             }
-            catch (CostManException err)
+            else
             {
-                GUIUtils.ShowErrorMessageBox("An Error Occurred", err.toString());
+                GUIUtils.ShowErrorMessageBox("ERROR", "Invalid parameters for inserting new categories.");
             }
         });
     }
@@ -173,8 +245,8 @@ public class ViewModel implements IViewModel
 
             if (result)
             {
-                currentID = 0;
-                view.openLoginWindowOnlyAndCloseOtherWindows();
+                ViewModel.this.currentID = 0;
+                ViewModel.this.view.openLoginWindowOnlyAndCloseOtherWindows();
             }
         });
     }
@@ -188,7 +260,7 @@ public class ViewModel implements IViewModel
                             "All unsaved changes will be lost !");
 
             if (result) {
-                view.openMainWindowOnlyAndCloseOtherWindows();
+                ViewModel.this.view.openMainWindowOnlyAndCloseOtherWindows();
             }
         }));
     }
@@ -199,40 +271,28 @@ public class ViewModel implements IViewModel
     @Override
     public void getPrimaryCategories()
     {
-        executorService.submit(new Runnable() {
-            @Override
-            public void run() {
-                try
-                {
-                    List<String> categories = model.getPrimaryCategories();
-                    view.showCategories(categories, EnumCategoryType.Primary);
-                }
-                catch (CostManException e)
-                {
-                    GUIUtils.ShowErrorMessageBox("Error", e.toString());
-                }
-            }
-        });
-
+        try
+        {
+            List<String> categories = this.model.getPrimaryCategories();
+            this.view.showCategories(categories, EnumCategoryType.Primary);
+        }
+        catch (CostManException e)
+        {
+            GUIUtils.ShowErrorMessageBox("Error", e.toString());
+        }
     }
 
     @Override
     public void getSubCategories(String currentSelectedPrimaryCagtegory)
     {
-        executorService.submit(new Runnable() {
-            @Override
-            public void run() {
-                try
-                {
-                    List<String> categories = model.getSecondaryCategories(currentSelectedPrimaryCagtegory);
-                    view.showCategories(categories, EnumCategoryType.Secondary);
-                }
-                catch (CostManException e)
-                {
-                    GUIUtils.ShowErrorMessageBox("Error", e.toString());
-                }
-            }
-        });
-
+        try
+        {
+            List<String> categories = this.model.getSecondaryCategories(currentSelectedPrimaryCagtegory);
+            this.view.showCategories(categories, EnumCategoryType.Secondary);
+        }
+        catch (CostManException e)
+        {
+            GUIUtils.ShowErrorMessageBox("Error", e.toString());
+        }
     }
 }

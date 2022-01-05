@@ -87,4 +87,11 @@ public interface IModel {
      * @throws CostManException if fetching a category name by ID wasn't successful
      */
     public String getCategoryNameByCategoryID(int categoryId) throws CostManException;
+
+    /**
+     * Get the currency rates of the DB
+     * @return List of currencies
+     * @throws CostManException if there was any problem fetching the currencies
+     */
+    public float[] getCurrencies() throws CostManException;
 }

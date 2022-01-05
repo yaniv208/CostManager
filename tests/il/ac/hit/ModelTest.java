@@ -194,5 +194,21 @@ public class ModelTest
         }
         assertFalse(isExceptionThrown);
     }
+
+    @org.junit.Test
+    public void getCurrencies(){
+        boolean isExceptionThrown = false;
+        LOGGER.info("Starting getCurrencies()");
+
+        try {
+            float[] currencies = Model.getInstance().getCurrencies();
+
+            assertEquals("Wrong array size", 4, currencies.length);
+        }
+        catch (CostManException err) {
+            isExceptionThrown = true;
+        }
+        assertFalse(isExceptionThrown);
+    }
 }
 

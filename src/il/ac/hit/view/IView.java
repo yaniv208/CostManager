@@ -18,4 +18,6 @@ public interface IView {
     void switchFromRegistrationWindowToMainWindow();
     void openLoginWindowOnlyAndCloseOtherWindows();
     void showCategories(List<String> categories, EnumCategoryType currentCategoriesType);
+
+    void saveCurrenciesRates(float[] currencies);
 }
