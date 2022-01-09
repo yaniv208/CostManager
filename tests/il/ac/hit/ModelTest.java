@@ -29,7 +29,7 @@ public class ModelTest
         String expected = "Problem with registering user!";
 
         try {
-            User user = new User("test@gmail.com", "testPass", "Yossi Cohen");
+            User user = new User("test@gmail.com", "testPass");
             Model.getInstance().insertNewUser(user);
             // if an exception will occur, it would take place on next line
         }
@@ -76,7 +76,7 @@ public class ModelTest
         String expected = "Error while inserting into DataBase!";
 
         try {
-            Model.getInstance().insertNewItem(new Item(5,2, 3, "2021-12-08",
+            Model.getInstance().insertNewItem(new Item(5,"aaa", "cyberAAA", "2021-12-08",
                     50, "USD", 2.2f, "Hamburger"));
             // if an exception will occur, it would take place on next line
         }

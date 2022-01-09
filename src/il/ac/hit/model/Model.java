@@ -121,12 +121,11 @@ public class Model implements IModel
         try {
             Class.forName(this.dbDriverName);
             connection = DriverManager.getConnection(this.dbProtocol, this.dbUserName, this.dbPassword);
-            ps = connection.prepareStatement("INSERT INTO users VALUES (?, ?,?, ?)");
+            ps = connection.prepareStatement("INSERT INTO users VALUES (?, ?, ?)");
 
             ps.setInt(1, NULL);
             ps.setString(2, user.getEmail());
             ps.setString(3, user.getPassword());
-            ps.setString(4, user.getFullName());
 
             if (ps.executeUpdate() != 1) {
                 throw new CostManException("Problem with registering user!");
@@ -438,12 +437,15 @@ public class Model implements IModel
             rs = ps.executeQuery();
 
             while (rs.next())
-            { // assign variables of each item, and adding it to collection
+            {
+                // assign variables of each item, and adding it to collection
                 itemToAdd = new Item();
                 itemToAdd.setItemId(rs.getInt("ItemID"));
                 itemToAdd.setUserId(rs.getInt("OwnerUserID"));
-                itemToAdd.setCategoryId(rs.getInt("CategoryID"));
-                itemToAdd.setSubCategoryId(rs.getInt("SubCategoryID"));
+
+                itemToAdd.setCategory(this.getCategoryNameByCategoryID(rs.getInt("CategoryID")));
+                itemToAdd.setSubCategory(this.getCategoryNameByCategoryID(rs.getInt("SubCategoryID")));
+
                 itemToAdd.setDate(rs.getString("Date"));
                 itemToAdd.setPrice(rs.getInt("Price"));
                 itemToAdd.setCurrency(rs.getString("Currency"));
@@ -479,8 +481,8 @@ public class Model implements IModel
 
             ps.setInt(1, NULL);
             ps.setInt(2, item.getUserId());
-            ps.setInt(3, item.getCategoryId());
-            ps.setInt(4, item.getSubCategoryId());
+            ps.setInt(3, this.getCategoryIDByCategoryName(item.getCategory()));
+            ps.setInt(4, this.getCategoryIDByCategoryName(item.getSubCategory()));
             ps.setString(5, item.getDate());
             ps.setInt(6, item.getPrice());
             ps.setString(7, item.getCurrency());

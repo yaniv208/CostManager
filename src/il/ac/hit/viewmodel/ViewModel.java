@@ -62,12 +62,12 @@ public class ViewModel implements IViewModel
     }
 
     @Override
-    public void handleRegistrationRequest(String email, String password, String fullName)
+    public void handleRegistrationRequest(String email, String password)
     {
         executorService.submit(() -> {
             try
             {
-                User newUser = new User(email, password, fullName);
+                User newUser = new User(email, password);
                 ViewModel.this.currentID = ViewModel.this.model.insertNewUser(newUser);
                 ViewModel.this.view.switchFromRegistrationWindowToMainWindow();
                 GUIUtils.ShowOkMessageBox("Successful Registration !", "You've been registered" +
@@ -86,6 +86,7 @@ public class ViewModel implements IViewModel
         executorService.submit(() -> {
             List<Item> itemsInRangeOfDates;
             boolean areTwoDatesValid = true;
+
             try
             {
                 areTwoDatesValid = isDateValid(fromDate) || isDateValid(toDate);
@@ -177,7 +178,7 @@ public class ViewModel implements IViewModel
                 {
                     ViewModel.this.model.insertNewCategory(categoryName, ownerCategoryName);
                     GUIUtils.ShowOkMessageBox("Sub-Category added!", String.format(outputMessageFormat, categoryName));
-                    this.getPrimaryCategories();
+                    this.getPrimaryCategories(EnumConsumerOfCategories.CategoriesWindow);
                 }
                 catch (CostManException err)
                 {
@@ -264,7 +265,7 @@ public class ViewModel implements IViewModel
      * Retrieve categories by their specified type (PRIMARY or SECONDARY)
      */
     @Override
-    public void getPrimaryCategories()
+    public void getPrimaryCategories(EnumConsumerOfCategories caller)
     {
         executorService.submit(new Runnable()
         {
@@ -274,7 +275,8 @@ public class ViewModel implements IViewModel
                 try
                 {
                     List<String> categories = ViewModel.this.model.getPrimaryCategories();
-                    ViewModel.this.view.showCategories(categories, EnumCategoryType.Primary);
+
+                    ViewModel.this.view.showCategories(categories, EnumCategoryType.Primary, caller);
                 }
                 catch (CostManException e)
                 {
@@ -285,7 +287,7 @@ public class ViewModel implements IViewModel
     }
 
     @Override
-    public void getSubCategories(String currentSelectedPrimaryCategory) {
+    public void getSubCategories(String currentSelectedPrimaryCategory, EnumConsumerOfCategories caller) {
         executorService.submit(new Runnable()
         {
             @Override
@@ -293,7 +295,7 @@ public class ViewModel implements IViewModel
             {
                 try {
                     List<String> categories =ViewModel. this.model.getSecondaryCategories(currentSelectedPrimaryCategory);
-                    ViewModel.this.view.showCategories(categories, EnumCategoryType.Secondary);
+                    ViewModel.this.view.showCategories(categories, EnumCategoryType.Secondary, caller);
                 } catch (CostManException e) {
                     GUIUtils.ShowErrorMessageBox("Error", e.toString());
                 }

@@ -19,31 +19,19 @@ import java.util.Objects;
 public class Item {
     int itemId;
     int userId;
-    int categoryId;
-    int subCategoryId;
+    String category;
+    String subCategory;
     String date;
     int price;
     String currency;
     float currencyRate;
     String description;
     public Item() {}
-    public Item(int userId, int categoryId, int subCategoryId, String date, int price, String currency,
-                float currencyRate, String description) throws CostManException {
-        setUserId(userId);
-        setCategoryId(categoryId);
-        setSubCategoryId(subCategoryId);
-        setDate(date);
-        setPrice(price);
-        setCurrency(currency);
-        setCurrencyRate(currencyRate);
-        setDescription(description);
-    }
-
     public Item(int userId, String category, String subCategory, String date, int price, String currency,
                 float currencyRate, String description) throws CostManException {
         setUserId(userId);
-        setCategoryId(Model.getInstance().getCategoryIDByCategoryName(category));
-        setSubCategoryId(Model.getInstance().getCategoryIDByCategoryName(subCategory));
+        setCategory(category);
+        setSubCategory(subCategory);
         setDate(date);
         setPrice(price);
         setCurrency(currency);
@@ -75,20 +63,20 @@ public class Item {
         this.userId = userId;
     }
 
-    public int getCategoryId() {
-        return categoryId;
+    public String getCategory() {
+        return category;
     }
 
-    public void setCategoryId(int categoryId) {
-        this.categoryId = categoryId;
+    public void setCategory(String category) {
+        this.category = category;
     }
 
-    public int getSubCategoryId() {
-        return subCategoryId;
+    public String getSubCategory() {
+        return subCategory;
     }
 
-    public void setSubCategoryId(int subCategoryId) {
-        this.subCategoryId = subCategoryId;
+    public void setSubCategory(String subCategory) {
+        this.subCategory = subCategory;
     }
 
     public String getDate() {
@@ -138,8 +126,8 @@ public class Item {
         return "Item{" +
                 "itemId=" + itemId +
                 ", userId=" + userId +
-                ", categoryId=" + categoryId +
-                ", subCategoryId=" + subCategoryId +
+                ", categoryId=" + category +
+                ", subCategoryId=" + subCategory +
                 ", date='" + date + '\'' +
                 ", price=" + price +
                 ", currencyRate=" + currencyRate +
@@ -152,11 +140,18 @@ public class Item {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Item item = (Item) o;
-        return getItemId() == item.getItemId() && getUserId() == item.getUserId() && getCategoryId() == item.getCategoryId() && getSubCategoryId() == item.getSubCategoryId() && getPrice() == item.getPrice() && Float.compare(item.getCurrencyRate(), getCurrencyRate()) == 0 && getDate().equals(item.getDate()) && getDescription().equals(item.getDescription());
+        return (getItemId() == item.getItemId() &&
+                getUserId() == item.getUserId() &&
+                getCategory().equals(item.getCategory()) &&
+                getSubCategory().equals(item.getSubCategory()) &&
+                getPrice() == item.getPrice() &&
+                Float.compare(item.getCurrencyRate(), getCurrencyRate()) == 0 &&
+                getDate().equals(item.getDate()) &&
+                getDescription().equals(item.getDescription()));
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getItemId(), getUserId(), getCategoryId(), getSubCategoryId(), getDate(), getPrice(), getCurrencyRate(), getDescription());
+        return Objects.hash(getItemId(), getUserId(), getCategory(), getSubCategory(), getDate(), getPrice(), getCurrencyRate(), getDescription());
     }
 }

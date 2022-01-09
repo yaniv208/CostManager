@@ -12,26 +12,10 @@ import java.util.Objects;
 public class User {
     String email;
     String password;
-    String fullName;
 
-    public User(String email, String password, String fullName) throws CostManException {
+    public User(String email, String password) throws CostManException {
         setEmail(email);
         setPassword(password);
-        setFullName(fullName);
-    }
-
-    public String getFullName() {
-        return fullName;
-    }
-
-    public void setFullName(String fullName) throws CostManException {
-        if(!fullName.equals("")){
-            this.fullName = fullName;
-        }
-        else {
-            throw new CostManException("You must enter your name!");
-        }
-
     }
 
     public String getEmail() {

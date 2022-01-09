@@ -10,7 +10,7 @@ public interface IViewModel {
     void handleAuthentication(String email, String password);
 
     // Registration form
-    void handleRegistrationRequest(String email, String password, String fullName);
+    void handleRegistrationRequest(String email, String password);
 
     // Reports form
     void getItemsBetweenDates(String fromDate, String toDate);
@@ -30,7 +30,7 @@ public interface IViewModel {
     void setView(IView view);
     void setModel(IModel model);
     void handleClosingOfFeatureWindow();
-    void getPrimaryCategories();
-    void getSubCategories(String currentSelectedPrimaryCagtegory);
+    void getPrimaryCategories(EnumConsumerOfCategories caller);
+    void getSubCategories(String currentSelectedPrimaryCategory, EnumConsumerOfCategories caller);
 
 }

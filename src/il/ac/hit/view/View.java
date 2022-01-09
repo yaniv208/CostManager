@@ -4,6 +4,7 @@ import il.ac.hit.CostManException;
 import il.ac.hit.GUIUtils;
 import il.ac.hit.model.EnumCategoryType;
 import il.ac.hit.model.Item;
+import il.ac.hit.viewmodel.EnumConsumerOfCategories;
 import il.ac.hit.viewmodel.IViewModel;
 
 import javax.swing.*;
@@ -44,7 +45,6 @@ public class View implements IView
         this.categoriesWindow = new CategoriesWindow();
         this.reportsWindow = new ReportsWindow();
 
-        this.viewModel.getPrimaryCategories();
         this.viewModel.getCurrenciesRates();
     }
 
@@ -212,9 +212,9 @@ public class View implements IView
     {
         private JFrame frame;
         private GridBagConstraints constraints;
-        private JLabel note, fullNameLabel, emailLabel, passwordLabel;
+        private JLabel note, emailLabel, passwordLabel;
         private JButton registerBtn;
-        private JTextField emailTextField, fullNameTextField;
+        private JTextField emailTextField;
         private JPasswordField passwordTextField;
         private JPanel panelCenter, panelNorth, panelSouth;
 
@@ -229,8 +229,6 @@ public class View implements IView
             emailTextField = new JTextField(20);
             passwordLabel = new JLabel("Password: ");
             passwordTextField = new JPasswordField(20);
-            fullNameLabel = new JLabel("Full Name: ");
-            fullNameTextField = new JTextField(20);
 
             // Creating Buttons
             registerBtn = new JButton("Create Account");
@@ -257,9 +255,8 @@ public class View implements IView
             registerBtn.addActionListener(e -> {
                 String email = emailTextField.getText();
                 String password = new String(passwordTextField.getPassword());
-                String fullName = fullNameTextField.getText();
 
-                View.this.viewModel.handleRegistrationRequest(email, password, fullName);
+                View.this.viewModel.handleRegistrationRequest(email, password);
             });
 
             // Handling North Panel
@@ -280,11 +277,6 @@ public class View implements IView
             panelCenter.add(passwordLabel, constraints);
             GUIUtils.setConstraintsSettings(constraints, 1, 1, GridBagConstraints.WEST, 10, 10);
             panelCenter.add(passwordTextField, constraints);
-
-            GUIUtils.setConstraintsSettings(constraints, 0, 2, GridBagConstraints.EAST, 10, 10);
-            panelCenter.add(fullNameLabel, constraints);
-            GUIUtils.setConstraintsSettings(constraints, 1, 2, GridBagConstraints.WEST, 10, 10);
-            panelCenter.add(fullNameTextField, constraints);
 
             // Handling South Panel
             panelSouth.setLayout(new GridBagLayout());
@@ -320,7 +312,6 @@ public class View implements IView
         private void setFonts() {
             this.frame.setFont(new Font("Consolas", Font.BOLD, 24));
             this.note.setFont(new Font("Consolas", Font.BOLD, 24));
-            this.fullNameLabel.setFont(new Font("Consolas", Font.PLAIN, 15));
             this.emailLabel.setFont(new Font("Consolas", Font.PLAIN, 15));
             this.passwordLabel.setFont(new Font("Consolas", Font.PLAIN, 15));
         }
@@ -329,7 +320,6 @@ public class View implements IView
         {
             this.emailTextField.setText("");
             this.passwordTextField.setText("");
-            this.fullNameTextField.setText("");
         }
     }
 
@@ -438,15 +428,18 @@ public class View implements IView
                     0, GridBagConstraints.CENTER, 10, 10);
             this.manageTransactionsButton.setPreferredSize(new Dimension(300,
                     this.manageTransactionsButton.getPreferredSize().height));
+
             this.manageTransactionsButton.addActionListener(e -> {
                 frame.setVisible(false);
-                transactionsWindow.frame.setVisible(true);
+                // transactionsWindow.frame.setVisible(true);
+                transactionsWindow.openWindow();
             });
 
             this.centerPanel.add(this.manageTransactionsButton, this.constraints);
 
             GUIUtils.setConstraintsSettings(this.constraints, 0, 1, GridBagConstraints.CENTER, 10, 10);
             this.generateReportButton.setPreferredSize(new Dimension(300, this.generateReportButton.getPreferredSize().height));
+
             this.generateReportButton.addActionListener(e -> {
                 frame.setVisible(false);
                 reportsWindow.frame.setVisible(true);
@@ -456,9 +449,11 @@ public class View implements IView
 
             GUIUtils.setConstraintsSettings(this.constraints, 0, 2, GridBagConstraints.CENTER, 10, 10);
             this.manageCategoriesAndSubCategoriesButton.setPreferredSize(new Dimension(300, this.manageCategoriesAndSubCategoriesButton.getPreferredSize().height));
+
             this.manageCategoriesAndSubCategoriesButton.addActionListener(e -> {
                 frame.setVisible(false);
-                categoriesWindow.frame.setVisible(true);
+                // categoriesWindow.frame.setVisible(true);
+                categoriesWindow.openWindow();
             });
 
             this.centerPanel.add(this.manageCategoriesAndSubCategoriesButton, this.constraints);
@@ -541,6 +536,17 @@ public class View implements IView
             setProperties();
         }
 
+        public void openWindow()
+        {
+            // 1. Get the primary categories specifically for the "TransactionsWindow"
+            View.this.viewModel.getPrimaryCategories(EnumConsumerOfCategories.TransactionsWindow);
+
+            // 2. Show the window
+            this.frame.setVisible(true);
+
+            this.currencyRateTextField.setText(String.valueOf(this.currencyRatesValues[0]));
+        }
+
         public void setProperties()
         {
             // In order to block the user from changing the displayed rate of the selected currency.
@@ -558,7 +564,7 @@ public class View implements IView
                     String item = TransactionsWindow.this.categoriesComboBox.getItemAt(index);
                     // GUIUtils.ShowOkMessageBox("", e.getItem().toString());
                     // GUIUtils.ShowOkMessageBox("", item);
-                    View.this.viewModel.getSubCategories(item);
+                    View.this.viewModel.getSubCategories(item, EnumConsumerOfCategories.TransactionsWindow);
                 }
             });
 
@@ -693,7 +699,11 @@ public class View implements IView
             this.dateTextField.setText("");
             this.descriptionTextField.setText("");
             this.idTextField.setText("");
-            this.categoriesComboBox.setSelectedIndex(0);
+
+            if (this.categoriesComboBox.getModel().getSize() != 0)
+            {
+                this.categoriesComboBox.setSelectedIndex(0);
+            }
             this.subCategoriesComboBox.removeAllItems();
             // this.subCategoriesComboBox.setSelectedIndex(0);
             this.currenciesComboBox.setSelectedIndex(0);
@@ -740,6 +750,15 @@ public class View implements IView
             constraints = new GridBagConstraints();
 
             setProperties();
+        }
+
+        public void openWindow()
+        {
+            // 1. Get the primary categories specifically for the "CategoriesWindow"
+            View.this.viewModel.getPrimaryCategories(EnumConsumerOfCategories.CategoriesWindow);
+
+            // 2. Show the window
+            this.frame.setVisible(true);
         }
 
         public void setProperties()
@@ -838,7 +857,11 @@ public class View implements IView
         public void clearAllFields()
         {
             this.categoryTextField.setText("");
-            this.categoriesComboBox.setSelectedIndex(0);
+
+            if (this.categoriesComboBox.getModel().getSize() != 0)
+            {
+                this.categoriesComboBox.setSelectedIndex(0);
+            }
             this.subCategoryTextField.setText("");
         }
     }
@@ -1131,8 +1154,8 @@ public class View implements IView
             for (Item item : data)
             {
                 tableModel.addRow(new Object[]{
-                        item.getItemId(), item.getCategoryId(), item.getSubCategoryId(), item.getDate(),
-                        item.getPrice(), item.getCategoryId(), item.getDescription()});
+                        item.getItemId(), item.getCategory(), item.getSubCategory(), item.getDate(),
+                        item.getPrice(), item.getCurrency() + " (" + String.valueOf(item.getCurrencyRate()) + ")", item.getDescription()});
             }
         }
 
@@ -1178,41 +1201,80 @@ public class View implements IView
      *                                where "Primary" stands for "Categories" and "Secondary" stands for "Sub-Categories".
      */
     @Override
-    public void showCategories(List<String> categories, EnumCategoryType currentCategoriesType)
+    public void showCategories(List<String> categories, EnumCategoryType currentCategoriesType, EnumConsumerOfCategories caller)
     {
         String[] arrayOfCategories = new String[categories.size()];
         categories.toArray(arrayOfCategories);
 
-        if (currentCategoriesType == EnumCategoryType.Primary)
+        if (caller == EnumConsumerOfCategories.CategoriesWindow)
         {
-            /*
-            1. Update the categories that transactionsWindow.categoriesComboBox knows (with setModel)
-            */
-            transactionsWindow.categoriesComboBox.setModel(new DefaultComboBoxModel<>(categories.toArray(arrayOfCategories)));
+            // call show categories only for CategoriesWindow
+            if (currentCategoriesType == EnumCategoryType.Primary)
+            {
+                /*
+                2. Update the categories that categoriesWindow.categoriesComboBox knows (with setModel)
+                */
 
-            // Set the default value of this text combo box to the first primary category
-            this.transactionsWindow.categoriesComboBox.setSelectedIndex(0);
+                categoriesWindow.categoriesComboBox.setModel(new DefaultComboBoxModel<>(categories.toArray(arrayOfCategories)));
 
-            // Load the sub-categories of the default first primary category which is "default-selected"
-            this.viewModel.getSubCategories(Objects.requireNonNull
-                    (this.transactionsWindow.categoriesComboBox.getSelectedItem()).toString());
-
-            /*
-            2. Update the categories that categoriesWindow.categoriesComboBox knows (with setModel)
-            */
-
-            categoriesWindow.categoriesComboBox.setModel(new DefaultComboBoxModel<>(categories.toArray(arrayOfCategories)));
-
-            // Set the default value of this text combo box to the first primary category
-            this.categoriesWindow.categoriesComboBox.setSelectedIndex(0);
+                // Set the default value of this text combo box to the first primary category
+                this.categoriesWindow.categoriesComboBox.setSelectedIndex(0);
+            }
         }
         else
         {
-            // transactionsWindow.categoriesComboBox.setSelectedIndex(0);
-            transactionsWindow.subCategoriesComboBox.removeAllItems();
-            transactionsWindow.subCategoriesComboBox.setModel(new DefaultComboBoxModel<>(categories.toArray(arrayOfCategories)));
-            transactionsWindow.subCategoriesComboBox.setSelectedIndex(0);
+            if (currentCategoriesType == EnumCategoryType.Primary)
+            {
+            /*
+            1. Update the categories that transactionsWindow.categoriesComboBox knows (with setModel)
+            */
+                transactionsWindow.categoriesComboBox.setModel(new DefaultComboBoxModel<>(categories.toArray(arrayOfCategories)));
+
+                // Set the default value of this text combo box to the first primary category
+                this.transactionsWindow.categoriesComboBox.setSelectedIndex(0);
+
+                // Load the sub-categories of the default first primary category which is "default-selected"
+                this.viewModel.getSubCategories(Objects.requireNonNull
+                        (this.transactionsWindow.categoriesComboBox.getSelectedItem()).toString(), caller);
+            }
+            else
+            {
+                transactionsWindow.subCategoriesComboBox.removeAllItems();
+                transactionsWindow.subCategoriesComboBox.setModel(new DefaultComboBoxModel<>(categories.toArray(arrayOfCategories)));
+                transactionsWindow.subCategoriesComboBox.setSelectedIndex(0);
+            }
         }
+
+        // if (currentCategoriesType == EnumCategoryType.Primary)
+        // {
+        //     /*
+        //     1. Update the categories that transactionsWindow.categoriesComboBox knows (with setModel)
+        //     */
+        //     transactionsWindow.categoriesComboBox.setModel(new DefaultComboBoxModel<>(categories.toArray(arrayOfCategories)));
+        //
+        //     // Set the default value of this text combo box to the first primary category
+        //     this.transactionsWindow.categoriesComboBox.setSelectedIndex(0);
+        //
+        //     // Load the sub-categories of the default first primary category which is "default-selected"
+        //     this.viewModel.getSubCategories(Objects.requireNonNull
+        //         (this.transactionsWindow.categoriesComboBox.getSelectedItem()).toString());
+        //
+        //     /*
+        //     2. Update the categories that categoriesWindow.categoriesComboBox knows (with setModel)
+        //     */
+        //
+        //     categoriesWindow.categoriesComboBox.setModel(new DefaultComboBoxModel<>(categories.toArray(arrayOfCategories)));
+        //
+        //     // Set the default value of this text combo box to the first primary category
+        //     this.categoriesWindow.categoriesComboBox.setSelectedIndex(0);
+        // }
+        // else
+        // {
+        //     // transactionsWindow.categoriesComboBox.setSelectedIndex(0);
+        //     transactionsWindow.subCategoriesComboBox.removeAllItems();
+        //     transactionsWindow.subCategoriesComboBox.setModel(new DefaultComboBoxModel<>(categories.toArray(arrayOfCategories)));
+        //     transactionsWindow.subCategoriesComboBox.setSelectedIndex(0);
+        // }
     }
 
     /**

@@ -30,7 +30,7 @@ public class GUIUtils
         boolean isYes = true;
         int dialogButton = JOptionPane.YES_NO_OPTION;
         int dialogResult = JOptionPane.showConfirmDialog(null, message, title, dialogButton);
-        if(dialogResult == JOptionPane.NO_OPTION)
+        if(dialogResult == JOptionPane.NO_OPTION || dialogResult == JOptionPane.CLOSED_OPTION)
         {
             isYes = false;
         }
