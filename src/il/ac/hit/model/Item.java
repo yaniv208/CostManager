@@ -26,6 +26,7 @@ public class Item {
     String currency;
     float currencyRate;
     String description;
+
     public Item() {}
     public Item(int userId, String category, String subCategory, String date, int price, String currency,
                 float currencyRate, String description) throws CostManException {

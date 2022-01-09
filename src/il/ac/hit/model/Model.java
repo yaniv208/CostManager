@@ -224,7 +224,7 @@ public class Model implements IModel
             // Run the query
             rs = ps.executeQuery();
 
-            // Initialize the returned list
+            // Initialize the list
             allRequestedCategories = new ArrayList<>();
 
             // Get all the categories

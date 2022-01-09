@@ -32,12 +32,19 @@ public class View implements IView
     private CategoriesWindow categoriesWindow;
     private ReportsWindow reportsWindow;
 
+    /**
+     * Set the ViewModel instance variable as the implemented ViewModel provided in parameter.
+     * @param vm Implemented ViewModel class
+     */
     @Override
     public void setIViewModel(IViewModel vm)
     {
         this.viewModel = vm;
     }
 
+    /**
+     * A function that initializes all the windows of the program
+     */
     @Override
     public void init()
     {
@@ -51,6 +58,9 @@ public class View implements IView
         this.viewModel.getCurrenciesRates();
     }
 
+    /**
+     * A function that loads loginWindow's components and shows this specific window
+     */
     @Override
     public void start()
     {
@@ -72,6 +82,9 @@ public class View implements IView
         private JButton loginBtn, createAccountBtn;
         private char defaultEchoChar;
 
+        /**
+         * public constructor of LoginWindow
+         */
         public LoginWindow()
         {
             // Generating Frame
@@ -104,6 +117,9 @@ public class View implements IView
             constraints = new GridBagConstraints();
         }
 
+        /**
+         * A function that sets properties of components in the window
+         */
         public void start()
         {
             note.setFont(Font.getFont(Font.SANS_SERIF));
@@ -176,6 +192,13 @@ public class View implements IView
             setFonts();
         }
 
+        /**
+         * A function that sets various settings of the frame
+         * @param frame the frame to be modified
+         * @param panelCenter panel center to be modified
+         * @param panelNorth panel north to be modified
+         * @param panelSouth panel south to be modified
+         */
         void setFrameSettings(JFrame frame, JPanel panelCenter, JPanel panelNorth, JPanel panelSouth)
         {
             frame.setLayout(new BorderLayout());
@@ -191,6 +214,9 @@ public class View implements IView
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         }
 
+        /**
+         * A function that changes the fonts shown in the window
+         */
         private void setFonts() {
             this.emailLabel.setFont(new Font("Consolas", Font.PLAIN, 15));
             this.passwordLabel.setFont(new Font("Consolas", Font.PLAIN, 15));
@@ -201,6 +227,9 @@ public class View implements IView
             this.note.setFont(new Font("Consolas", Font.BOLD, 25));
         }
 
+        /**
+         * A function that clears all fields in the window
+         */
         public void clearAllFields()
         {
             this.emailTextField.setText("");
@@ -221,6 +250,9 @@ public class View implements IView
         private JPasswordField passwordTextField;
         private JPanel panelCenter, panelNorth, panelSouth;
 
+        /**
+         * Constructor of Registration Window
+         */
         RegistrationWindow()
         {
             // Creating Frame
@@ -248,6 +280,9 @@ public class View implements IView
             setProperties();
         }
 
+        /**
+         * A function that sets the properties of the window.
+         */
         public void setProperties()
         {
             panelCenter.setFont(Font.getFont(Font.SANS_SERIF));
@@ -290,6 +325,13 @@ public class View implements IView
             setFrameSettings(frame, panelCenter, panelNorth, panelSouth);
         }
 
+        /**
+         * A function that sets various settings of the frame
+         * @param frame the frame to be modified
+         * @param panelCenter panel center to be modified
+         * @param panelNorth panel north to be modified
+         * @param panelSouth panel south to be modified
+         */
         void setFrameSettings(JFrame frame, JPanel panelCenter, JPanel panelNorth, JPanel panelSouth)
         {
             frame.setLayout(new BorderLayout());
@@ -312,6 +354,9 @@ public class View implements IView
             });
         }
 
+        /**
+         * A function that changes the fonts shown in the window
+         */
         private void setFonts() {
             this.frame.setFont(new Font("Consolas", Font.BOLD, 24));
             this.note.setFont(new Font("Consolas", Font.BOLD, 24));
@@ -319,6 +364,9 @@ public class View implements IView
             this.passwordLabel.setFont(new Font("Consolas", Font.PLAIN, 15));
         }
 
+        /**
+         * A function that clears all fields in the window
+         */
         public void clearAllFields()
         {
             this.emailTextField.setText("");
@@ -338,6 +386,9 @@ public class View implements IView
         private JPanel centerPanel, northPanel, southPanel;
         private GridBagConstraints constraints;
 
+        /**
+         * Public constructor of MainWindow
+         */
         public MainWindow()
         {
             this.InitializeComponents();
@@ -348,6 +399,9 @@ public class View implements IView
             this.setFonts();
         }
 
+        /**
+         * A function that changes the fonts shown in the window
+         */
         private void setFonts() {
             this.frame.setFont(new Font("Consolas", Font.BOLD, 24));
             this.frameTitle.setFont(new Font("Consolas", Font.BOLD, 24));
@@ -357,6 +411,9 @@ public class View implements IView
             this.logoutButton.setFont(new Font("Consolas", Font.PLAIN, 15));
         }
 
+        /**
+         * A function that initializes all the components in the window
+         */
         private void InitializeComponents()
         {
             // Initializing the Frame
@@ -375,11 +432,13 @@ public class View implements IView
 
             // Components of the Logout Section:
             this.southPanel = new JPanel();
-
             this.constraints = new GridBagConstraints();
             this.constraints.insets = new Insets(5, 0, 5, 0);
         }
 
+        /**
+         * A function that sets properties of the frame itself
+         */
         private void PrepareWindowProperties()
         {
             // Add the different sections to the window
@@ -408,6 +467,9 @@ public class View implements IView
             });
         }
 
+        /**
+         * A function that prepares the properties of the title section itself
+         */
         private void PrepareTitleSection()
         {
             this.northPanel.setLayout(new GridBagLayout());
@@ -424,6 +486,9 @@ public class View implements IView
             this.northPanel.add(this.frameTitle, this.constraints);
         }
 
+        /**
+         * A function that prepares the properties of the menu section itself
+         */
         private void PrepareMenuSection()
         {
             this.centerPanel.setLayout(new GridBagLayout());
@@ -462,6 +527,9 @@ public class View implements IView
             this.centerPanel.add(this.manageCategoriesAndSubCategoriesButton, this.constraints);
         }
 
+        /**
+         * A function that prepares the properties of the logout section itself
+         */
         private void PrepareLogoutSection()
         {
             this.logoutButton.setPreferredSize(new Dimension(100, this.manageTransactionsButton.getPreferredSize().height));
@@ -493,22 +561,25 @@ public class View implements IView
         private JComboBox<String> categoriesComboBox, subCategoriesComboBox, currenciesComboBox;
         private float[] currencyRatesValues;
 
+        /**
+         * Public constructor of TransactionsWindow
+         */
         public TransactionsWindow()
         {
             frame = new JFrame();
 
             // Handling Combo Boxes
-            currenciesArray       = new String[]{"ILS", "USD", "EUR", "GBP"};
-            currencyRatesValues   = new float[4];
-            currenciesComboBox    = new JComboBox<>(currenciesArray);
+            currenciesArray = new String[]{"ILS", "USD", "EUR", "GBP"};
+            currencyRatesValues = new float[4];
+            currenciesComboBox = new JComboBox<>(currenciesArray);
 
-            categoriesComboBox    = new JComboBox<>();
+            categoriesComboBox = new JComboBox<>();
             subCategoriesComboBox = new JComboBox<>();
 
             // Generating panels
-            panelNorth  = new JPanel();
+            panelNorth = new JPanel();
             panelCenter = new JPanel();
-            panelSouth  = new JPanel();
+            panelSouth = new JPanel();
 
             // Generating buttons
             logOutBtn = new JButton("Log out");
@@ -539,17 +610,24 @@ public class View implements IView
             setProperties();
         }
 
+        /**
+         * A function that gets called when this window is opened.
+         * Categories are being fetched, and then the window is shown.
+         */
         public void openWindow()
         {
-            // 1. Get the primary categories specifically for the "TransactionsWindow"
+            // Get the primary categories specifically for the "TransactionsWindow"
             View.this.viewModel.getPrimaryCategories(EnumConsumerOfCategories.TransactionsWindow);
 
-            // 2. Show the window
+            // Show the window
             this.frame.setVisible(true);
 
             this.currencyRateTextField.setText(String.valueOf(this.currencyRatesValues[0]));
         }
 
+        /**
+         * Set properties of TransactionsWindow's window
+         */
         public void setProperties()
         {
             // In order to block the user from changing the displayed rate of the selected currency.
@@ -655,6 +733,13 @@ public class View implements IView
             setFrameSettings(this.frame, panelCenter, panelNorth, panelSouth);
         }
 
+        /**
+         * A function that sets various settings of the frame
+         * @param frame the frame to be modified
+         * @param panelCenter panel center to be modified
+         * @param panelNorth panel north to be modified
+         * @param panelSouth panel south to be modified
+         */
         void setFrameSettings(JFrame frame, JPanel panelCenter, JPanel panelNorth, JPanel panelSouth)
         {
             // Set the visual properties of the window
@@ -682,6 +767,9 @@ public class View implements IView
             });
         }
 
+        /**
+         * A function that clears all fields in the window
+         */
         public void clearAllFields()
         {
             this.sumTextField.setText("");
@@ -714,6 +802,9 @@ public class View implements IView
         private JComboBox<String> categoriesComboBox;
         private JPanel panelCenter, panelSouth;
 
+        /**
+         * Constructor of CategoriesWindow
+         */
         CategoriesWindow()
         {
             frame = new JFrame("Categories & Sub-Categories Page");
@@ -742,15 +833,21 @@ public class View implements IView
             setProperties();
         }
 
+        /**
+         * A function that gets called when this window is opened.
+         * Categories are being fetched, and then the window is shown.
+         */
         public void openWindow()
         {
-            // 1. Get the primary categories specifically for the "CategoriesWindow"
+            // Get the primary categories specifically for the "CategoriesWindow"
             View.this.viewModel.getPrimaryCategories(EnumConsumerOfCategories.CategoriesWindow);
 
-            // 2. Show the window
+            // Show the window
             this.frame.setVisible(true);
         }
-
+        /**
+         * Set properties of CategoriesWindow's window
+         */
         public void setProperties()
         {
             panelCenter.setLayout(new GridBagLayout());
@@ -807,6 +904,9 @@ public class View implements IView
             });
         }
 
+        /**
+         * A function that changes the fonts shown in the window
+         */
         private void setFonts(){
             this.addNewCategory.setFont(new Font("Consolas", Font.PLAIN, 15));
             this.addNewSubCategory.setFont(new Font("Consolas", Font.PLAIN, 15));
@@ -818,6 +918,12 @@ public class View implements IView
             this.logoutButton.setFont(new Font("Consolas", Font.PLAIN, 15));
         }
 
+        /**
+         * A function that sets various settings of the frame
+         * @param frame the frame to be modified
+         * @param panelCenter panel center to be modified
+         * @param panelSouth panel south to be modified
+         */
         void setFrameSettings(JFrame frame, JPanel panelCenter, JPanel panelSouth)
         {
             frame.setLayout(new BorderLayout());
@@ -840,6 +946,9 @@ public class View implements IView
             });
         }
 
+        /**
+         * A function that clears all fields in the window
+         */
         public void clearAllFields()
         {
             this.categoryTextField.setText("");
@@ -886,6 +995,9 @@ public class View implements IView
 
         private JPanel subPanel;
 
+        /**
+         * Public constructor of ReportsWindow
+         */
         public ReportsWindow()
         {
             this.days = new String[31];
@@ -913,6 +1025,9 @@ public class View implements IView
             this.prepareTable();
         }
 
+        /**
+         * A function that initializes all the components in the window
+         */
         private void InitializeComponents()
         {
             this.frame = new JFrame();
@@ -944,6 +1059,9 @@ public class View implements IView
             this.subPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         }
 
+        /**
+         * A function that adds the table to the window and adds its columns
+         */
         private void prepareTable()
         {
             reportsPanel.add(new JScrollPane(reportsTable));
@@ -960,6 +1078,9 @@ public class View implements IView
             tableModel.addColumn("Description");
         }
 
+        /**
+         * A function that sets properties of the frame itself
+         */
         private void PrepareWindowProperties()
         {
             // Add the different sections to the window
@@ -987,6 +1108,9 @@ public class View implements IView
             });
         }
 
+        /**
+         * A function that sets properties of the "Generate Report" section
+         */
         private void PrepareReportsGenerationSection()
         {
             this.reportsGenerationSection.setLayout(new GridBagLayout());
@@ -1062,6 +1186,9 @@ public class View implements IView
             this.reportsGenerationSection.add(this.reportsPanel, this.constraints);
         }
 
+        /**
+         * A function that sets properties of the date selection section
+         */
         private void PrepareFromAndToLabelsProperties()
         {
             this.labelFromDate.setText("Start Date:");
@@ -1075,6 +1202,9 @@ public class View implements IView
             this.reportsGenerationSection.add(this.labelToDate, this.constraints);
         }
 
+        /**
+         * A function that sets properties of the "FROM" dates ComboBoxes
+         */
         private void PrepareFromComboBoxesProperties()
         {
         /*
@@ -1097,6 +1227,9 @@ public class View implements IView
             this.reportsGenerationSection.add(this.comboBoxFromYear, this.constraints);
         }
 
+        /**
+         * A function that sets properties of the "TO" dates ComboBoxes
+         */
         private void PrepareToComboBoxesProperties()
         {
         /*
@@ -1120,6 +1253,9 @@ public class View implements IView
             this.reportsGenerationSection.add(this.comboBoxToYear, this.constraints);
         }
 
+        /**
+         * A function that sets properties of the logout section
+         */
         private void PrepareLogoutSection()
         {
             this.logoutButton.setPreferredSize(new Dimension(100, this.logoutButton.getPreferredSize().height));
@@ -1131,6 +1267,10 @@ public class View implements IView
             this.logoutSection.add(subPanel, BorderLayout.SOUTH);
         }
 
+        /**
+         * A function that populates the JTable with the items retrieved from DB.
+         * @param data List of items fetched from the DB.
+         */
         public void populateTable(List<Item> data)
         {
             // Initialize table
@@ -1145,6 +1285,9 @@ public class View implements IView
             }
         }
 
+        /**
+         * A function that clears all fields in the window
+         */
         public void clearAllFields()
         {
             this.comboBoxFromDay.setSelectedIndex(0);
@@ -1168,9 +1311,8 @@ public class View implements IView
     }
 
     /**
-     * showItems
-     *     Purpose: This method is responsible to show the current user's items in the table within the reports window.
-     * @param data - A list of all the items which should be displayed.
+     * Show the current user's items in the table within the reports window.
+     * @param data A list of all the items which should be displayed.
      */
     @Override
     public void showItems(List<Item> data)
@@ -1179,12 +1321,10 @@ public class View implements IView
     }
 
     /**
-     * showCategories
-     *     Purpose: This method is responsible to show categories to the user within the "TransactionsWindow" and
-     *              the "CategoriesWindow"
-     * @param categories - A list of all the categories which should be displayed.
-     * @param currentCategoriesType - An enum variable which indicates what is the type of the current incoming categories,
-     *                                where "Primary" stands for "Categories" and "Secondary" stands for "Sub-Categories".
+     * Show categories to the user within the "TransactionsWindow" and the "CategoriesWindow"
+     * @param categories A list of all the categories which should be displayed.
+     * @param currentCategoriesType An Enum variable which indicates what is the type of the current incoming categories,
+     * where "Primary" stands for "Categories" and "Secondary" stands for "Sub-Categories".
      */
     @Override
     public void showCategories(List<String> categories, EnumCategoryType currentCategoriesType, EnumConsumerOfCategories caller)
@@ -1198,7 +1338,7 @@ public class View implements IView
             if (currentCategoriesType == EnumCategoryType.Primary)
             {
                 /*
-                2. Update the categories that categoriesWindow.categoriesComboBox knows (with setModel)
+                Update the categories that categoriesWindow.categoriesComboBox knows (with setModel)
                 */
 
                 categoriesWindow.categoriesComboBox.setModel(new DefaultComboBoxModel<>(categories.toArray(arrayOfCategories)));
@@ -1211,9 +1351,7 @@ public class View implements IView
         {
             if (currentCategoriesType == EnumCategoryType.Primary)
             {
-            /*
-            1. Update the categories that transactionsWindow.categoriesComboBox knows (with setModel)
-            */
+                // Update the categories that transactionsWindow.categoriesComboBox knows (with setModel)
                 transactionsWindow.categoriesComboBox.setModel(new DefaultComboBoxModel<>(categories.toArray(arrayOfCategories)));
 
                 // Set the default value of this text combo box to the first primary category
@@ -1233,7 +1371,7 @@ public class View implements IView
     }
 
     /**
-     * save the current userID in the view.
+     * Save the current userID in the View.
      * @param id The ID of the current logged-on user.
      */
     @Override
@@ -1243,10 +1381,8 @@ public class View implements IView
     }
 
     /**
-     * switchFromLoginWindowToMainWindow
-     *     Purpose: This method is responsible to "close" (hide) the login window and "open" (show) the main window
-     *              of the program.
-     *              In addition, this method clears all the fields of the login window.
+     * "close" (hide) the login window and "open" (show) the main window of the program.
+     * In addition, this method clears all the fields of the login window.
      */
     @Override
     public void switchFromLoginWindowToMainWindow()
@@ -1313,6 +1449,10 @@ public class View implements IView
         this.reportsWindow.clearAllFields();
     }
 
+    /**
+     * A function that gets the currency rates array and applies it in the array showed in View.
+     * @param currencies array of float variables, containing currencies.
+     */
     @Override
     public void saveCurrenciesRates(float[] currencies)
     {

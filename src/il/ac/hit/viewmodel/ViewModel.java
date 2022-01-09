@@ -22,7 +22,9 @@ public class ViewModel implements IViewModel
     private int currentID = 0;
     private ExecutorService executorService;
 
-    // Public default constructor
+    /**
+     * Public default constructor
+     */
     public ViewModel() {
         this.executorService = Executors.newFixedThreadPool(3);
     }
@@ -90,12 +92,12 @@ public class ViewModel implements IViewModel
                 User newUser = new User(email, password);
                 ViewModel.this.currentID = ViewModel.this.model.insertNewUser(newUser);
                 ViewModel.this.view.switchFromRegistrationWindowToMainWindow();
-                GUIUtils.showOkMessageBox("Successful Registration !", "You've been registered" +
+                GUIUtils.showOkMessageBox("Successful Registration!", "You've been registered" +
                         " successfully!");
             }
             catch (CostManException err)
             {
-                GUIUtils.showErrorMessageBox("An Error Occurred", err.toString());
+                GUIUtils.showErrorMessageBox("Error", err.toString());
             }
         });
     }
@@ -119,7 +121,8 @@ public class ViewModel implements IViewModel
                 // If one of the dates is invalid
                 if (!areTwoDatesValid)
                 {
-                    GUIUtils.showErrorMessageBox("Invalid Date parameter", "One of the given dates is invalid, please retry.");
+                    GUIUtils.showErrorMessageBox("Invalid Date parameter", "One of the given dates is" +
+                            "invalid, please retry.");
                     return;
                 }
 
@@ -272,7 +275,7 @@ public class ViewModel implements IViewModel
         executorService.submit(() -> SwingUtilities.invokeLater(() -> {
             boolean result = GUIUtils.showYesNoMessageBox("Get out of this window?",
                     "Are you sure you want to get out of this window?\n" +
-                            "All unsaved changes will be lost !");
+                            "All unsaved changes will be lost!");
 
             if (result) {
                 ViewModel.this.view.openMainWindowOnlyAndCloseOtherWindows();
@@ -290,7 +293,6 @@ public class ViewModel implements IViewModel
             try
             {
                 List<String> categories = ViewModel.this.model.getPrimaryCategories();
-
                 ViewModel.this.view.showCategories(categories, EnumCategoryType.Primary, caller);
             }
             catch (CostManException e)
