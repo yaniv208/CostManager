@@ -6,7 +6,6 @@ import il.ac.hit.model.EnumCategoryType;
 import il.ac.hit.model.Item;
 import il.ac.hit.viewmodel.EnumConsumerOfCategories;
 import il.ac.hit.viewmodel.IViewModel;
-
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
@@ -17,6 +16,10 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * This class implements the IView interface,
+ * and represents the User Interface Component of the Model
+ */
 public class View implements IView
 {
     private IViewModel viewModel;
@@ -133,7 +136,7 @@ public class View implements IView
                 }
                 catch (InterruptedException ex)
                 {
-                    GUIUtils.ShowErrorMessageBox("Error", "Problem with the sleeping thread");
+                    GUIUtils.showErrorMessageBox("Error", "Problem with the sleeping thread");
                 }
             });
 
@@ -189,13 +192,13 @@ public class View implements IView
         }
 
         private void setFonts() {
-            this.frame.setFont(new Font("Consolas", Font.BOLD, 24));
-            this.note.setFont(new Font("Consolas", Font.BOLD, 24));
             this.emailLabel.setFont(new Font("Consolas", Font.PLAIN, 15));
             this.passwordLabel.setFont(new Font("Consolas", Font.PLAIN, 15));
             this.loginBtn.setFont(new Font("Consolas", Font.PLAIN, 15));
             this.createAccountBtn.setFont(new Font("Consolas", Font.PLAIN, 15));
             this.showPasswordCheckBox.setFont(new Font("Consolas", Font.PLAIN, 15));
+            this.frame.setFont(new Font("Consolas", Font.BOLD, 25));
+            this.note.setFont(new Font("Consolas", Font.BOLD, 25));
         }
 
         public void clearAllFields()
@@ -486,7 +489,7 @@ public class View implements IView
                 dateTextField, descriptionTextField, idTextField;
         private JButton logOutBtn, insertBtn, deleteBtn;
         private GridBagConstraints constraints;
-        private String[] currenciesArray, categoriesArray, subCategoriesArray;
+        private String[] currenciesArray;
         private JComboBox<String> categoriesComboBox, subCategoriesComboBox, currenciesComboBox;
         private float[] currencyRatesValues;
 
@@ -552,40 +555,27 @@ public class View implements IView
             // In order to block the user from changing the displayed rate of the selected currency.
             this.currencyRateTextField.setEnabled(false);
 
-            this.categoriesComboBox.addItemListener(new ItemListener()
-            {
-                @Override
-                public void itemStateChanged(ItemEvent e)
-                {
-                    // Load dynamically the sub categories which belongs to the current selected category
-                    // View.this.viewModel.getSubCategories(e.getItem().toString());
+            this.categoriesComboBox.addItemListener(e -> {
+                // Load dynamically the sub categories which belongs to the current selected category
 
-                    int index = TransactionsWindow.this.categoriesComboBox.getSelectedIndex();
-                    String item = TransactionsWindow.this.categoriesComboBox.getItemAt(index);
-                    // GUIUtils.ShowOkMessageBox("", e.getItem().toString());
-                    // GUIUtils.ShowOkMessageBox("", item);
-                    View.this.viewModel.getSubCategories(item, EnumConsumerOfCategories.TransactionsWindow);
-                }
+                int index = TransactionsWindow.this.categoriesComboBox.getSelectedIndex();
+                String item = TransactionsWindow.this.categoriesComboBox.getItemAt(index);
+                View.this.viewModel.getSubCategories(item, EnumConsumerOfCategories.TransactionsWindow);
             });
 
-            String stringRepresentsationOfSelectedCurrencyRate = String.valueOf(TransactionsWindow.this.currencyRatesValues[0]);
-            TransactionsWindow.this.currencyRateTextField.setText(stringRepresentsationOfSelectedCurrencyRate);
+            String stringRepresentationOfSelectedCurrencyRate = String.valueOf(TransactionsWindow.this.currencyRatesValues[0]);
+            TransactionsWindow.this.currencyRateTextField.setText(stringRepresentationOfSelectedCurrencyRate);
 
-            this.currenciesComboBox.addItemListener(new ItemListener()
-            {
-                @Override
-                public void itemStateChanged(ItemEvent e)
-                {
-                    // Show the currrency rate of the selected currency
-                    int indexOfSelectedCurrency = TransactionsWindow.this.currenciesComboBox.getSelectedIndex();
-                    String stringRepresentsationOfSelectedCurrencyRate = String.valueOf(TransactionsWindow.this.currencyRatesValues[indexOfSelectedCurrency]);
-                    TransactionsWindow.this.currencyRateTextField.setText(stringRepresentsationOfSelectedCurrencyRate);
-                }
+            this.currenciesComboBox.addItemListener(e -> {
+                // Show the currency rate of the selected currency
+                int indexOfSelectedCurrency = TransactionsWindow.this.currenciesComboBox.getSelectedIndex();
+                String stringRepresentationOfSelectedCurrencyRate1 = String.valueOf(TransactionsWindow.this.currencyRatesValues[indexOfSelectedCurrency]);
+                TransactionsWindow.this.currencyRateTextField.setText(stringRepresentationOfSelectedCurrencyRate1);
             });
 
             // Handling insert button click
             this.insertBtn.addActionListener(e -> {
-                Item item = null;
+                Item item;
                 try
                 {
                     item = new Item(userID,
@@ -601,7 +591,7 @@ public class View implements IView
                 }
                 catch (CostManException ex)
                 {
-                    GUIUtils.ShowErrorMessageBox("Error", "Error inserting new item!");
+                    GUIUtils.showErrorMessageBox("Error", "Error inserting new item!");
                 }
             });
 
@@ -721,7 +711,7 @@ public class View implements IView
         private JLabel addNewCategory, addNewSubCategory, categoryName, rootCategoryName, subCategoryName, backSlash;
         private JButton newCategoryBtn, newSubCategoryBtn, logoutButton;
         private JTextField categoryTextField, subCategoryTextField;
-        private JComboBox categoriesComboBox;
+        private JComboBox<String> categoriesComboBox;
         private JPanel panelCenter, panelSouth;
 
         CategoriesWindow()
@@ -737,7 +727,7 @@ public class View implements IView
 
             addNewSubCategory = new JLabel("Add a new Sub-Category: ");
             rootCategoryName = new JLabel("Root Category: ");
-            categoriesComboBox = new JComboBox();
+            categoriesComboBox = new JComboBox<>();
             subCategoryName = new JLabel("Sub-Category name: ");
             subCategoryTextField = new JTextField(15);
             newSubCategoryBtn = new JButton("Add New Sub-Category");
@@ -802,20 +792,16 @@ public class View implements IView
             setFrameSettings(this.frame, panelCenter, panelSouth);
             setFonts();
 
-            newCategoryBtn.addActionListener(new ActionListener()
-            {
-                @Override
-                public void actionPerformed(ActionEvent e)
-                {
-                    String newCategoryName = categoryTextField.getText();
+            newCategoryBtn.addActionListener(e -> {
+                String newCategoryName = categoryTextField.getText();
 
-                    View.this.viewModel.addCategory(newCategoryName, null, EnumCategoryType.Primary);
-                }
+                View.this.viewModel.addCategory(newCategoryName, null, EnumCategoryType.Primary);
             });
 
             newSubCategoryBtn.addActionListener(e -> {
                 String newSubCategoryName = subCategoryTextField.getText();
-                String ownerOfNewSubCategoryName = categoriesComboBox.getSelectedItem().toString();
+                String ownerOfNewSubCategoryName = Objects.requireNonNull
+                        (categoriesComboBox.getSelectedItem()).toString();
 
                 View.this.viewModel.addCategory(newSubCategoryName, ownerOfNewSubCategoryName, EnumCategoryType.Secondary);
             });
@@ -1155,7 +1141,7 @@ public class View implements IView
             {
                 tableModel.addRow(new Object[]{
                         item.getItemId(), item.getCategory(), item.getSubCategory(), item.getDate(),
-                        item.getPrice(), item.getCurrency() + " (" + String.valueOf(item.getCurrencyRate()) + ")", item.getDescription()});
+                        item.getPrice(), item.getCurrency() + " (" + item.getCurrencyRate() + ")", item.getDescription()});
             }
         }
 
@@ -1244,43 +1230,11 @@ public class View implements IView
                 transactionsWindow.subCategoriesComboBox.setSelectedIndex(0);
             }
         }
-
-        // if (currentCategoriesType == EnumCategoryType.Primary)
-        // {
-        //     /*
-        //     1. Update the categories that transactionsWindow.categoriesComboBox knows (with setModel)
-        //     */
-        //     transactionsWindow.categoriesComboBox.setModel(new DefaultComboBoxModel<>(categories.toArray(arrayOfCategories)));
-        //
-        //     // Set the default value of this text combo box to the first primary category
-        //     this.transactionsWindow.categoriesComboBox.setSelectedIndex(0);
-        //
-        //     // Load the sub-categories of the default first primary category which is "default-selected"
-        //     this.viewModel.getSubCategories(Objects.requireNonNull
-        //         (this.transactionsWindow.categoriesComboBox.getSelectedItem()).toString());
-        //
-        //     /*
-        //     2. Update the categories that categoriesWindow.categoriesComboBox knows (with setModel)
-        //     */
-        //
-        //     categoriesWindow.categoriesComboBox.setModel(new DefaultComboBoxModel<>(categories.toArray(arrayOfCategories)));
-        //
-        //     // Set the default value of this text combo box to the first primary category
-        //     this.categoriesWindow.categoriesComboBox.setSelectedIndex(0);
-        // }
-        // else
-        // {
-        //     // transactionsWindow.categoriesComboBox.setSelectedIndex(0);
-        //     transactionsWindow.subCategoriesComboBox.removeAllItems();
-        //     transactionsWindow.subCategoriesComboBox.setModel(new DefaultComboBoxModel<>(categories.toArray(arrayOfCategories)));
-        //     transactionsWindow.subCategoriesComboBox.setSelectedIndex(0);
-        // }
     }
 
     /**
-     * setID
-     *     Purpose: This method is responsible to save the current userID in the view.
-     * @param id - The id of the current logged-on user.
+     * save the current userID in the view.
+     * @param id The ID of the current logged-on user.
      */
     @Override
     public void setID(int id)

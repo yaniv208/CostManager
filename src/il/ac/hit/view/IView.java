@@ -6,16 +6,30 @@ import il.ac.hit.viewmodel.EnumConsumerOfCategories;
 import il.ac.hit.viewmodel.IViewModel;
 import java.util.List;
 
+/**
+ * This class represents the Interface of the View
+ */
 public interface IView {
+
     void setIViewModel(IViewModel vm);
+
     void init();
+
     void start();
+
     void showItems(List<Item> data);
+
     void setID (int id);
+
     void openMainWindowOnlyAndCloseOtherWindows();
+
     void switchFromLoginWindowToMainWindow();
+
     void switchFromRegistrationWindowToMainWindow();
+
     void openLoginWindowOnlyAndCloseOtherWindows();
+
     void showCategories(List<String> categories, EnumCategoryType currentCategoriesType, EnumConsumerOfCategories caller);
+
     void saveCurrenciesRates(float[] currencies);
 }
