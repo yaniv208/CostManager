@@ -88,7 +88,6 @@ public class ModelTest
     @org.junit.Test
     public void deleteItem() {
         LOGGER.info("Starting deleteItem() Test");
-
         String expected = "Error deleting item!";
 
         try {

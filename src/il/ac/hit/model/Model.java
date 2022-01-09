@@ -235,7 +235,7 @@ public class Model implements IModel
 
         }
         catch (Exception e) {
-            throw new CostManException("Can't retrieve the categories from the DB.", e);
+            throw new CostManException("Can't retrieve the categories from the DB", e);
         }
         finally {
             cleanupUpdateUsageProcess(ps, connection, rs);
@@ -256,7 +256,6 @@ public class Model implements IModel
         List<String> allRequestedCategories;
 
         String finalQueryTemplate = "SELECT CategoryName FROM categories WHERE OwnerCategoryID=? ORDER BY CategoryName ASC";
-        String finalQuery;
         int primaryCategoryID = this.getCategoryIDByCategoryName(currentPrimaryCategory);
 
         try {
@@ -276,7 +275,6 @@ public class Model implements IModel
             while (rs.next()) {
                 allRequestedCategories.add(rs.getString("CategoryName"));
             }
-
         }
         catch (Exception e) {
             throw new CostManException("Can't retrieve the categories from the DB.", e);
@@ -411,7 +409,7 @@ public class Model implements IModel
     }
 
     /**
-     * A function that returns data by a specific range of dates
+     * Return data by a specific range of dates
      * @param userId user ID of the requesting user
      * @param from origin date
      * @param to destination date
@@ -465,7 +463,7 @@ public class Model implements IModel
     }
 
     /**
-     * A function that inserts a new item into the database
+     * Insert a new item into the database
      * @param item represents an item that would be inserted into database
      * @throws CostManException if there was any problem inserting a new item
      */
@@ -503,7 +501,7 @@ public class Model implements IModel
     }
 
     /**
-     * A function that deletes a specific item from the database
+     * Delete a specific item from the database
      * @param OwnerUserId represents specific user ID whose belonged item to be deleted.
      * @param itemId represents specific item ID to be deleted.
      * @throws CostManException if there was any problem deleting an item from database

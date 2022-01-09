@@ -63,13 +63,5 @@ public class GUIUtils
         currentConstraintsObject.ipady = ipady;
     }
 
-    public static void showFrame(JFrame frame){
-        frame.setVisible(true);
-    }
-
-    public static void hideFrame(JFrame frame){
-        frame.setVisible(false);
-    }
-
 }
 

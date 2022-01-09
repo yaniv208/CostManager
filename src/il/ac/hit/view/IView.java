@@ -3,8 +3,6 @@ package il.ac.hit.view;
 import il.ac.hit.model.EnumCategoryType;
 import il.ac.hit.model.Item;
 import il.ac.hit.viewmodel.IViewModel;
-
-import javax.swing.table.DefaultTableModel;
 import java.util.List;
 
 public interface IView {
@@ -18,6 +16,5 @@ public interface IView {
     void switchFromRegistrationWindowToMainWindow();
     void openLoginWindowOnlyAndCloseOtherWindows();
     void showCategories(List<String> categories, EnumCategoryType currentCategoriesType);
-
     void saveCurrenciesRates(float[] currencies);
 }

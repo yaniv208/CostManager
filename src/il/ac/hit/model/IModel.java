@@ -88,10 +88,5 @@ public interface IModel {
      */
     public String getCategoryNameByCategoryID(int categoryId) throws CostManException;
 
-    /**
-     * Get the currency rates of the DB
-     * @return List of currencies
-     * @throws CostManException if there was any problem fetching the currencies
-     */
     public float[] getCurrencies() throws CostManException;
 }

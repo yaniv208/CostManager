@@ -21,7 +21,6 @@ public interface IViewModel {
     // Add items form
     void addItem(Item item);
     void deleteItem(String itemID);
-
     void getCurrenciesRates();
 
     // All forms
@@ -33,4 +32,5 @@ public interface IViewModel {
     void handleClosingOfFeatureWindow();
     void getPrimaryCategories();
     void getSubCategories(String currentSelectedPrimaryCagtegory);
+
 }

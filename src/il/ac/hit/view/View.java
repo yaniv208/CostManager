@@ -576,7 +576,6 @@ public class View implements IView
                 Item item = null;
                 try
                 {
-                    // TODO FIX CHANGE FROM NUMBER TO CATEGORY STRING USING AVIV'S METHODS
                     item = new Item(userID,
                             Objects.requireNonNull(categoriesComboBox.getSelectedItem()).toString(),
                             Objects.requireNonNull(subCategoriesComboBox.getSelectedItem()).toString(),
@@ -1175,13 +1174,6 @@ public class View implements IView
     @Override
     public void showCategories(List<String> categories, EnumCategoryType currentCategoriesType)
     {
-
-        /*
-        TODO:
-        If primary:
-        1. Update the categories that transactionsWindow.categoriesComboBox knows (with setModel)
-        2. Update the categories that categoriesWindow.categoriesComboBox knows (with setModel)
-        */
         String[] arrayOfCategories = new String[categories.size()];
         categories.toArray(arrayOfCategories);
 
@@ -1196,7 +1188,8 @@ public class View implements IView
             this.transactionsWindow.categoriesComboBox.setSelectedIndex(0);
 
             // Load the sub-categories of the default first primary category which is "default-selected"
-            this.viewModel.getSubCategories(this.transactionsWindow.categoriesComboBox.getSelectedItem().toString());
+            this.viewModel.getSubCategories(Objects.requireNonNull
+                    (this.transactionsWindow.categoriesComboBox.getSelectedItem()).toString());
 
             /*
             2. Update the categories that categoriesWindow.categoriesComboBox knows (with setModel)
@@ -1242,10 +1235,8 @@ public class View implements IView
     }
 
     /**
-     * switchFromRegistrationWindowToMainWindow
-     *     Purpose: This method is responsible to "close" (hide) the registration window and "open" (show) the main window
-     *              of the program.
-     *              In addition, this method clears all the fields of the registration window.
+     * "close" (hide) the registration window and "open" (show) the main window of the program.
+     * In addition, this method clears all the fields of the registration window.
      */
     @Override
     public void switchFromRegistrationWindowToMainWindow()
@@ -1256,10 +1247,8 @@ public class View implements IView
     }
 
     /**
-     * openMainWindowOnlyAndCloseOtherWindows
-     *     Purpose: This method is responsible to "open" (show) the login window of the program
-     *              and "close" (hide) all the windows.
-     *              In addition, this method clears all the fields of all the windows of the program.
+     * "open" (show) the login window of the program and "close" (hide) all the windows.
+     *  In addition, this method clears all the fields of all the windows of the program.
      */
     @Override
     public void openLoginWindowOnlyAndCloseOtherWindows()
@@ -1280,10 +1269,8 @@ public class View implements IView
     }
 
     /**
-     * openMainWindowOnlyAndCloseOtherWindows
-     *     Purpose: This method is responsible to "open" (show) the main window of the program
-     *              and "close" (hide) all the windows.
-     *              In addition, this method clears all the fields of all the windows of the program.
+     * "open" (show) the main window of the program and "close" (hide) all the windows.
+     * In addition, this method clears all the fields of all the windows of the program.
      */
     @Override
     public void openMainWindowOnlyAndCloseOtherWindows()
@@ -1309,7 +1296,7 @@ public class View implements IView
     {
         this.transactionsWindow.currencyRatesValues = currencies;
 
-        // Set the default value of this text fiedl to 1.0 because the default currency is ILS.
+        // Set the default value of this text field to 1.0 because the default currency is ILS.
         this.transactionsWindow.currencyRateTextField.setText(String.valueOf(currencies[0]));
     }
 }

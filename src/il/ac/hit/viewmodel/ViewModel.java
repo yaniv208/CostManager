@@ -46,8 +46,6 @@ public class ViewModel implements IViewModel
 
                 if (currentID != 0) { // Login successful
                     view.switchFromLoginWindowToMainWindow();
-
-                    // TODO CHECK IF SHOULD BE REMOVED
                     view.setID(currentID);
                 }
 
@@ -93,7 +91,7 @@ public class ViewModel implements IViewModel
                 areTwoDatesValid = isDateValid(fromDate) || isDateValid(toDate);
 
                 // If one of the dates is invalid
-                if (areTwoDatesValid == false)
+                if (!areTwoDatesValid)
                 {
                     GUIUtils.ShowErrorMessageBox("Invalid Date parameter", "One of the given dates is invalid, please retry.");
                     return;
@@ -114,7 +112,7 @@ public class ViewModel implements IViewModel
      * @param date - The given date which should be checked.
      * @return true if valid, otherwise false
      */
-    public static boolean isDateValid(String date)
+    public static boolean isDateValid(String date) // TODO why is that here and not in GUIUtils?
     {
         try {
             DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
@@ -130,16 +128,13 @@ public class ViewModel implements IViewModel
 
     @Override
     public void getCurrenciesRates() {
-        executorService.submit(new Runnable() {
-            @Override
-            public void run() {
-                try{
-                    float[] currencies = model.getCurrencies();
-                    ViewModel.this.view.saveCurrenciesRates(currencies);
-                }
-                catch (CostManException e){
-                    GUIUtils.ShowErrorMessageBox("Error", e.toString());
-                }
+        executorService.submit(() -> {
+            try{
+                float[] currencies = model.getCurrencies();
+                ViewModel.this.view.saveCurrenciesRates(currencies);
+            }
+            catch (CostManException e){
+                GUIUtils.ShowErrorMessageBox("Error", e.toString());
             }
         });
     }
@@ -149,7 +144,7 @@ public class ViewModel implements IViewModel
     {
         executorService.submit(() -> {
 
-            boolean isCategoryValid = (categoryName != null) && (categoryName.equals("") == false);
+            boolean isCategoryValid = (categoryName != null) && (!categoryName.equals(""));
             String outputMessageFormat = "The category \"%s\" has been successfully added.";
 
             /*
@@ -172,11 +167,11 @@ public class ViewModel implements IViewModel
             // There is an insertion of sub-category
             else
             {
-                isCategoryValid = isCategoryValid && (ownerCategoryName != null) && (ownerCategoryName.equals("") == false);
+                isCategoryValid = isCategoryValid && (ownerCategoryName != null) && (!ownerCategoryName.equals(""));
             }
 
-            // If the categories matches the conditions above accroding to their types
-            if (isCategoryValid == true)
+            // If the categories matches the conditions above according to their types
+            if (isCategoryValid)
             {
                 try
                 {
@@ -186,12 +181,12 @@ public class ViewModel implements IViewModel
                 }
                 catch (CostManException err)
                 {
-                    GUIUtils.ShowErrorMessageBox("An Error Occurred", err.toString());
+                    GUIUtils.ShowErrorMessageBox("Error", err.toString());
                 }
             }
             else
             {
-                GUIUtils.ShowErrorMessageBox("ERROR", "Invalid parameters for inserting new categories.");
+                GUIUtils.ShowErrorMessageBox("Error", "Invalid parameters for inserting new categories.");
             }
         });
     }
@@ -222,7 +217,7 @@ public class ViewModel implements IViewModel
             }
             catch (NumberFormatException err)
             {
-                GUIUtils.ShowOkMessageBox("An Error Occurred", err.toString());
+                GUIUtils.ShowOkMessageBox("Error", err.toString());
             }
 
             try
@@ -232,7 +227,7 @@ public class ViewModel implements IViewModel
             }
             catch (CostManException err)
             {
-                GUIUtils.ShowOkMessageBox("An Error Occurred", err.toString());
+                GUIUtils.ShowOkMessageBox("Error", err.toString());
             }
         });
     }
@@ -283,15 +278,11 @@ public class ViewModel implements IViewModel
     }
 
     @Override
-    public void getSubCategories(String currentSelectedPrimaryCagtegory)
-    {
-        try
-        {
-            List<String> categories = this.model.getSecondaryCategories(currentSelectedPrimaryCagtegory);
+    public void getSubCategories(String currentSelectedPrimaryCategory) {
+        try {
+            List<String> categories = this.model.getSecondaryCategories(currentSelectedPrimaryCategory);
             this.view.showCategories(categories, EnumCategoryType.Secondary);
-        }
-        catch (CostManException e)
-        {
+        } catch (CostManException e) {
             GUIUtils.ShowErrorMessageBox("Error", e.toString());
         }
     }
