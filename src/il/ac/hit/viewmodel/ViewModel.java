@@ -108,11 +108,11 @@ public class ViewModel implements IViewModel
     }
 
     /**
-     * Checks if the given input date is valid date or not.
-     * @param date - The given date which should be checked.
-     * @return true if valid, otherwise false
-     */
-    public static boolean isDateValid(String date) // TODO why is that here and not in GUIUtils?
+    * Checks if the given input date is valid date or not.
+    * @param date - The given date which should be checked.
+    * @return true if valid, otherwise false
+    */
+    public static boolean isDateValid(String date)
     {
         try {
             DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
@@ -266,24 +266,38 @@ public class ViewModel implements IViewModel
     @Override
     public void getPrimaryCategories()
     {
-        try
+        executorService.submit(new Runnable()
         {
-            List<String> categories = this.model.getPrimaryCategories();
-            this.view.showCategories(categories, EnumCategoryType.Primary);
-        }
-        catch (CostManException e)
-        {
-            GUIUtils.ShowErrorMessageBox("Error", e.toString());
-        }
+            @Override
+            public void run()
+            {
+                try
+                {
+                    List<String> categories = ViewModel.this.model.getPrimaryCategories();
+                    ViewModel.this.view.showCategories(categories, EnumCategoryType.Primary);
+                }
+                catch (CostManException e)
+                {
+                    GUIUtils.ShowErrorMessageBox("Error", e.toString());
+                }
+            }
+        });
     }
 
     @Override
     public void getSubCategories(String currentSelectedPrimaryCategory) {
-        try {
-            List<String> categories = this.model.getSecondaryCategories(currentSelectedPrimaryCategory);
-            this.view.showCategories(categories, EnumCategoryType.Secondary);
-        } catch (CostManException e) {
-            GUIUtils.ShowErrorMessageBox("Error", e.toString());
-        }
+        executorService.submit(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                try {
+                    List<String> categories =ViewModel. this.model.getSecondaryCategories(currentSelectedPrimaryCategory);
+                    ViewModel.this.view.showCategories(categories, EnumCategoryType.Secondary);
+                } catch (CostManException e) {
+                    GUIUtils.ShowErrorMessageBox("Error", e.toString());
+                }
+            }
+        });
     }
 }

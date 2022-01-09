@@ -552,7 +552,13 @@ public class View implements IView
                 public void itemStateChanged(ItemEvent e)
                 {
                     // Load dynamically the sub categories which belongs to the current selected category
-                    View.this.viewModel.getSubCategories(e.getItem().toString());
+                    // View.this.viewModel.getSubCategories(e.getItem().toString());
+
+                    int index = TransactionsWindow.this.categoriesComboBox.getSelectedIndex();
+                    String item = TransactionsWindow.this.categoriesComboBox.getItemAt(index);
+                    // GUIUtils.ShowOkMessageBox("", e.getItem().toString());
+                    // GUIUtils.ShowOkMessageBox("", item);
+                    View.this.viewModel.getSubCategories(item);
                 }
             });
 
@@ -1202,7 +1208,7 @@ public class View implements IView
         }
         else
         {
-            transactionsWindow.categoriesComboBox.setSelectedIndex(0);
+            // transactionsWindow.categoriesComboBox.setSelectedIndex(0);
             transactionsWindow.subCategoriesComboBox.removeAllItems();
             transactionsWindow.subCategoriesComboBox.setModel(new DefaultComboBoxModel<>(categories.toArray(arrayOfCategories)));
             transactionsWindow.subCategoriesComboBox.setSelectedIndex(0);
