@@ -6,8 +6,10 @@ import il.ac.hit.model.Model;
 import il.ac.hit.model.User;
 import org.junit.FixMethodOrder;
 import org.junit.runners.MethodSorters;
+
 import java.util.List;
 import java.util.logging.Logger;
+
 import static org.junit.Assert.*;
 
 /**
@@ -19,8 +21,7 @@ import static org.junit.Assert.*;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 
-public class ModelTest
-{
+public class ModelTest {
     private static final Logger LOGGER = Logger.getLogger(ModelTest.class.getName());
 
     @org.junit.Test
@@ -32,8 +33,7 @@ public class ModelTest
             User user = new User("test@gmail.com", "testPass");
             Model.getInstance().insertNewUser(user);
             // if an exception will occur, it would take place on next line
-        }
-        catch (CostManException e) {
+        } catch (CostManException e) {
             assertEquals(null, expected, e.getMessage());
         }
     }
@@ -46,8 +46,7 @@ public class ModelTest
         try {
             Model.getInstance().selectUserCredentials("test@gmail.com", "testPass");
             // if an exception will occur, it would take place on next line
-        }
-        catch (CostManException err) {
+        } catch (CostManException err) {
             assertEquals(null, expected, err.getMessage());
         }
 
@@ -63,8 +62,7 @@ public class ModelTest
                     "2020-01-01", "2021-12-08");
             assertNotNull("List of items is null", items);
             // if another exception will be thrown, it will take place on next line
-        }
-        catch (CostManException err) {
+        } catch (CostManException err) {
             assertEquals(null, expected, err.getMessage());
         }
 
@@ -76,11 +74,10 @@ public class ModelTest
         String expected = "Error while inserting into DataBase!";
 
         try {
-            Model.getInstance().insertNewItem(new Item(5,"aaa", "cyberAAA", "2021-12-08",
+            Model.getInstance().insertNewItem(new Item(5, "aaa", "cyberAAA", "2021-12-08",
                     50, "USD", 2.2f, "Hamburger"));
             // if an exception will occur, it would take place on next line
-        }
-        catch (CostManException err) {
+        } catch (CostManException err) {
             assertEquals(null, expected, err.getMessage());
         }
     }
@@ -92,15 +89,13 @@ public class ModelTest
 
         try {
             Model.getInstance().deleteItem(12, 12);
-        }
-        catch (CostManException err) {
+        } catch (CostManException err) {
             assertEquals(null, expected, err.getMessage());
         }
     }
 
     @org.junit.Test
-    public void GetCategories_Primary_Test1()
-    {
+    public void GetCategories_Primary_Test1() {
         boolean isExceptionThrown = false;
         LOGGER.info("Starting GetCategories_Primary_Test1()");
 
@@ -109,8 +104,7 @@ public class ModelTest
 
             assertNotEquals("List of primaries is null", primaries2, null);
             assertEquals("Wrong element at position 0", primaries2.get(0), "TstCat1_Primary");
-        }
-        catch (CostManException err) {
+        } catch (CostManException err) {
             isExceptionThrown = true;
         }
 
@@ -118,8 +112,7 @@ public class ModelTest
     }
 
     @org.junit.Test
-    public void GetCategories_Secondary_Test1()
-    {
+    public void GetCategories_Secondary_Test1() {
         boolean isExceptionThrown = false;
         LOGGER.info("Starting GetCategories_Secondary_Test1()");
 
@@ -128,8 +121,7 @@ public class ModelTest
 
             assertNotEquals("List of primaries is null", secondaries2, null);
             assertEquals("Wrong element at position 0", secondaries2.get(0), ("TstCat1_Secondary"));
-        }
-        catch (CostManException err) {
+        } catch (CostManException err) {
             isExceptionThrown = true;
         }
 
@@ -137,8 +129,7 @@ public class ModelTest
     }
 
     @org.junit.Test
-    public void InsertNewCategory_Primary_Test1()
-    {
+    public void InsertNewCategory_Primary_Test1() {
         boolean isExceptionThrown = false;
         LOGGER.info("Starting InsertNewCategory_Primary_Test1()");
 
@@ -149,8 +140,7 @@ public class ModelTest
             assertEquals("Wrong number of elements", primaries1.size(), 2);
             assertEquals("Wrong element at position 0", primaries1.get(0), "ProgramPrimary");
             assertEquals("Wrong element at position 1", primaries1.get(1), "TstCat1_Primary");
-        }
-        catch (CostManException err) {
+        } catch (CostManException err) {
             isExceptionThrown = true;
         }
 
@@ -158,8 +148,7 @@ public class ModelTest
     }
 
     @org.junit.Test
-    public void InsertNewCategory_Secondary_Test1()
-    {
+    public void InsertNewCategory_Secondary_Test1() {
         boolean isExceptionThrown = false;
         LOGGER.info("Starting InsertNewCategory_Secondary_Test1()");
 
@@ -170,8 +159,7 @@ public class ModelTest
             assertEquals("Wrong number of elements", secondaries1.size(), 2);
             assertEquals("Wrong element at position 0", secondaries1.get(0), "ProgramSecondary");
             assertEquals("Wrong element at position 1", secondaries1.get(1), "TstCat1_Secondary");
-        }
-        catch (CostManException err) {
+        } catch (CostManException err) {
             isExceptionThrown = true;
         }
 
@@ -179,7 +167,7 @@ public class ModelTest
     }
 
     @org.junit.Test
-    public void getCategoryNameByCategoryID(){
+    public void getCategoryNameByCategoryID() {
         boolean isExceptionThrown = false;
         LOGGER.info("Starting getCategoryNameByCategoryID()");
 
@@ -187,15 +175,14 @@ public class ModelTest
             String categoryName = Model.getInstance().getCategoryNameByCategoryID(1);
 
             assertEquals("Wrong category name at ID 1", categoryName, "TstCat1_Primary");
-        }
-        catch (CostManException err) {
+        } catch (CostManException err) {
             isExceptionThrown = true;
         }
         assertFalse(isExceptionThrown);
     }
 
     @org.junit.Test
-    public void getCurrencies(){
+    public void getCurrencies() {
         boolean isExceptionThrown = false;
         LOGGER.info("Starting getCurrencies()");
 
@@ -203,8 +190,7 @@ public class ModelTest
             float[] currencies = Model.getInstance().getCurrencies();
 
             assertEquals("Wrong array size", 4, currencies.length);
-        }
-        catch (CostManException err) {
+        } catch (CostManException err) {
             isExceptionThrown = true;
         }
         assertFalse(isExceptionThrown);

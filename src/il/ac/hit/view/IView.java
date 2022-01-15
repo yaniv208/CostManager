@@ -4,6 +4,7 @@ import il.ac.hit.model.EnumCategoryType;
 import il.ac.hit.model.Item;
 import il.ac.hit.viewmodel.EnumConsumerOfCategories;
 import il.ac.hit.viewmodel.IViewModel;
+
 import java.util.List;
 
 /**
@@ -13,6 +14,7 @@ public interface IView {
 
     /**
      * Set the ViewModel instance variable as the implemented ViewModel provided in parameter.
+     *
      * @param vm Implemented ViewModel class
      */
     void setIViewModel(IViewModel vm);
@@ -29,15 +31,17 @@ public interface IView {
 
     /**
      * Show the current user's items in the table within the reports window.
+     *
      * @param data A list of all the items which should be displayed.
      */
     void showItems(List<Item> data);
 
     /**
      * Save the current userID in the View.
+     *
      * @param id The ID of the current logged-on user.
      */
-    void setID (int id);
+    void setID(int id);
 
     /**
      * "open" (show) the main window of the program and "close" (hide) all the windows.
@@ -59,20 +63,22 @@ public interface IView {
 
     /**
      * "open" (show) the login window of the program and "close" (hide) all the windows.
-     *  In addition, this method clears all the fields of all the windows of the program.
+     * In addition, this method clears all the fields of all the windows of the program.
      */
     void openLoginWindowOnlyAndCloseOtherWindows();
 
     /**
      * Show categories to the user within the "TransactionsWindow" and the "CategoriesWindow"
+     *
      * @param categories A list of all the categories which should be displayed.
-     * @param currentCategoriesType An Enum variable which indicates what is the type of the current incoming categories,
-     * where "Primary" stands for "Categories" and "Secondary" stands for "Sub-Categories".
+     * @param currentCategoriesType An Enum variable which indicates what is the type of the current incoming
+     * categories, where "Primary" stands for "Categories" and "Secondary" stands for "Sub-Categories".
      */
     void showCategories(List<String> categories, EnumCategoryType currentCategoriesType, EnumConsumerOfCategories caller);
 
     /**
      * A function that gets the currency rates array and applies it in the array showed in View.
+     *
      * @param currencies array of float variables, containing currencies.
      */
     void saveCurrenciesRates(float[] currencies);

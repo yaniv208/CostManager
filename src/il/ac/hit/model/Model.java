@@ -5,21 +5,22 @@ import il.ac.hit.CostManException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+
 import static java.sql.Types.NULL;
 
 /**
  * This class represents the Database Component of the Model
  */
-public class Model implements IModel
-{
+public class Model implements IModel {
+    private static final Model instance = new Model();
     private final String dbDriverName = "com.mysql.jdbc.Driver";
     private final String dbProtocol = "jdbc:mysql://localhost:3306/costman";
     private final String dbUserName = "root";
     private final String dbPassword = "123456";
-    private static final Model instance = new Model();
 
     /**
      * Singleton method, in order to use it on DBModelTest
+     *
      * @return an instance of DBModel
      */
     public static Model getInstance() {
@@ -28,18 +29,18 @@ public class Model implements IModel
 
     /**
      * A code block that will be executed during "final" block, in order to prevent code redundancy
+     *
      * @param inputPreparedStatement The prepared statement which should be terminated
-     * @param inputConnection The connection which should be terminated
-     * @param inputResultSet The result set which should be terminated
+     * @param inputConnection        The connection which should be terminated
+     * @param inputResultSet         The result set which should be terminated
      * @throws CostManException if there was any problem closing resources
      */
-    private void cleanupUpdateUsageProcess(PreparedStatement inputPreparedStatement, Connection inputConnection, ResultSet inputResultSet) throws CostManException
-    {
+    private void cleanupUpdateUsageProcess(PreparedStatement inputPreparedStatement, Connection inputConnection,
+                                           ResultSet inputResultSet) throws CostManException {
         if (inputConnection != null) {
             try {
                 inputConnection.close();
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 throw new CostManException("A problem occurred while closing inputConnection.", e);
             }
         }
@@ -47,8 +48,7 @@ public class Model implements IModel
         if (inputPreparedStatement != null) {
             try {
                 inputPreparedStatement.close();
-            }
-            catch (SQLException e) {
+            } catch (SQLException e) {
                 throw new CostManException("A problem occurred while closing Prepared Statement!", e);
             }
         }
@@ -56,8 +56,7 @@ public class Model implements IModel
         if (inputResultSet != null) {
             try {
                 inputResultSet.close();
-            }
-            catch (SQLException e) {
+            } catch (SQLException e) {
                 throw new CostManException("A problem occurred while closing ResultSet!", e);
             }
         }
@@ -65,13 +64,13 @@ public class Model implements IModel
 
     /**
      * A function that verifies the user's input with the database and showing corresponding message.
-     * @param email email address written on login page
-     * @param password email address written on login page
+     *
+     * @param email Email address written on login page
+     * @param password Email address written on login page
      * @return ID of the specific user on the database, 0 if null/not found
-     * @throws CostManException if there was any problem retrieving user ID
+     * @throws CostManException If there was any problem retrieving user ID
      */
-    public int selectUserCredentials(String email, String password) throws CostManException
-    {
+    public int selectUserCredentials(String email, String password) throws CostManException {
         PreparedStatement ps = null;
         Connection connection = null;
         ResultSet rs = null;
@@ -89,17 +88,13 @@ public class Model implements IModel
             rs = ps.executeQuery();
 
             // getting ID of the specific user, so only 1 ID returned.
-            if(rs.next()){
+            if (rs.next()) {
                 userId = rs.getInt("UserID");
             }
 
-        }
-
-        catch (SQLException | ClassNotFoundException e) {
+        } catch (SQLException | ClassNotFoundException e) {
             throw new CostManException("Error logging in! (User not found/Wrong password)", e);
-        }
-
-        finally {
+        } finally {
             cleanupUpdateUsageProcess(ps, connection, rs);
         }
 
@@ -108,12 +103,12 @@ public class Model implements IModel
 
     /**
      * A function that inserts a new user to the database.
+     *
      * @param user A parameter representing user, containing strings of email address and a password.
-     * @return the ID of the inserted user, if successful
-     * @throws CostManException if there was any problem creating a user
+     * @return The ID of the inserted user, if successful
+     * @throws CostManException If there was any problem creating a user
      */
-    public int insertNewUser(User user) throws CostManException
-    {
+    public int insertNewUser(User user) throws CostManException {
         PreparedStatement ps = null;
         Connection connection = null;
         int id;
@@ -130,17 +125,13 @@ public class Model implements IModel
             if (ps.executeUpdate() != 1) {
                 throw new CostManException("Problem with registering user!");
             }
-        }
-
-        catch (SQLException | ClassNotFoundException e) {
+        } catch (SQLException | ClassNotFoundException e) {
             throw new CostManException("Problem with registering user!", e);
-        }
-
-        finally {
+        } finally {
             cleanupUpdateUsageProcess(ps, connection, null);
         }
 
-        // using the previous implemented method in order to get ID of the inserted user
+        // Using the previous implemented method in order to get ID of the inserted user
         id = selectUserCredentials(user.email, user.password);
 
         return id;
@@ -148,8 +139,9 @@ public class Model implements IModel
 
     /**
      * Retrieve categories by their specified type (PRIMARY or SECONDARY)
+     *
      * @param requestedCategoriesType The type of the requested categories which should be retrieved.
-     * @return The list of the categories from the requested type.
+     * @return A list of the categories from the requested type.
      * @throws CostManException if there was any problem retrieving categories
      */
     public List<String> getCategoriesByCategoryType(EnumCategoryType requestedCategoriesType) throws CostManException {
@@ -192,11 +184,9 @@ public class Model implements IModel
                 allRequestedCategories.add(rs.getString("CategoryName"));
             }
 
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             throw new CostManException("Can't retrieve the categories from the DB.", e);
-        }
-        finally {
+        } finally {
             cleanupUpdateUsageProcess(ps, connection, rs);
         }
 
@@ -205,8 +195,9 @@ public class Model implements IModel
 
     /**
      * Retrieve all the primary categories
-     * @return The list of the categories from the requested type.
-     * @throws CostManException if there was any problem retrieving categories
+     *
+     * @return A list of the categories from the requested type.
+     * @throws CostManException If there was any problem retrieving categories
      */
     public List<String> getPrimaryCategories() throws CostManException {
         Connection connection = null;
@@ -232,11 +223,9 @@ public class Model implements IModel
                 allRequestedCategories.add(rs.getString("CategoryName"));
             }
 
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             throw new CostManException("Can't retrieve the categories from the DB", e);
-        }
-        finally {
+        } finally {
             cleanupUpdateUsageProcess(ps, connection, rs);
         }
 
@@ -245,8 +234,9 @@ public class Model implements IModel
 
     /**
      * Retrieve all the sub-categories which belongs to the current given primary category
-     * @return The list of the categories from the requested type.
-     * @throws CostManException if there was any problem retrieving categories
+     *
+     * @return A list of the categories from the requested type
+     * @throws CostManException If there was any problem retrieving categories
      */
     public List<String> getSecondaryCategories(String currentPrimaryCategory) throws CostManException {
         Connection connection = null;
@@ -274,11 +264,9 @@ public class Model implements IModel
             while (rs.next()) {
                 allRequestedCategories.add(rs.getString("CategoryName"));
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             throw new CostManException("Can't retrieve the categories from the DB.", e);
-        }
-        finally {
+        } finally {
             cleanupUpdateUsageProcess(ps, connection, rs);
         }
 
@@ -286,12 +274,12 @@ public class Model implements IModel
     }
 
     /**
-     * Insert new category to the Database
+     * Insert a new category to the Database
+     *
      * @param newCategoryName The new category name
-     * @param ownerCategoryName The Owner of the current category.
-     *                          If the current category is a PRIMARY category, this value should be null,
-     *                          otherwise the name of the category owner.
-     * @throws CostManException if there was any problem inserting a new category
+     * @param ownerCategoryName The Owner of the current category. If the current category is a PRIMARY category,
+     * this value would be null. Otherwise, the name of the category owner.
+     * @throws CostManException If insertion of a new category wasn't successful
      */
     public void insertNewCategory(String newCategoryName, String ownerCategoryName) throws CostManException {
         Connection connection = null;
@@ -302,8 +290,7 @@ public class Model implements IModel
 
         if (ownerCategoryName == null) {
             categoryPrimaryIndicator = null;
-        }
-        else {
+        } else {
             categoryPrimaryIndicator = String.valueOf(getCategoryIDByCategoryName(ownerCategoryName));
         }
 
@@ -318,20 +305,19 @@ public class Model implements IModel
             if (ps.executeUpdate() != 1) {
                 throw new CostManException("Error while trying to insert a new category!");
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             throw new CostManException("Cannot insert the new category to the DB", e);
-        }
-        finally {
+        } finally {
             cleanupUpdateUsageProcess(ps, connection, null);
         }
     }
 
     /**
      * Retrieve the requested category ID by its name
+     *
      * @param categoryName The name of the category which should be resolved to it's corresponding ID
      * @return The corresponding ID of the given category name
-     * @throws CostManException if there was any problem retrieving category ID
+     * @throws CostManException If there was any problem retrieving category ID
      */
     public int getCategoryIDByCategoryName(String categoryName) throws CostManException {
         Connection connection = null;
@@ -341,7 +327,7 @@ public class Model implements IModel
         String finalQueryTemplate = "SELECT CategoryID FROM categories WHERE CategoryName=?";
 
         // In case where the input category name doesn't exist, this default value should be returned.
-        int returnValue; // default value of an integer in Java is 0.
+        int returnValue; // In general, default value of an integer in Java is 0.
 
         try {
             Class.forName(this.dbDriverName);
@@ -360,8 +346,7 @@ public class Model implements IModel
         } catch (Exception e) {
             throw new CostManException(String.format("Cannot convert the category name \"%s\" to a category id",
                     categoryName), e);
-        }
-        finally {
+        } finally {
             cleanupUpdateUsageProcess(ps, connection, rs);
         }
 
@@ -370,9 +355,10 @@ public class Model implements IModel
 
     /**
      * Retrieve the requested category name by its ID
+     *
      * @param categoryId The ID of the category which should be resolved to it's corresponding name
      * @return The corresponding name of the given category ID
-     * @throws CostManException if there was any problem retrieving category name
+     * @throws CostManException If there was any problem retrieving category name
      */
     public String getCategoryNameByCategoryID(int categoryId) throws CostManException {
         Connection connection = null;
@@ -399,8 +385,7 @@ public class Model implements IModel
         } catch (Exception e) {
             throw new CostManException(String.format("Can't convert the category ID \"%d\" to a category name",
                     categoryId), e);
-        }
-        finally {
+        } finally {
             cleanupUpdateUsageProcess(ps, connection, rs);
         }
 
@@ -408,15 +393,15 @@ public class Model implements IModel
     }
 
     /**
-     * Return data by a specific range of dates
-     * @param userId user ID of the requesting user
-     * @param from origin date
-     * @param to destination date
-     * @return A specific list of items selected by range of dates
-     * @throws CostManException if there was any problem getting data between specified dates
+     * A function that returns data by a specific range of dates
+     *
+     * @param userId User ID of the requesting user
+     * @param from Origin date
+     * @param to Destination date
+     * @return A list of items selected by range of dates
+     * @throws CostManException If fetching items by dates wasn't successful
      */
-    public List<Item> getItemsByRangeOfDates(int userId, String from, String to) throws CostManException
-    {
+    public List<Item> getItemsByRangeOfDates(int userId, String from, String to) throws CostManException {
         PreparedStatement ps = null;
         Connection connection = null;
         ResultSet rs = null;
@@ -436,9 +421,8 @@ public class Model implements IModel
 
             rs = ps.executeQuery();
 
-            while (rs.next())
-            {
-                // assign variables of each item, and adding it to collection
+            while (rs.next()) {
+                // Assign variables of each item, and adding it to collection
                 itemToAdd = new Item();
                 itemToAdd.setItemId(rs.getInt("ItemID"));
                 itemToAdd.setUserId(rs.getInt("OwnerUserID"));
@@ -453,11 +437,9 @@ public class Model implements IModel
                 itemToAdd.setDescription(rs.getString("Description"));
                 items.add(itemToAdd);
             }
-        }
-        catch (SQLException | ClassNotFoundException e) {
+        } catch (SQLException | ClassNotFoundException e) {
             throw new CostManException("Error getting data between dates!", e);
-        }
-        finally {
+        } finally {
             cleanupUpdateUsageProcess(ps, connection, rs);
         }
 
@@ -465,12 +447,12 @@ public class Model implements IModel
     }
 
     /**
-     * Insert a new item into the database
-     * @param item represents an item that would be inserted into database
-     * @throws CostManException if there was any problem inserting a new item
+     * A function that inserts a new item into the database
+     *
+     * @param item Item that would be inserted into database
+     * @throws CostManException If insertion of a new item wasn't successful
      */
-    public void insertNewItem(Item item) throws CostManException
-    {
+    public void insertNewItem(Item item) throws CostManException {
         PreparedStatement ps = null;
         Connection connection = null;
 
@@ -492,24 +474,21 @@ public class Model implements IModel
             if (ps.executeUpdate() != 1) {
                 throw new CostManException("Error while inserting into DataBase!");
             }
-        }
-
-        catch (SQLException | ClassNotFoundException e) {
+        } catch (SQLException | ClassNotFoundException e) {
             throw new CostManException("Error while inserting into DataBase!", e);
-        }
-        finally {
+        } finally {
             cleanupUpdateUsageProcess(ps, connection, null);
         }
     }
 
     /**
-     * Delete a specific item from the database
-     * @param OwnerUserId represents specific user ID whose belonged item to be deleted.
-     * @param itemId represents specific item ID to be deleted.
-     * @throws CostManException if there was any problem deleting an item from database
+     * A function that deletes a specific item from the database
+     *
+     * @param OwnerUserId Represents specific user ID whose belonged item to be deleted.
+     * @param itemId Represents specific item ID to be deleted.
+     * @throws CostManException If deletion of an item wasn't successful
      */
-    public void deleteItem(int OwnerUserId, int itemId) throws CostManException
-    {
+    public void deleteItem(int OwnerUserId, int itemId) throws CostManException {
         PreparedStatement ps = null;
         Connection connection = null;
 
@@ -525,19 +504,18 @@ public class Model implements IModel
                 throw new CostManException("Error deleting item!");
             }
 
-        }
-        catch (SQLException | ClassNotFoundException e) {
+        } catch (SQLException | ClassNotFoundException e) {
             throw new CostManException("Error deleting item!", e);
-        }
-        finally {
+        } finally {
             cleanupUpdateUsageProcess(ps, connection, null);
         }
     }
 
     /**
-     * Get the currency rates of the DB
-     * @return List of currencies
-     * @throws CostManException if there was any problem fetching the currencies
+     * A method that gets the currency rates of the DB
+     *
+     * @return An array of currencies
+     * @throws CostManException If there was any problem fetching the currencies
      */
     public float[] getCurrencies() throws CostManException {
         PreparedStatement ps = null;
@@ -556,17 +534,12 @@ public class Model implements IModel
             rs = ps.executeQuery();
 
             // Getting the value of specific currency
-            for (int i = 0; rs.next(); i++)
-            {
+            for (int i = 0; rs.next(); i++) {
                 currencies[i] = rs.getFloat("Value");
             }
-        }
-
-        catch (SQLException | ClassNotFoundException e) {
+        } catch (SQLException | ClassNotFoundException e) {
             throw new CostManException("Error fetching values!", e);
-        }
-
-        finally {
+        } finally {
             cleanupUpdateUsageProcess(ps, connection, rs);
         }
 

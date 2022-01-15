@@ -1,7 +1,9 @@
 package il.ac.hit.viewmodel;
 
-public enum EnumConsumerOfCategories
-{
+/**
+ * Enum specifying the specific window trying to fetch the categories
+ */
+public enum EnumConsumerOfCategories {
     TransactionsWindow,
     CategoriesWindow
 }
