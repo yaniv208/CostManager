@@ -10,9 +10,7 @@ import il.ac.hit.viewmodel.IViewModel;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.awt.event.ItemEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.awt.event.*;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
@@ -792,7 +790,7 @@ public class View implements IView {
 
                     View.this.viewModel.addItem(item);
                 } catch (CostManException ex) {
-                    GUIUtils.showErrorMessageBox("Error", "Error inserting new item!");
+                    GUIUtils.showErrorMessageBox("Error", ex.toString());
                 }
             });
 
@@ -1032,6 +1030,9 @@ public class View implements IView {
 
             panelSouth.setLayout(new GridBagLayout());
             panelSouth.setBorder(BorderFactory.createEmptyBorder());
+
+            logoutButton.addActionListener(e -> View.this.viewModel.logout());
+
             GUIUtils.setConstraintsSettings(constraints, 0, 0, GridBagConstraints.CENTER,
                     10, 10);
             panelSouth.add(logoutButton, constraints);
