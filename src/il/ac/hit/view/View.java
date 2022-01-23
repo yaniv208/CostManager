@@ -6,7 +6,6 @@ import il.ac.hit.model.EnumCategoryType;
 import il.ac.hit.model.Item;
 import il.ac.hit.viewmodel.EnumConsumerOfCategories;
 import il.ac.hit.viewmodel.IViewModel;
-
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
@@ -327,7 +326,7 @@ public class View implements IView {
         /**
          * A function that sets various settings of the frame
          *
-         * @param frame       the frame to be modified
+         * @param frame the frame to be modified
          * @param panelCenter panel center to be modified
          * @param panelNorth  panel north to be modified
          * @param panelSouth  panel south to be modified
@@ -789,6 +788,7 @@ public class View implements IView {
                             descriptionTextField.getText());
 
                     View.this.viewModel.addItem(item);
+                    clearAllFields();
                 } catch (CostManException ex) {
                     GUIUtils.showErrorMessageBox("Error", ex.toString());
                 }
@@ -912,7 +912,6 @@ public class View implements IView {
          */
         public void clearAllFields() {
             this.sumTextField.setText("");
-            this.currencyRateSumLabel.setText("");
             this.dateTextField.setText("");
             this.descriptionTextField.setText("");
             this.idTextField.setText("");
@@ -920,8 +919,7 @@ public class View implements IView {
             if (this.categoriesComboBox.getModel().getSize() != 0) {
                 this.categoriesComboBox.setSelectedIndex(0);
             }
-            this.subCategoriesComboBox.removeAllItems();
-            // this.subCategoriesComboBox.setSelectedIndex(0);
+            this.subCategoriesComboBox.setSelectedIndex(0);
             this.currenciesComboBox.setSelectedIndex(0);
         }
     }

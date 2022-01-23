@@ -1,11 +1,9 @@
 package il.ac.hit.model;
 
 import il.ac.hit.CostManException;
-
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-
 import static java.sql.Types.NULL;
 
 /**
@@ -31,8 +29,8 @@ public class Model implements IModel {
      * A code block that will be executed during "final" block, in order to prevent code redundancy
      *
      * @param inputPreparedStatement The prepared statement which should be terminated
-     * @param inputConnection        The connection which should be terminated
-     * @param inputResultSet         The result set which should be terminated
+     * @param inputConnection The connection which should be terminated
+     * @param inputResultSet The result set which should be terminated
      * @throws CostManException if there was any problem closing resources
      */
     private void cleanupUpdateUsageProcess(PreparedStatement inputPreparedStatement, Connection inputConnection,

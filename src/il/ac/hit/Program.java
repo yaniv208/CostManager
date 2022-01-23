@@ -26,6 +26,5 @@ public class Program {
             view.init();
             view.start();
         });
-
     }
 }

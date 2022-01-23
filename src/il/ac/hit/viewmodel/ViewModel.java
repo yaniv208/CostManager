@@ -122,7 +122,7 @@ public class ViewModel implements IViewModel {
                 itemsInRangeOfDates = model.getItemsByRangeOfDates(currentID, fromDate, toDate);
                 SwingUtilities.invokeLater(() -> view.showItems(itemsInRangeOfDates));
             } catch (CostManException err) {
-                GUIUtils.showErrorMessageBox("Error", "Problem fetching items!");
+                GUIUtils.showErrorMessageBox("Error", err.toString());
             }
         });
     }

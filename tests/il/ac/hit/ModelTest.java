@@ -6,21 +6,17 @@ import il.ac.hit.model.Model;
 import il.ac.hit.model.User;
 import org.junit.FixMethodOrder;
 import org.junit.runners.MethodSorters;
-
 import java.util.List;
 import java.util.logging.Logger;
-
 import static org.junit.Assert.*;
 
 /**
  * A class that contains all the unit tests for the functions in Model
- * assertEquals    - Asserts that two objects are equal.
- * assertNotEquals - Asserts that two objects are not equals.
- * assertFalse - Asserts that the actual parameter is false.
+ * assertEquals Asserts that two objects are equal.
+ * assertNotEquals Asserts that two objects are not equals.
+ * assertFalse Asserts that the actual parameter is false.
  */
-
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-
 public class ModelTest {
     private static final Logger LOGGER = Logger.getLogger(ModelTest.class.getName());
 
